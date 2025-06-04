@@ -51,3 +51,6 @@ publish/
 
 # Local history for some extensions
 .history/
+
+# ASP.NET Core environment-specific settings
+Backend/appsettings.Development.json
