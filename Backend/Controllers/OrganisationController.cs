@@ -35,6 +35,15 @@ public class OrganisationController : ControllerBase
         return organisations.Any() ? Ok(organisations) : NotFound($"No organisations found for campaign ID {campaignId}.");
     }
 
+    [HttpGet("connected/{id}")]
+    public IActionResult GetConnectedOrganisations(long id)
+    {
+        var organisations = _dbContext.Organisations
+            .Where(o => o.Id != id && o.CharOrgConnections.Any(c => c.OrganisationId == id))
+            .ToList();
+        return organisations.Any() ? Ok(organisations) : NotFound("No connected organisations found.");
+    }
+
     [HttpPost]
     public IActionResult Post([FromBody] Models.Organisation organisation)
     {
