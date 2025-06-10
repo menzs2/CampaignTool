@@ -9,6 +9,7 @@ public partial class Organisation
 {
     [Key]
     [Column("id")]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
 
     [Column("organisation_name")]

@@ -7,6 +7,7 @@ namespace Backend.Models;
 public partial class User
 {
     [Key]
+    [Column("id")]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
 

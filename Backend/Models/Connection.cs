@@ -9,6 +9,7 @@ public partial class Connection
 {
     [Key]
     [Column("id")]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
 
     [Column("connection_name")]

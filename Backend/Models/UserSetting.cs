@@ -8,6 +8,7 @@ public partial class UserSetting
 {
     [Key]
     [Column("id")]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
 
     [Column("select_last_campaign")]
