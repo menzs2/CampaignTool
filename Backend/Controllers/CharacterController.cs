@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Backend;
 
 [Route("api/[controller]")]
+[ApiController]
 public class CharacterController : ControllerBase
 {
     private readonly CampaignToolContext _dbContext;
