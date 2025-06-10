@@ -28,7 +28,7 @@ public partial class CampaignToolContext : DbContext
 
     public virtual DbSet<UserSetting> user_settings { get; set; }
 
-protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
         {
