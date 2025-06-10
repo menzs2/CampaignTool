@@ -1,5 +1,4 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Backend.Models;
@@ -35,6 +34,6 @@ public partial class Campaign
     [InverseProperty("Campaign")]
     public virtual ICollection<Organisation> Organisations { get; set; } = new List<Organisation>();
 
-    [InverseProperty("Campaign")]
+    [InverseProperty("DefaultCampaign")]
     public virtual ICollection<UserSetting> UserSettings { get; set; } = new List<UserSetting>();
 }

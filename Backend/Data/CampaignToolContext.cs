@@ -14,19 +14,19 @@ public partial class CampaignToolContext : DbContext
     {
     }
 
-    public virtual DbSet<Campaign> campaigns { get; set; }
+    public virtual DbSet<Campaign> Campaigns { get; set; }
 
-    public virtual DbSet<CharCharConnection> char_char_connections { get; set; }
+    public virtual DbSet<CharCharConnection> CharCharConnections { get; set; }
 
-    public virtual DbSet<Character> characters { get; set; }
+    public virtual DbSet<Character> Characters { get; set; }
 
-    public virtual DbSet<Connection> connections { get; set; }
+    public virtual DbSet<Connection> Connections { get; set; }
 
-    public virtual DbSet<Organisation> organisations { get; set; }
+    public virtual DbSet<Organisation> Organisations { get; set; }
 
-    public virtual DbSet<User> users { get; set; }
+    public virtual DbSet<User> Users { get; set; }
 
-    public virtual DbSet<UserSetting> user_settings { get; set; }
+    public virtual DbSet<UserSetting> UserSettings { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -160,7 +160,7 @@ public partial class CampaignToolContext : DbContext
             entity.Property(e => e.SelectLastCampaign).HasDefaultValue(false);
 
             entity.HasOne(d => d.DefaultCampaign).WithMany(p => p.UserSettings)
-                .HasForeignKey(d => d.DefaultCampaign)
+                .HasForeignKey(d => d.DefaultCampaignId)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("campaign_fkey");
         });

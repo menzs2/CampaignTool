@@ -1,5 +1,4 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Backend.Models;
@@ -33,11 +32,11 @@ public partial class CharCharConnection
     public long ConnectionId { get; set; }
 
     [ForeignKey("CharOneId")]
-    [InverseProperty("CharCharConnectionCharOne")]
+    [InverseProperty("CharCharConnectionCharOnes")]
     public virtual Character CharOne { get; set; } = null!;
 
     [ForeignKey("CharTwoId")]
-    [InverseProperty("CharCharConnectionCharTwo")]
+    [InverseProperty("CharCharConnectionCharTwos")]
     public virtual Character CharTwo { get; set; } = null!;
 
     [ForeignKey("ConnectionId")]
