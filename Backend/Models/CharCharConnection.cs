@@ -8,6 +8,7 @@ public partial class CharCharConnection
 {
     [Key]
     [Column("id")]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
 
     [Column("char_one_id")]

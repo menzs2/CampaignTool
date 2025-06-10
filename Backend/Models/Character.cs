@@ -8,6 +8,7 @@ public partial class Character
 {
     [Key]
     [Column("id")]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
 
     [Column("character_name")]
@@ -46,7 +47,7 @@ public partial class Character
 
     [InverseProperty("Character")]
     public virtual ICollection<CharOrgConnection> CharOrgConnections { get; set; } = new List<CharOrgConnection>(); 
-    
+
     [NotMapped]
     public long[] CharCharConnectionIds => CharCharConnectionCharOnes.Select(c => c.Id).Concat(CharCharConnectionCharTwos.Select(c => c.Id)).Distinct().ToArray();
 }

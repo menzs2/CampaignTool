@@ -8,6 +8,7 @@ public partial class Campaign
 {
     [Key]
     [Column("id")]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
 
     [Column("campaign_name")]

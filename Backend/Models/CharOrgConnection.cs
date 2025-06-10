@@ -6,8 +6,9 @@ namespace Backend.Models;
 [Table("char_organisation_connection")]
 public class CharOrgConnection
 {
-[Key]
+    [Key]
     [Column("id")]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
 
     [Column("char_id")]
