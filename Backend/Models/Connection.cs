@@ -32,4 +32,7 @@ public partial class Connection
 
     [InverseProperty("Connection")]
     public virtual ICollection<CharCharConnection> CharCharConnections { get; set; } = new List<CharCharConnection>();
+
+    [InverseProperty("Connection")]
+    public virtual ICollection<CharOrgConnection> CharOrgConnections { get; set; } = new List<CharOrgConnection>();
 }

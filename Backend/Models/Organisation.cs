@@ -35,4 +35,7 @@ public partial class Organisation
     [ForeignKey("CampaignId")]
     [InverseProperty("Organisations")]
     public virtual Campaign? Campaign { get; set; }
+    
+    [InverseProperty("Organisation")]
+    public virtual ICollection<CharOrgConnection> CharOrgConnections { get; set; } = new List<CharOrgConnection>();
 }

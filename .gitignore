@@ -54,3 +54,6 @@ publish/
 
 # ASP.NET Core environment-specific settings
 Backend/appsettings.Development.json
+
+# Entity Framework Core Migrations
+**/Migrations/
