@@ -28,6 +28,22 @@ public class CharacterController : ControllerBase
         return character != null ? Ok(character) : NotFound($"Character with ID {id} not found.");
     }
 
+    [HttpGet("campaign/{campaignId}")]
+    public IActionResult GetByCampaign(long campaignId)
+    {
+        var characters = _dbContext.Characters.Where(c => c.CampaignId == campaignId).ToList();
+        return characters.Any() ? Ok(characters) : NotFound($"No characters found for campaign ID {campaignId}.");
+    }
+
+    [HttpGet("connected/{id}")]
+    public IActionResult GetConnectedCharacters(long Id)
+    {
+        var characters = _dbContext.Characters
+            .Where(c => c.CharCharConnectionIds.Contains(Id))
+            .ToList();
+        return characters != null ? Ok(characters) : NotFound("No connected characters not found.");
+    }
+
     [HttpPost]
     public IActionResult Post([FromBody] Models.Character character)
     {

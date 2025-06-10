@@ -43,4 +43,7 @@ public partial class Character
 
     [InverseProperty("CharTwo")]
     public virtual ICollection<CharCharConnection> CharCharConnectionCharTwos { get; set; } = new List<CharCharConnection>();
+
+    [NotMapped]
+    public long[] CharCharConnectionIds => CharCharConnectionCharOnes.Select(c => c.Id).Concat(CharCharConnectionCharTwos.Select(c => c.Id)).Distinct().ToArray();
 }
