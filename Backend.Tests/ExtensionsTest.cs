@@ -179,5 +179,49 @@ namespace Backend.Data.Tests
             Assert.Equal(organisation.GmOnly, dto.GmOnly);
             Assert.Equal(organisation.GmOnlyDescription, dto.GmOnlyDescription);
         }
+        [Fact]
+        public void User_ToDto_WithNullUser_ReturnsNull()
+        {
+            // Arrange
+            User? user = null;
+
+            // Act
+            var result = user.ToDto();
+
+            // Assert
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void User_ToDto_WithValidUser_ReturnsDtoWithSameValues()
+        {
+            // Arrange
+            var user = new User
+            {
+                Id = 100,
+                FirstName = "John",
+                LastName = "Doe",
+                UserName = "johndoe",
+                Email = "john@example.com",
+                HasLogin = true,
+                Password = "password123",
+                Role = 1
+            };
+
+            // Act
+            var dto = user.ToDto();
+
+            // Assert
+            Assert.NotNull(dto);
+            Assert.Equal(user.Id, dto.Id);
+            Assert.Equal(user.FirstName, dto.FirstName);
+            Assert.Equal(user.LastName, dto.LastName);
+            Assert.Equal(user.UserName, dto.UserName);
+            Assert.Equal(user.Email, dto.Email);
+            Assert.Equal(user.HasLogin, dto.HasLogin);
+            Assert.Equal(user.Password, dto.Password);
+            Assert.Equal(user.Role, dto.Role);
+        }
     }
 }
+

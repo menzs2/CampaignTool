@@ -1,5 +1,6 @@
 ﻿using Backend.Data;
 using Microsoft.AspNetCore.Mvc;
+using Shared;
 
 namespace Backend;
 
@@ -18,32 +19,41 @@ public class UserController : ControllerBase
     public IActionResult Get()
     {
         return _dbContext.Users.Any()
-            ? Ok(_dbContext.Users.ToList())
+            ? Ok(_dbContext.Users.ToDto())
             : NotFound("No users found.");
     }
 
     [HttpGet("{id}")]
     public IActionResult Get(long id)
     {
-        var user = _dbContext.Users.Find(id);
+        var user = _dbContext.Users.Where(u => u.Id == id).FirstOrDefault()?.ToDto();
+        if (user == null)
+        {
+            return NotFound($"User with ID {id} not found.");
+        }
         return user != null ? Ok(user) : NotFound($"User with ID {id} not found.");
     }
 
     [HttpPost]
-    public IActionResult Post([FromBody] Models.User user)
+    public IActionResult Post([FromBody] UserDto? user)
     {
         if (user == null)
         {
             return BadRequest("User data is null.");
         }
+        var newUser = user.ToModel();
+        if (newUser == null)
+        {
+            return BadRequest("Invalid user data.");
+        }
 
-        _dbContext.Users.Add(user);
+        _dbContext.Users.Add(newUser);
         _dbContext.SaveChanges();
         return CreatedAtAction(nameof(Get), new { id = user.Id }, user);
     }
 
     [HttpPut("{id}")]
-    public IActionResult Put(long id, [FromBody] Models.User user)
+    public IActionResult Put(long id, [FromBody] UserDto? user)
     {
         if (user == null || user.Id != id)
         {
