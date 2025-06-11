@@ -250,4 +250,60 @@ public static class Extensions
         return users;
     }
     #endregion
+
+    #region UserSetting Extensions
+    
+    public static UserSettingDto? ToDto(this UserSetting? userSetting)
+    {
+        if (userSetting == null) return null;
+
+        return new UserSettingDto
+        {
+            Id = userSetting.Id,
+            SelectLastCampaign = userSetting.SelectLastCampaign,
+            SameNameWarning = userSetting.SameNameWarning,
+            DefaultCampaignId = userSetting.DefaultCampaignId
+        };
+    }
+
+    public static List<UserSettingDto> ToDto(this IEnumerable<UserSetting?> userSettings)
+    {
+        var userSettingsDtoList = new List<UserSettingDto>();
+        foreach (var userSetting in userSettings)
+        {
+            if (userSetting.ToDto() is UserSettingDto dto)
+            {
+                userSettingsDtoList.Add(dto);
+            }
+        }
+        return userSettingsDtoList;
+    }
+
+    public static UserSetting? ToModel(this UserSettingDto? userSettingDto)
+    {
+        if (userSettingDto == null) return null;
+
+        return new UserSetting
+        {
+            Id = userSettingDto.Id,
+            SelectLastCampaign = userSettingDto.SelectLastCampaign,
+            SameNameWarning = userSettingDto.SameNameWarning,
+            DefaultCampaignId = userSettingDto.DefaultCampaignId
+        };
+    }
+
+    public static List<UserSetting> ToModel(this IEnumerable<UserSettingDto?> userSettingDtos)
+    {
+        var userSettings = new List<UserSetting>();
+        foreach (var userSettingDto in userSettingDtos)
+        {
+            if (userSettingDto.ToModel() is UserSetting userSetting)
+            {
+                userSettings.Add(userSetting);
+            }
+        }
+        return userSettings;
+    }
+
+    #endregion
 }
