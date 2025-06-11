@@ -1,5 +1,4 @@
 ﻿using Backend.Data;
-using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Shared;
 
@@ -19,18 +18,7 @@ public class CampaignController : ControllerBase
     [HttpGet]
     public IActionResult Get()
     {
-        var campaigns = _dbContext.Campaigns
-            .Select(c => new CampaignDto
-            {
-                Id = c.Id,
-                CampaignName = c.CampaignName,
-                DescriptionShort = c.DescriptionShort,
-                Description = c.Description,
-                Gm = c.Gm,
-                GmOnlyDescription = c.GmOnlyDescription
-            })
-            .ToList();
-
+        var campaigns = _dbContext.Campaigns.ToDto().ToList();
         return campaigns.Any() ? Ok(campaigns) : NotFound("No campaigns found.");
     }
 
@@ -38,35 +26,29 @@ public class CampaignController : ControllerBase
     public IActionResult Get(long id)
     {
         var campaign = _dbContext.Campaigns
-            .Where(c => c.Id == id)
-            .Select(c => new CampaignDto
-            {
-                Id = c.Id,
-                CampaignName = c.CampaignName,
-                DescriptionShort = c.DescriptionShort,
-                Description = c.Description,
-                Gm = c.Gm,
-                GmOnlyDescription = c.GmOnlyDescription
-            })
-            .FirstOrDefault();
+            .Where(c => c.Id == id).FirstOrDefault()?.ToDto();
         return campaign != null ? Ok(campaign) : NotFound($"Campaign with ID {id} not found.");
     }
 
     [HttpPost]
-    public IActionResult Post([FromBody] Campaign campaign)
+    public IActionResult Post([FromBody] CampaignDto campaign)
     {
         if (campaign == null)
         {
             return BadRequest("Campaign data is null.");
         }
-
-        _dbContext.Campaigns.Add(campaign);
+        var newCampaign = campaign.ToModel();
+        if (newCampaign == null)
+        {
+            return BadRequest("Invalid campaign data.");
+        }
+        _dbContext.Campaigns.Add(newCampaign);
         _dbContext.SaveChanges();
         return CreatedAtAction(nameof(Get), new { id = campaign.Id }, campaign);
     }
 
     [HttpPut("{id}")]
-    public IActionResult Put(long id, [FromBody] Campaign campaign)
+    public IActionResult Put(long id, [FromBody] CampaignDto campaign)
     {
         if (campaign == null || campaign.Id != id)
         {
