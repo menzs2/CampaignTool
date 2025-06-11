@@ -125,7 +125,7 @@ public static class Extensions
     #endregion
 
     #region Organisation Extensions
-    
+
     public static OrganisationDto? ToDto(this Organisation? organisation)
     {
         if (organisation == null) return null;
@@ -186,5 +186,68 @@ public static class Extensions
         return organisations;
     }
 
+    #endregion
+
+    #region User Extensions
+
+    public static UserDto? ToDto(this User? user)
+    {
+        if (user == null) return null;
+
+        return new UserDto
+        {
+            Id = user.Id,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            UserName = user.UserName,
+            Email = user.Email,
+            HasLogin = user.HasLogin,
+            Password = user.Password,
+            Role = user.Role
+        };
+    }
+
+    public static List<UserDto> ToDto(this IEnumerable<User?> users)
+    {
+        var usersDtoList = new List<UserDto>();
+        foreach (var user in users)
+        {
+            if (user.ToDto() is UserDto dto)
+            {
+                usersDtoList.Add(dto);
+            }
+        }
+        return usersDtoList;
+    }
+
+    public static User? ToModel(this UserDto? userDto)
+    {
+        if (userDto == null) return null;
+
+        return new User
+        {
+            Id = userDto.Id,
+            FirstName = userDto.FirstName,
+            LastName = userDto.LastName,
+            UserName = userDto.UserName,
+            Email = userDto.Email,
+            HasLogin = userDto.HasLogin,
+            Password = userDto.Password,
+            Role = userDto.Role
+        };
+    }
+
+    public static List<User> ToModel(this IEnumerable<UserDto?> userDtos)
+    {
+        var users = new List<User>();
+        foreach (var userDto in userDtos)
+        {
+            if (userDto.ToModel() is User user)
+            {
+                users.Add(user);
+            }
+        }
+        return users;
+    }
     #endregion
 }
