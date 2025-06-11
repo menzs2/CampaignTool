@@ -123,4 +123,68 @@ public static class Extensions
     }
 
     #endregion
+
+    #region Organisation Extensions
+    
+    public static OrganisationDto? ToDto(this Organisation? organisation)
+    {
+        if (organisation == null) return null;
+
+        return new OrganisationDto
+        {
+            Id = organisation.Id,
+            OrganisationName = organisation.OrganisationName,
+            DescriptionShort = organisation.DescriptionShort,
+            Description = organisation.Description,
+            State = organisation.State,
+            CampaignId = organisation.CampaignId,
+            GmOnly = organisation.GmOnly,
+            GmOnlyDescription = organisation.GmOnlyDescription
+        };
+    }
+
+    public static List<OrganisationDto> ToDto(this IEnumerable<Organisation?> organisations)
+    {
+        var organisationsDtoList = new List<OrganisationDto>();
+        foreach (var organisation in organisations)
+        {
+            if (organisation.ToDto() is OrganisationDto dto)
+            {
+                organisationsDtoList.Add(dto);
+            }
+        }
+        return organisationsDtoList;
+    }
+
+    public static Organisation? ToModel(this OrganisationDto? organisationDto)
+    {
+        if (organisationDto == null) return null;
+
+        return new Organisation
+        {
+            Id = organisationDto.Id,
+            OrganisationName = organisationDto.OrganisationName,
+            DescriptionShort = organisationDto.DescriptionShort,
+            Description = organisationDto.Description,
+            State = organisationDto.State,
+            CampaignId = organisationDto.CampaignId,
+            GmOnly = organisationDto.GmOnly,
+            GmOnlyDescription = organisationDto.GmOnlyDescription
+        };
+    }
+
+    public static List<Organisation> ToModel(this IEnumerable<OrganisationDto?> organisationDtos)
+    {
+        var organisations = new List<Organisation>();
+        foreach (var organisationDto in organisationDtos)
+        {
+            if (organisationDto.ToModel() is Organisation organisation)
+            {
+                organisations.Add(organisation);
+            }
+        }
+        return organisations;
+    }
+
+    #endregion
 }

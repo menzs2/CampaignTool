@@ -134,5 +134,50 @@ namespace Backend.Data.Tests
             Assert.Equal(character.PlayerId, dto.PlayerId);
             Assert.Equal(character.DescriptionShort, dto.DescriptionShort);
         }
+
+
+        [Fact]
+        public void Organisation_ToDto_WithNullOrganisation_ReturnsNull()
+        {
+            // Arrange
+            Organisation? organisation = null;
+
+            // Act
+            var result = organisation.ToDto();
+
+            // Assert
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void Organisation_ToDto_WithValidOrganisation_ReturnsDtoWithSameValues()
+        {
+            // Arrange
+            var organisation = new Organisation
+            {
+                Id = 42,
+                OrganisationName = "Guild of Heroes",
+                DescriptionShort = "Short desc",
+                Description = "A guild for heroes.",
+                State = "Active",
+                CampaignId = 7,
+                GmOnly = true,
+                GmOnlyDescription = "Secret info"
+            };
+
+            // Act
+            var dto = organisation.ToDto();
+
+            // Assert
+            Assert.NotNull(dto);
+            Assert.Equal(organisation.Id, dto.Id);
+            Assert.Equal(organisation.OrganisationName, dto.OrganisationName);
+            Assert.Equal(organisation.DescriptionShort, dto.DescriptionShort);
+            Assert.Equal(organisation.Description, dto.Description);
+            Assert.Equal(organisation.State, dto.State);
+            Assert.Equal(organisation.CampaignId, dto.CampaignId);
+            Assert.Equal(organisation.GmOnly, dto.GmOnly);
+            Assert.Equal(organisation.GmOnlyDescription, dto.GmOnlyDescription);
+        }
     }
 }
