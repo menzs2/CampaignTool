@@ -4,6 +4,8 @@ namespace Shared;
 
 public static class Extensions
 {
+    #region Campaign Extensions
+
     public static CampaignDto? ToDto(this Campaign campaign)
     {
         if (campaign == null) return null;
@@ -59,4 +61,66 @@ public static class Extensions
         }
         return campaigns;
     }
+
+    #endregion
+
+    #region Character Extensions
+
+    public static CharacterDto? ToDto(this Character? character)
+    {
+        if (character == null) return null;
+
+        return new CharacterDto
+        {
+            Id = character.Id,
+            CharacterName = character.CharacterName,
+            Description = character.Description,
+            CampaignId = character.CampaignId,
+            PlayerId = character.PlayerId,
+            DescriptionShort = character.DescriptionShort,
+        };
+    }
+
+    public static List<CharacterDto> ToDto(this IEnumerable<Character?> characters)
+    {
+        var charactersDtoList = new List<CharacterDto>();
+        foreach (var character in characters)
+        {
+            if (character.ToDto() is CharacterDto dto)
+            {
+                charactersDtoList.Add(dto);
+            }
+        }
+        return charactersDtoList;
+    }
+
+    public static Character? ToModel(this CharacterDto? characterDto)
+    {
+        if (characterDto == null) return null;
+
+        return new Character
+        {
+            Id = characterDto.Id,
+            CharacterName = characterDto.CharacterName,
+            Description = characterDto.Description,
+            CampaignId = characterDto.CampaignId,
+            PlayerId = characterDto.PlayerId,
+            DescriptionShort = characterDto.DescriptionShort,
+        };
+    }
+
+    public static List<Character> ToModel(this IEnumerable<CharacterDto?> characterDtos)
+    {
+        var characters = new List<Character>();
+        foreach (var characterDto in characterDtos)
+        {
+            if (characterDto.ToModel() is Character character)
+            {
+                characters.Add(character);
+            }
+        }
+        return characters;
+    }
+
+    #endregion
 }

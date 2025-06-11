@@ -95,5 +95,44 @@ namespace Backend.Data.Tests
             Assert.Single(result);
             Assert.Equal(3, result[0].Id);
         }
+        [Fact]
+        public void Character_ToDto_WithNullCharacter_ReturnsNull()
+        {
+            // Arrange
+            Character? character = null;
+
+            // Act
+            var result = character.ToDto();
+
+            // Assert
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void Character_ToDto_WithValidCharacter_ReturnsDtoWithSameValues()
+        {
+            // Arrange
+            var character = new Character
+            {
+                Id = 10,
+                CharacterName = "Hero",
+                Description = "A brave hero",
+                CampaignId = 5,
+                PlayerId = 2,
+                DescriptionShort = "Short desc"
+            };
+
+            // Act
+            var dto = character.ToDto();
+
+            // Assert
+            Assert.NotNull(dto);
+            Assert.Equal(character.Id, dto.Id);
+            Assert.Equal(character.CharacterName, dto.CharacterName);
+            Assert.Equal(character.Description, dto.Description);
+            Assert.Equal(character.CampaignId, dto.CampaignId);
+            Assert.Equal(character.PlayerId, dto.PlayerId);
+            Assert.Equal(character.DescriptionShort, dto.DescriptionShort);
+        }
     }
 }
