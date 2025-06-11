@@ -1,6 +1,7 @@
 ﻿using Backend.Data;
 using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
+using Shared;
 
 namespace Backend;
 
@@ -18,15 +19,36 @@ public class CampaignController : ControllerBase
     [HttpGet]
     public IActionResult Get()
     {
-        return _dbContext.Campaigns.Any()
-            ? Ok(_dbContext.Campaigns.ToList())
-            : NotFound("No campaigns found.");
+        var campaigns = _dbContext.Campaigns
+            .Select(c => new CampaignDto
+            {
+                Id = c.Id,
+                CampaignName = c.CampaignName,
+                DescriptionShort = c.DescriptionShort,
+                Description = c.Description,
+                Gm = c.Gm,
+                GmOnlyDescription = c.GmOnlyDescription
+            })
+            .ToList();
+
+        return campaigns.Any() ? Ok(campaigns) : NotFound("No campaigns found.");
     }
 
     [HttpGet("{id}")]
     public IActionResult Get(long id)
     {
-        var campaign = _dbContext.Campaigns.Find(id);
+        var campaign = _dbContext.Campaigns
+            .Where(c => c.Id == id)
+            .Select(c => new CampaignDto
+            {
+                Id = c.Id,
+                CampaignName = c.CampaignName,
+                DescriptionShort = c.DescriptionShort,
+                Description = c.Description,
+                Gm = c.Gm,
+                GmOnlyDescription = c.GmOnlyDescription
+            })
+            .FirstOrDefault();
         return campaign != null ? Ok(campaign) : NotFound($"Campaign with ID {id} not found.");
     }
 
