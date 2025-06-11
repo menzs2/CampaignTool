@@ -4,7 +4,7 @@ namespace Shared;
 
 public static class Extensions
 {
-    public static CampaignDto ToDto(this Campaign campaign)
+    public static CampaignDto? ToDto(this Campaign campaign)
     {
         if (campaign == null) return null;
 
@@ -19,12 +19,20 @@ public static class Extensions
         };
     }
 
-    public static IEnumerable<CampaignDto> ToDto(this IEnumerable<Campaign> campaigns)
+    public static List<CampaignDto> ToDto(this IEnumerable<Campaign> campaigns)
     {
-        return campaigns?.Select(c => c.ToDto()) ?? Enumerable.Empty<CampaignDto>();
+        var campaignsDtoList = new List<CampaignDto>();
+        foreach (var campaign in campaigns)
+        {
+            if (campaign.ToDto() is CampaignDto dto)
+            {
+                campaignsDtoList.Add(dto);
+            }
+        }
+        return campaignsDtoList;
     }
 
-    public static Campaign ToModel(this CampaignDto campaignDto)
+    public static Campaign? ToModel(this CampaignDto campaignDto)
     {
         if (campaignDto == null) return null;
 
@@ -41,6 +49,14 @@ public static class Extensions
 
     public static IEnumerable<Campaign> ToModel(this IEnumerable<CampaignDto> campaignDtos)
     {
-        return campaignDtos?.Select(c => c.ToModel()) ?? Enumerable.Empty<Campaign>();
+        var campaigns = new List<Campaign>();
+        foreach (var campaignDto in campaignDtos)
+        {
+            if (campaignDto.ToModel() is Campaign campaign)
+            {
+                campaigns.Add(campaign);
+            }
+        }
+        return campaigns;
     }
 }
