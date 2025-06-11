@@ -41,5 +41,4 @@ public partial class Organisation
     public virtual ICollection<CharOrgConnection> CharOrgConnections { get; set; } = new List<CharOrgConnection>();
 
     [NotMapped]
-    public long[] CharOrgConnectionIds => CharOrgConnections.Select(c => c.Id).ToArray();
-}
+    public long[]? CharIds => CharOrgConnections?.Select(c => c.CharId).ToArray();}
