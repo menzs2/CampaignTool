@@ -12,18 +12,24 @@ public partial class CharCharConnection
     public long Id { get; set; }
 
     [Column("char_one_id")]
+    [Required]
     public long CharOneId { get; set; }
 
     [Column("char_two_id")]
+    [Required]
     public long CharTwoId { get; set; }
 
     [Column("direction")]
+    [Required]
     public byte[] Direction { get; set; } = null!;
 
     [Column("description")]
+    [StringLength(500)]
+    [Required]
     public string? Description { get; set; }
 
     [Column("gm_only_description")]
+    [StringLength(1000)]
     public string? GmOnlyDescription { get; set; }
 
     [Column("gm_only")]

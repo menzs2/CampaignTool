@@ -12,15 +12,19 @@ public partial class Character
     public long Id { get; set; }
 
     [Column("character_name")]
+    [StringLength(200)]
+    [Required]
     public string CharacterName { get; set; } = null!;
 
     [Column("description_short")]
+    [StringLength(200)]
     public string DescriptionShort { get; set; } = null!;
 
     [Column("description")]
     public string? Description { get; set; }
 
     [Column("state")]
+    [StringLength(200)]
     public string? State { get; set; }
 
     [Column("campaign_id")]

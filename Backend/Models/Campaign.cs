@@ -12,9 +12,12 @@ public partial class Campaign
     public long Id { get; set; }
 
     [Column("campaign_name")]
+    [StringLength(200)]
+    [Required]
     public string CampaignName { get; set; } = null!;
 
     [Column("description_short")]
+    [StringLength(200)]
     public string DescriptionShort { get; set; } = null!;
 
     [Column("description")]

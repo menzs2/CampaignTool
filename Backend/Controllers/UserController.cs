@@ -1,4 +1,5 @@
 ﻿using Backend.Data;
+using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Shared;
 
@@ -48,6 +49,21 @@ public class UserController : ControllerBase
         }
 
         _dbContext.Users.Add(newUser);
+        _dbContext.SaveChanges();
+        // Automatically create a UserSetting for the new user
+        if (newUser == null)
+        {
+            return BadRequest("Failed to create user.");
+        }
+        var usersetting = new UserSetting
+        {
+            UserId = newUser.Id,
+            User = newUser,
+            DefaultCampaignId = null,
+            SelectLastCampaign = true,
+            SameNameWarning = true
+        };
+        _dbContext.UserSettings.Add(usersetting);
         _dbContext.SaveChanges();
         return CreatedAtAction(nameof(Get), new { id = user.Id }, user);
     }

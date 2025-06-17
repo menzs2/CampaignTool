@@ -12,6 +12,7 @@ public class CharOrgConnection
     public long Id { get; set; }
 
     [Column("char_id")]
+    [Required]
     public long CharId { get; set; }
 
     [Column("organisation_id")]
@@ -21,9 +22,11 @@ public class CharOrgConnection
     public byte[] Direction { get; set; } = null!;
 
     [Column("description")]
+    [StringLength(500)]
     public string? Description { get; set; }
 
     [Column("gm_only_description")]
+    [StringLength(1000)]
     public string? GmOnlyDescription { get; set; }
 
     [Column("gm_only")]

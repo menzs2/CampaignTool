@@ -25,6 +25,7 @@ public partial class UserSetting
     public virtual Campaign? DefaultCampaign { get; set; }
 
     [Column("user_id")]
+    [Required]
     public long UserId { get; set; }
 
     [ForeignKey("UserId")]

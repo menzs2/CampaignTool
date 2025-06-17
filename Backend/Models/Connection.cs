@@ -13,9 +13,12 @@ public partial class Connection
     public long Id { get; set; }
 
     [Column("connection_name")]
+    [StringLength(200)]
+    [Required]
     public string ConnectionName { get; set; } = null!;
 
     [Column("description")]
+    [StringLength(500)]
     public string? Description { get; set; }
 
     [Column("gm_only_description")]

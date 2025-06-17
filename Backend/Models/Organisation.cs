@@ -13,15 +13,19 @@ public partial class Organisation
     public long Id { get; set; }
 
     [Column("organisation_name")]
+    [StringLength(200)]
+    [Required]
     public string OrganisationName { get; set; } = null!;
 
     [Column("description_short")]
+    [StringLength(200)]
     public string DescriptionShort { get; set; } = null!;
 
     [Column("description")]
     public string? Description { get; set; }
 
     [Column("state")]
+    [StringLength(200)]
     public string? State { get; set; }
 
     [Column("campaign_id")]
