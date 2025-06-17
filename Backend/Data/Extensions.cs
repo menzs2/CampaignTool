@@ -1,15 +1,15 @@
 ﻿using Backend.Models;
+using Shared;
 
-namespace Shared;
+namespace Backend.Data;
 
 public static class Extensions
 {
     #region Campaign Extensions
 
-    public static CampaignDto? ToDto(this Campaign campaign)
+    public static CampaignDto? ToDto(this Campaign? campaign)
     {
         if (campaign == null) return null;
-
         return new CampaignDto
         {
             Id = campaign.Id,
@@ -21,20 +21,10 @@ public static class Extensions
         };
     }
 
-    public static List<CampaignDto> ToDto(this IEnumerable<Campaign> campaigns)
-    {
-        var campaignsDtoList = new List<CampaignDto>();
-        foreach (var campaign in campaigns)
-        {
-            if (campaign.ToDto() is CampaignDto dto)
-            {
-                campaignsDtoList.Add(dto);
-            }
-        }
-        return campaignsDtoList;
-    }
+    public static IEnumerable<CampaignDto> ToDto(this IEnumerable<Campaign?> campaigns)
+        => campaigns.Where(c => c != null).Select(c => c!.ToDto()!).ToList();
 
-    public static Campaign? ToModel(this CampaignDto campaignDto)
+    public static Campaign? ToModel(this CampaignDto? campaignDto)
     {
         if (campaignDto == null) return null;
         var newCampaign = new Campaign
@@ -46,9 +36,7 @@ public static class Extensions
             GmOnlyDescription = campaignDto.GmOnlyDescription
         };
         if (campaignDto.Id.HasValue)
-        {
             newCampaign.Id = campaignDto.Id.Value;
-        }
         return newCampaign;
 
     }
@@ -85,17 +73,12 @@ public static class Extensions
         };
     }
 
-    public static List<CharacterDto> ToDto(this IEnumerable<Character?> characters)
+    public static IEnumerable<CharacterDto> ToDto(this IEnumerable<Character?> characters)
     {
-        var charactersDtoList = new List<CharacterDto>();
-        foreach (var character in characters)
-        {
-            if (character.ToDto() is CharacterDto dto)
-            {
-                charactersDtoList.Add(dto);
-            }
-        }
-        return charactersDtoList;
+        return characters
+            .Where(c => c != null)
+            .Select(c => c!.ToDto()!)
+            .ToList();
     }
 
     public static Character? ToModel(this CharacterDto? characterDto)
@@ -116,17 +99,12 @@ public static class Extensions
         return newCharacter;
     }
 
-    public static List<Character> ToModel(this IEnumerable<CharacterDto?> characterDtos)
+    public static IEnumerable<Character> ToModel(this IEnumerable<CharacterDto?> characterDtos)
     {
-        var characters = new List<Character>();
-        foreach (var characterDto in characterDtos)
-        {
-            if (characterDto.ToModel() is Character character)
-            {
-                characters.Add(character);
-            }
-        }
-        return characters;
+        return characterDtos
+            .Where(c => c != null)
+            .Select(c => c!.ToModel()!)
+            .ToList();
     }
 
     #endregion
@@ -150,17 +128,12 @@ public static class Extensions
         };
     }
 
-    public static List<OrganisationDto> ToDto(this IEnumerable<Organisation?> organisations)
+    public static IEnumerable<OrganisationDto> ToDto(this IEnumerable<Organisation?> organisations)
     {
-        var organisationsDtoList = new List<OrganisationDto>();
-        foreach (var organisation in organisations)
-        {
-            if (organisation.ToDto() is OrganisationDto dto)
-            {
-                organisationsDtoList.Add(dto);
-            }
-        }
-        return organisationsDtoList;
+        return organisations
+            .Where(o => o != null)
+            .Select(o => o!.ToDto()!)
+            .ToList();
     }
 
     public static Organisation? ToModel(this OrganisationDto? organisationDto)
@@ -183,17 +156,12 @@ public static class Extensions
         return newOrganisation;
     }
 
-    public static List<Organisation> ToModel(this IEnumerable<OrganisationDto?> organisationDtos)
+    public static IEnumerable<Organisation> ToModel(this IEnumerable<OrganisationDto?> organisationDtos)
     {
-        var organisations = new List<Organisation>();
-        foreach (var organisationDto in organisationDtos)
-        {
-            if (organisationDto.ToModel() is Organisation organisation)
-            {
-                organisations.Add(organisation);
-            }
-        }
-        return organisations;
+        return organisationDtos
+            .Where(o => o != null)
+            .Select(o => o!.ToModel()!)
+            .ToList();
     }
 
     #endregion
@@ -217,17 +185,12 @@ public static class Extensions
         };
     }
 
-    public static List<UserDto> ToDto(this IEnumerable<User?> users)
+    public static IEnumerable<UserDto> ToDto(this IEnumerable<User?> users)
     {
-        var usersDtoList = new List<UserDto>();
-        foreach (var user in users)
-        {
-            if (user.ToDto() is UserDto dto)
-            {
-                usersDtoList.Add(dto);
-            }
-        }
-        return usersDtoList;
+        return users
+            .Where(u => u != null)
+            .Select(u => u!.ToDto()!)
+            .ToList();
     }
 
     public static User? ToModel(this UserDto? userDto)
@@ -250,17 +213,12 @@ public static class Extensions
         return newUser;
     }
 
-    public static List<User> ToModel(this IEnumerable<UserDto?> userDtos)
+    public static IEnumerable<User> ToModel(this IEnumerable<UserDto?> userDtos)
     {
-        var users = new List<User>();
-        foreach (var userDto in userDtos)
-        {
-            if (userDto.ToModel() is User user)
-            {
-                users.Add(user);
-            }
-        }
-        return users;
+        return userDtos
+            .Where(u => u != null)
+            .Select(u => u!.ToModel()!)
+            .ToList();
     }
     #endregion
 
@@ -279,17 +237,12 @@ public static class Extensions
         };
     }
 
-    public static List<UserSettingDto> ToDto(this IEnumerable<UserSetting?> userSettings)
+    public static IEnumerable<UserSettingDto> ToDto(this IEnumerable<UserSetting?> userSettings)
     {
-        var userSettingsDtoList = new List<UserSettingDto>();
-        foreach (var userSetting in userSettings)
-        {
-            if (userSetting.ToDto() is UserSettingDto dto)
-            {
-                userSettingsDtoList.Add(dto);
-            }
-        }
-        return userSettingsDtoList;
+        return userSettings
+            .Where(u => u != null)
+            .Select(u => u!.ToDto()!)
+            .ToList();
     }
 
     public static UserSetting? ToModel(this UserSettingDto? userSettingDto)
@@ -308,17 +261,12 @@ public static class Extensions
         return userSetting;
     }
 
-    public static List<UserSetting> ToModel(this IEnumerable<UserSettingDto?> userSettingDtos)
+    public static IEnumerable<UserSetting> ToModel(this IEnumerable<UserSettingDto?> userSettingDtos)
     {
-        var userSettings = new List<UserSetting>();
-        foreach (var userSettingDto in userSettingDtos)
-        {
-            if (userSettingDto.ToModel() is UserSetting userSetting)
-            {
-                userSettings.Add(userSetting);
-            }
-        }
-        return userSettings;
+        return userSettingDtos
+            .Where(u => u != null)
+            .Select(u => u!.ToModel()!)
+            .ToList();
     }
 
     #endregion
@@ -339,17 +287,12 @@ public static class Extensions
         };
     }
 
-    public static List<ConnectionDto> ToDto(this IEnumerable<Connection?> connections)
+    public static IEnumerable<ConnectionDto> ToDto(this IEnumerable<Connection?> connections)
     {
-        var connectionsDtoList = new List<ConnectionDto>();
-        foreach (var connection in connections)
-        {
-            if (connection.ToDto() is ConnectionDto dto)
-            {
-                connectionsDtoList.Add(dto);
-            }
-        }
-        return connectionsDtoList;
+        return connections
+            .Where(c => c != null)
+            .Select(c => c!.ToDto()!)
+            .ToList();
     }
     public static Connection? ToModel(this ConnectionDto? connectionDto)
     {
@@ -384,17 +327,12 @@ public static class Extensions
             CharTwoId = charCharConnection.CharTwoId
         };
     }
-    public static List<CharCharConnectionDto> ToDto(this IEnumerable<CharCharConnection> charCharConnections)
+    public static IEnumerable<CharCharConnectionDto> ToDto(this IEnumerable<CharCharConnection> charCharConnections)
     {
-        var charCharConnectionsDtoList = new List<CharCharConnectionDto>();
-        foreach (var charCharConnection in charCharConnections)
-        {
-            if (charCharConnection.ToDto() is CharCharConnectionDto dto)
-            {
-                charCharConnectionsDtoList.Add(dto);
-            }
-        }
-        return charCharConnectionsDtoList;
+        return charCharConnections
+            .Where(c => c != null)
+            .Select(c => c!.ToDto()!)
+            .ToList();
     }
 
     public static CharCharConnection? ToModel(this CharCharConnectionDto? charCharConnectionDto)
@@ -416,17 +354,12 @@ public static class Extensions
         return newCharCharConnection;
     }
 
-    public static List<CharCharConnection> ToModel(this IEnumerable<CharCharConnectionDto?> charCharConnectionDtos)
+    public static IEnumerable<CharCharConnection> ToModel(this IEnumerable<CharCharConnectionDto?> charCharConnectionDtos)
     {
-        var charCharConnections = new List<CharCharConnection>();
-        foreach (var charCharConnectionDto in charCharConnectionDtos)
-        {
-            if (charCharConnectionDto.ToModel() is CharCharConnection charCharConnection)
-            {
-                charCharConnections.Add(charCharConnection);
-            }
-        }
-        return charCharConnections;
+        return charCharConnectionDtos
+            .Where(c => c != null)
+            .Select(c => c!.ToModel()!)
+            .ToList();
     }
 
     public static CharOrgConnectionDto? ToDto(this CharOrgConnection charOrgConnection)
@@ -445,17 +378,12 @@ public static class Extensions
         };
     }
 
-    public static List<CharOrgConnectionDto> ToDto(this IEnumerable<CharOrgConnection> charOrgConnections)
+    public static IEnumerable<CharOrgConnectionDto> ToDto(this IEnumerable<CharOrgConnection> charOrgConnections)
     {
-        var charOrgConnectionsDtoList = new List<CharOrgConnectionDto>();
-        foreach (var charOrgConnection in charOrgConnections)
-        {
-            if (charOrgConnection.ToDto() is CharOrgConnectionDto dto)
-            {
-                charOrgConnectionsDtoList.Add(dto);
-            }
-        }
-        return charOrgConnectionsDtoList;
+        return charOrgConnections
+            .Where(c => c != null)
+            .Select(c => c!.ToDto()!)
+            .ToList();
     }
 
     public static CharOrgConnection? ToModel(this CharOrgConnectionDto? charOrgConnectionDto)
@@ -477,17 +405,12 @@ public static class Extensions
         return newCharOrgConnection;
     }
 
-    public static List<CharOrgConnection> ToModel(this IEnumerable<CharOrgConnectionDto?> charOrgConnectionDtos)
+    public static IEnumerable<CharOrgConnection> ToModel(this IEnumerable<CharOrgConnectionDto?> charOrgConnectionDtos)
     {
-        var charOrgConnections = new List<CharOrgConnection>();
-        foreach (var charOrgConnectionDto in charOrgConnectionDtos)
-        {
-            if (charOrgConnectionDto.ToModel() is CharOrgConnection charOrgConnection)
-            {
-                charOrgConnections.Add(charOrgConnection);
-            }
-        }
-        return charOrgConnections;
+        return charOrgConnectionDtos
+            .Where(c => c != null)
+            .Select(c => c!.ToModel()!)
+            .ToList();
     }
 
     #endregion
