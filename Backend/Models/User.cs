@@ -9,7 +9,7 @@ public partial class User
     [Key]
     [Column("id")]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public long Id { get; set; }
+    public long? Id { get; set; }
 
     [Column("first_name")]
     public string? FirstName { get; set; }
@@ -32,6 +32,6 @@ public partial class User
     [Column("role")]
     public long Role { get; set; }
 
-    [InverseProperty("UserSettings")]
-    public virtual UserSetting UserSettings { get; set; } = null!;
+    [InverseProperty("User")]
+    public virtual UserSetting UserSetting { get; set; } = null!;
 }

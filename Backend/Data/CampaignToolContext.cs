@@ -59,7 +59,7 @@ public partial class CampaignToolContext : DbContext
 
             entity.ToTable("char_char_connection");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Id).UseIdentityAlwaysColumn();
             entity.Property(e => e.Description).HasMaxLength(500);
             entity.Property(e => e.GmOnly).HasDefaultValue(false);
             entity.Property(e => e.GmOnlyDescription).HasMaxLength(500);
@@ -86,7 +86,7 @@ public partial class CampaignToolContext : DbContext
 
             entity.ToTable("character");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Id).UseIdentityAlwaysColumn();
             entity.Property(e => e.CharacterName).HasMaxLength(300);
             entity.Property(e => e.Description).HasColumnType("character varying");
             entity.Property(e => e.DescriptionShort).HasMaxLength(200);
@@ -105,7 +105,7 @@ public partial class CampaignToolContext : DbContext
 
             entity.ToTable("connection");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Id).UseIdentityAlwaysColumn();
             entity.Property(e => e.ConnectionName).HasMaxLength(50);
             entity.Property(e => e.Description).HasMaxLength(500);
             entity.Property(e => e.GmOnly).HasDefaultValue(false);
@@ -122,7 +122,7 @@ public partial class CampaignToolContext : DbContext
 
             entity.ToTable("organisation");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Id).UseIdentityAlwaysColumn();
             entity.Property(e => e.Description).HasColumnType("character varying");
             entity.Property(e => e.DescriptionShort).HasMaxLength(200);
             entity.Property(e => e.GmOnly).HasDefaultValue(true);
@@ -141,7 +141,7 @@ public partial class CampaignToolContext : DbContext
 
             entity.ToTable("user");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Id).UseIdentityAlwaysColumn();
             entity.Property(e => e.Email).HasMaxLength(100);
             entity.Property(e => e.FirstName).HasMaxLength(150);
             entity.Property(e => e.HasLogin).HasDefaultValue(false);
@@ -156,7 +156,7 @@ public partial class CampaignToolContext : DbContext
 
             entity.ToTable("user_setting");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Id).UseIdentityAlwaysColumn();
             entity.Property(e => e.SameNameWarning).HasDefaultValue(true);
             entity.Property(e => e.SelectLastCampaign).HasDefaultValue(false);
 
