@@ -24,6 +24,9 @@ public class CampaignController : ControllerBase
         return campaigns.Any() ? Ok(campaigns) : NotFound("No campaigns found.");
     }
 
+    /// <summary>
+    /// Gets a campaign by its ID.
+    /// </summary>
     [HttpGet("{id}")]
     public IActionResult Get(long id)
     {
@@ -32,7 +35,21 @@ public class CampaignController : ControllerBase
         return campaign != null ? Ok(campaign) : NotFound($"Campaign with ID {id} not found.");
     }
 
-    [HttpPost]
+    /// <summary>
+    /// Gets campaigns associated with a specific GM by their ID.
+    /// </summary>
+    [HttpGet("gm/{gmId}")]
+    public IActionResult GetByGmId(long gmId)
+    {
+        var campaigns = _dbContext.Campaigns
+            .Where(c => c.Gm == gmId).ToDto().ToList();
+        return campaigns.Any() ? Ok(campaigns) : NotFound($"No campaigns found for GM with ID {gmId}.");
+    }
+
+    /// <summary>
+    /// Adds a new campaign.
+    /// </summary>
+    [HttpPost]  
     public IActionResult Post([FromBody] CampaignDto campaign)
     {
         if (campaign == null)
@@ -49,6 +66,9 @@ public class CampaignController : ControllerBase
         return CreatedAtAction(nameof(Get), new { id = newCampaign.Id }, campaign);
     }
 
+    /// <summary>
+    /// Updates an existing campaign by its ID.
+    /// </summary>
     [HttpPut("{id}")]
     public IActionResult Put(long id, [FromBody] CampaignDto campaign)
     {
@@ -72,6 +92,9 @@ public class CampaignController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Deletes a campaign by its ID.
+    /// </summary>
     [HttpDelete("{id}")]
     public IActionResult Delete(long id)
     {
