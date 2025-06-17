@@ -6,6 +6,9 @@ namespace Backend.Models;
 [Table("campaign")]
 public partial class Campaign
 {
+    // <summary>
+    // Represents a campaign in the system, containing details about the campaign and its associations with characters, connections, organisations, and user settings.  
+    // </summary>
     [Key]
     [Column("id")]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
