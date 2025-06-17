@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Shared;
 
-namespace Backend;
+namespace Backend.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -14,7 +14,9 @@ public class CampaignController : ControllerBase
     {
         _dbContext = dbContext;
     }
-
+    /// <summary>
+    /// Gets all campaigns.
+    /// </summary>
     [HttpGet]
     public IActionResult Get()
     {
@@ -44,7 +46,7 @@ public class CampaignController : ControllerBase
         }
         _dbContext.Campaigns.Add(newCampaign);
         _dbContext.SaveChanges();
-        return CreatedAtAction(nameof(Get), new { id = campaign.Id }, campaign);
+        return CreatedAtAction(nameof(Get), new { id = newCampaign.Id }, campaign);
     }
 
     [HttpPut("{id}")]
