@@ -2,8 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Shared;
 
-namespace Backend;
+namespace Backend.Controllers;
 
+/// <summary>
+/// 1. Controller for managing characters in the campaign tool.
+/// 2. Provides endpoints to retrieve, create, update, and delete characters.
+/// </summary>
 [Route("api/[controller]")]
 [ApiController]
 public class CharacterController : ControllerBase
@@ -15,6 +19,9 @@ public class CharacterController : ControllerBase
         _dbContext = campaignToolContext;
     }
 
+    /// <summary>
+    /// Retrieves all characters.   
+    /// </summary>
     [HttpGet]
     public IActionResult Get()
     {
@@ -23,13 +30,19 @@ public class CharacterController : ControllerBase
             : NotFound("No characters found.");
     }
 
+    /// <summary>
+    /// Retrieves a character by its ID.
+    /// </summary>
     [HttpGet("{id}")]
     public IActionResult Get(long id)
     {
-        var character = _dbContext.Characters.Where(c=> c.Id == id).ToDto();
+        var character = _dbContext.Characters.Where(c => c.Id == id).ToDto();
         return character != null ? Ok(character) : NotFound($"Character with ID {id} not found.");
     }
 
+    /// <summary>
+    /// Retrieves characters associated with a specific campaign.
+    /// </summary>
     [HttpGet("campaign/{campaignId}")]
     public IActionResult GetByCampaign(long campaignId)
     {
@@ -37,15 +50,21 @@ public class CharacterController : ControllerBase
         return characters.Any() ? Ok(characters) : NotFound($"No characters found for campaign ID {campaignId}.");
     }
 
+    /// <summary>
+    /// Retrieves characters connected to a specific character by ID.
+    /// </summary>
     [HttpGet("connected/{id}")]
     public IActionResult GetConnectedCharacters(long Id)
     {
         var characters = _dbContext.Characters
             .Where(c => c.CharCharConnectionIds.Contains(Id))
             .ToDto();
-        return characters != null ? Ok(characters) : NotFound("No connected characters not found.");
+        return characters != null ? Ok(characters) : NotFound("No connected characters found.");
     }
 
+    /// <summary>
+    /// Creates a new character.
+    /// </summary>
     [HttpPost]
     public IActionResult Post([FromBody] CharacterDto character)
     {
@@ -60,9 +79,12 @@ public class CharacterController : ControllerBase
         }
         _dbContext.Characters.Add(newCharacter);
         _dbContext.SaveChanges();
-        return CreatedAtAction(nameof(Get), new { id = character.Id }, character);
+        return CreatedAtAction(nameof(Get), new { id = newCharacter.Id }, newCharacter.ToDto());
     }
 
+    /// <summary>
+    /// Updates an existing character.
+    /// </summary>
     [HttpPut("{id}")]
     public IActionResult Put(long id, [FromBody] CharacterDto character)
     {
@@ -85,6 +107,9 @@ public class CharacterController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Deletes a character by its ID.
+    /// </summary>
     [HttpDelete("{id}")]
     public IActionResult Delete(long id)
     {
