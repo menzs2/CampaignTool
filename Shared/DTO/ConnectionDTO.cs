@@ -1,8 +1,8 @@
 ﻿namespace Shared;
 
-public class ConnectionDTO
+public class ConnectionDto
 {
-    public long Id { get; set; }
+    public long? Id { get; set; }
 
     public string ConnectionName { get; set; } = null!;
 

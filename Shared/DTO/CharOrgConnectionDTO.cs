@@ -1,6 +1,6 @@
 ﻿namespace Shared;
 
-public class CharOrgConnectionDTO : BaseConnectionDTO
+public class CharOrgConnectionDto : BaseConnectionDto
 {
     public long CharId { get; set; }
 

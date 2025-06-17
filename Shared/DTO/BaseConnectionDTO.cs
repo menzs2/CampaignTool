@@ -1,8 +1,8 @@
 ﻿namespace Shared;
 
-public class BaseConnectionDTO
+public class BaseConnectionDto
 {
-    public long Id { get; set; }
+    public long? Id { get; set; }
     public byte[] Direction { get; set; } = null!;
 
     public string? Description { get; set; }
