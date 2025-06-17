@@ -166,7 +166,7 @@ public static class Extensions
     public static Organisation? ToModel(this OrganisationDto? organisationDto)
     {
         if (organisationDto == null) return null;
-       var newOrganisation = new Organisation
+        var newOrganisation = new Organisation
         {
             OrganisationName = organisationDto.OrganisationName,
             DescriptionShort = organisationDto.DescriptionShort,
@@ -295,7 +295,8 @@ public static class Extensions
     public static UserSetting? ToModel(this UserSettingDto? userSettingDto)
     {
         if (userSettingDto == null) return null;
-        var userSetting = new UserSetting{
+        var userSetting = new UserSetting
+        {
             SelectLastCampaign = userSettingDto.SelectLastCampaign,
             SameNameWarning = userSettingDto.SameNameWarning,
             DefaultCampaignId = userSettingDto.DefaultCampaignId
@@ -318,6 +319,175 @@ public static class Extensions
             }
         }
         return userSettings;
+    }
+
+    #endregion
+
+    #region Connection Extensions
+    public static ConnectionDto? ToDto(this Connection? connection)
+    {
+        if (connection == null) return null;
+
+        return new ConnectionDto
+        {
+            Id = connection.Id,
+            ConnectionName = connection.ConnectionName,
+            Description = connection.Description,
+            GmOnlyDescription = connection.GmOnlyDescription,
+            GmOnly = connection.GmOnly,
+            CampaignId = connection.CampaignId
+        };
+    }
+
+    public static List<ConnectionDto> ToDto(this IEnumerable<Connection?> connections)
+    {
+        var connectionsDtoList = new List<ConnectionDto>();
+        foreach (var connection in connections)
+        {
+            if (connection.ToDto() is ConnectionDto dto)
+            {
+                connectionsDtoList.Add(dto);
+            }
+        }
+        return connectionsDtoList;
+    }
+    public static Connection? ToModel(this ConnectionDto? connectionDto)
+    {
+        if (connectionDto == null) return null;
+        var newConnection = new Connection
+        {
+            ConnectionName = connectionDto.ConnectionName,
+            Description = connectionDto.Description,
+            GmOnlyDescription = connectionDto.GmOnlyDescription,
+            GmOnly = connectionDto.GmOnly,
+            CampaignId = connectionDto.CampaignId
+        };
+        if (connectionDto.Id.HasValue)
+        {
+            newConnection.Id = connectionDto.Id.Value;
+        }
+        return newConnection;
+    }
+
+    public static CharCharConnectionDto? ToDto(this CharCharConnection charCharConnection)
+    {
+        if (charCharConnection == null) return null;
+
+        return new CharCharConnectionDto
+        {
+            Id = charCharConnection.Id,
+            Direction = charCharConnection.Direction,
+            Description = charCharConnection.Description,
+            GmOnlyDescription = charCharConnection.GmOnlyDescription,
+            GmOnly = charCharConnection.GmOnly,
+            CharOneId = charCharConnection.CharOneId,
+            CharTwoId = charCharConnection.CharTwoId
+        };
+    }
+    public static List<CharCharConnectionDto> ToDto(this IEnumerable<CharCharConnection> charCharConnections)
+    {
+        var charCharConnectionsDtoList = new List<CharCharConnectionDto>();
+        foreach (var charCharConnection in charCharConnections)
+        {
+            if (charCharConnection.ToDto() is CharCharConnectionDto dto)
+            {
+                charCharConnectionsDtoList.Add(dto);
+            }
+        }
+        return charCharConnectionsDtoList;
+    }
+
+    public static CharCharConnection? ToModel(this CharCharConnectionDto? charCharConnectionDto)
+    {
+        if (charCharConnectionDto == null) return null;
+        var newCharCharConnection = new CharCharConnection
+        {
+            Direction = charCharConnectionDto.Direction,
+            Description = charCharConnectionDto.Description,
+            GmOnlyDescription = charCharConnectionDto.GmOnlyDescription,
+            GmOnly = charCharConnectionDto.GmOnly,
+            CharOneId = charCharConnectionDto.CharOneId,
+            CharTwoId = charCharConnectionDto.CharTwoId
+        };
+        if (charCharConnectionDto.Id.HasValue)
+        {
+            newCharCharConnection.Id = charCharConnectionDto.Id.Value;
+        }
+        return newCharCharConnection;
+    }
+
+    public static List<CharCharConnection> ToModel(this IEnumerable<CharCharConnectionDto?> charCharConnectionDtos)
+    {
+        var charCharConnections = new List<CharCharConnection>();
+        foreach (var charCharConnectionDto in charCharConnectionDtos)
+        {
+            if (charCharConnectionDto.ToModel() is CharCharConnection charCharConnection)
+            {
+                charCharConnections.Add(charCharConnection);
+            }
+        }
+        return charCharConnections;
+    }
+
+    public static CharOrgConnectionDto? ToDto(this CharOrgConnection charOrgConnection)
+    {
+        if (charOrgConnection == null) return null;
+
+        return new CharOrgConnectionDto
+        {
+            Id = charOrgConnection.Id,
+            Direction = charOrgConnection.Direction,
+            Description = charOrgConnection.Description,
+            GmOnlyDescription = charOrgConnection.GmOnlyDescription,
+            GmOnly = charOrgConnection.GmOnly,
+            CharId = charOrgConnection.CharId,
+            OrganisationId = charOrgConnection.OrganisationId
+        };
+    }
+
+    public static List<CharOrgConnectionDto> ToDto(this IEnumerable<CharOrgConnection> charOrgConnections)
+    {
+        var charOrgConnectionsDtoList = new List<CharOrgConnectionDto>();
+        foreach (var charOrgConnection in charOrgConnections)
+        {
+            if (charOrgConnection.ToDto() is CharOrgConnectionDto dto)
+            {
+                charOrgConnectionsDtoList.Add(dto);
+            }
+        }
+        return charOrgConnectionsDtoList;
+    }
+
+    public static CharOrgConnection? ToModel(this CharOrgConnectionDto? charOrgConnectionDto)
+    {
+        if (charOrgConnectionDto == null) return null;
+        var newCharOrgConnection = new CharOrgConnection
+        {
+            Direction = charOrgConnectionDto.Direction,
+            Description = charOrgConnectionDto.Description,
+            GmOnlyDescription = charOrgConnectionDto.GmOnlyDescription,
+            GmOnly = charOrgConnectionDto.GmOnly,
+            CharId = charOrgConnectionDto.CharId,
+            OrganisationId = charOrgConnectionDto.OrganisationId
+        };
+        if (charOrgConnectionDto.Id.HasValue)
+        {
+            newCharOrgConnection.Id = charOrgConnectionDto.Id.Value;
+        }
+        return newCharOrgConnection;
+    }
+
+    public static List<CharOrgConnection> ToModel(this IEnumerable<CharOrgConnectionDto?> charOrgConnectionDtos)
+    {
+        var charOrgConnections = new List<CharOrgConnection>();
+        foreach (var charOrgConnectionDto in charOrgConnectionDtos)
+        {
+            if (charOrgConnectionDto.ToModel() is CharOrgConnection charOrgConnection)
+            {
+                charOrgConnections.Add(charOrgConnection);
+            }
+        }
+        return charOrgConnections;
     }
 
     #endregion
