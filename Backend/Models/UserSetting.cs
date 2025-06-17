@@ -23,4 +23,10 @@ public partial class UserSetting
     [ForeignKey("DefaultCampaignId")]
     [InverseProperty("UserSettings")]
     public virtual Campaign? DefaultCampaign { get; set; }
+
+    [Column("user_id")]
+    [ForeignKey("User")]
+    [InverseProperty("UserSettings")]
+    [Required]
+    public long UserId { get; set; }
 }

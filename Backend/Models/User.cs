@@ -31,4 +31,7 @@ public partial class User
 
     [Column("role")]
     public long Role { get; set; }
+
+    [InverseProperty("UserSettings")]
+    public virtual UserSetting UserSettings { get; set; } = null!;
 }
