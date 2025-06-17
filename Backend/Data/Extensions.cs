@@ -37,16 +37,20 @@ public static class Extensions
     public static Campaign? ToModel(this CampaignDto campaignDto)
     {
         if (campaignDto == null) return null;
-
-        return new Campaign
+        var newCampaign = new Campaign
         {
-            Id = campaignDto.Id,
             CampaignName = campaignDto.CampaignName,
             DescriptionShort = campaignDto.DescriptionShort,
             Description = campaignDto.Description,
             Gm = campaignDto.Gm,
             GmOnlyDescription = campaignDto.GmOnlyDescription
         };
+        if (campaignDto.Id.HasValue)
+        {
+            newCampaign.Id = campaignDto.Id.Value;
+        }
+        return newCampaign;
+
     }
 
     public static IEnumerable<Campaign> ToModel(this IEnumerable<CampaignDto> campaignDtos)
@@ -97,16 +101,19 @@ public static class Extensions
     public static Character? ToModel(this CharacterDto? characterDto)
     {
         if (characterDto == null) return null;
-
-        return new Character
+        var newCharacter = new Character
         {
-            Id = characterDto.Id,
             CharacterName = characterDto.CharacterName,
             Description = characterDto.Description,
             CampaignId = characterDto.CampaignId,
             PlayerId = characterDto.PlayerId,
             DescriptionShort = characterDto.DescriptionShort,
         };
+        if (characterDto.Id.HasValue)
+        {
+            newCharacter.Id = characterDto.Id.Value;
+        }
+        return newCharacter;
     }
 
     public static List<Character> ToModel(this IEnumerable<CharacterDto?> characterDtos)
@@ -159,10 +166,8 @@ public static class Extensions
     public static Organisation? ToModel(this OrganisationDto? organisationDto)
     {
         if (organisationDto == null) return null;
-
-        return new Organisation
+       var newOrganisation = new Organisation
         {
-            Id = organisationDto.Id,
             OrganisationName = organisationDto.OrganisationName,
             DescriptionShort = organisationDto.DescriptionShort,
             Description = organisationDto.Description,
@@ -171,6 +176,11 @@ public static class Extensions
             GmOnly = organisationDto.GmOnly,
             GmOnlyDescription = organisationDto.GmOnlyDescription
         };
+        if (organisationDto.Id.HasValue)
+        {
+            newOrganisation.Id = organisationDto.Id.Value;
+        }
+        return newOrganisation;
     }
 
     public static List<Organisation> ToModel(this IEnumerable<OrganisationDto?> organisationDtos)
@@ -223,10 +233,8 @@ public static class Extensions
     public static User? ToModel(this UserDto? userDto)
     {
         if (userDto == null) return null;
-
-        return new User
+        var newUser = new User
         {
-            Id = userDto.Id,
             FirstName = userDto.FirstName,
             LastName = userDto.LastName,
             UserName = userDto.UserName,
@@ -235,6 +243,11 @@ public static class Extensions
             Password = userDto.Password,
             Role = userDto.Role
         };
+        if (userDto.Id.HasValue)
+        {
+            newUser.Id = userDto.Id.Value;
+        }
+        return newUser;
     }
 
     public static List<User> ToModel(this IEnumerable<UserDto?> userDtos)
@@ -252,7 +265,7 @@ public static class Extensions
     #endregion
 
     #region UserSetting Extensions
-    
+
     public static UserSettingDto? ToDto(this UserSetting? userSetting)
     {
         if (userSetting == null) return null;
@@ -282,14 +295,16 @@ public static class Extensions
     public static UserSetting? ToModel(this UserSettingDto? userSettingDto)
     {
         if (userSettingDto == null) return null;
-
-        return new UserSetting
-        {
-            Id = userSettingDto.Id,
+        var userSetting = new UserSetting{
             SelectLastCampaign = userSettingDto.SelectLastCampaign,
             SameNameWarning = userSettingDto.SameNameWarning,
             DefaultCampaignId = userSettingDto.DefaultCampaignId
         };
+        if (userSettingDto.Id.HasValue)
+        {
+            userSetting.Id = userSettingDto.Id.Value;
+        }
+        return userSetting;
     }
 
     public static List<UserSetting> ToModel(this IEnumerable<UserSettingDto?> userSettingDtos)

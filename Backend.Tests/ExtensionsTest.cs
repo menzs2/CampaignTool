@@ -222,6 +222,42 @@ namespace Backend.Data.Tests
             Assert.Equal(user.Password, dto.Password);
             Assert.Equal(user.Role, dto.Role);
         }
+
+
+        [Fact]
+        public void UserSetting_ToDto_WithNullUserSetting_ReturnsNull()
+        {
+            // Arrange
+            UserSetting? userSetting = null;
+
+            // Act
+            var result = userSetting.ToDto();
+
+            // Assert
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void UserSetting_ToDto_WithValidUserSetting_ReturnsDtoWithSameValues()
+        {
+            // Arrange
+            var userSetting = new UserSetting
+            {
+                Id = 55,
+                SelectLastCampaign = true,
+                SameNameWarning = false,
+                DefaultCampaignId = 123
+            };
+
+            // Act
+            var dto = userSetting.ToDto();
+
+            // Assert
+            Assert.NotNull(dto);
+            Assert.Equal(userSetting.Id, dto.Id);
+            Assert.Equal(userSetting.SelectLastCampaign, dto.SelectLastCampaign);
+            Assert.Equal(userSetting.SameNameWarning, dto.SameNameWarning);
+            Assert.Equal(userSetting.DefaultCampaignId, dto.DefaultCampaignId);
+        }
     }
 }
-

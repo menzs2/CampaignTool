@@ -2,7 +2,7 @@
 
 public class CampaignDto
 {
-    public long Id { get; set; }
+    public long? Id { get; set; }
 
     public string CampaignName { get; set; } = null!;
 
