@@ -4,13 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Backend.Models;
 
 [Table("char_organisation_connection")]
-public class CharOrgConnection
+public class CharOrgConnection : BaseConnection
 {
-    [Key]
-    [Column("id")]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public long Id { get; set; }
-
     [Column("char_id")]
     [Required]
     public long CharId { get; set; }
@@ -18,20 +13,7 @@ public class CharOrgConnection
     [Column("organisation_id")]
     public long OrganisationId { get; set; }
 
-    [Column("direction")]
-    public byte[] Direction { get; set; } = null!;
-
-    [Column("description")]
-    [StringLength(500)]
-    public string? Description { get; set; }
-
-    [Column("gm_only_description")]
-    [StringLength(1000)]
-    public string? GmOnlyDescription { get; set; }
-
-    [Column("gm_only")]
-    public bool GmOnly { get; set; }
-
+    [Required]
     [Column("connection_id")]
     public long ConnectionId { get; set; }
 
