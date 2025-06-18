@@ -33,6 +33,7 @@ public class CharacterController : ControllerBase
     /// <summary>
     /// Retrieves a character by its ID.
     /// </summary>
+    /// <param name="id">The ID of the character to retrieve.</param>
     [HttpGet("{id}")]
     public IActionResult Get(long id)
     {
@@ -43,6 +44,7 @@ public class CharacterController : ControllerBase
     /// <summary>
     /// Retrieves characters associated with a specific campaign.
     /// </summary>
+    /// <param name="campaignId">The ID of the campaign to retrieve characters for.</param>
     [HttpGet("campaign/{campaignId}")]
     public IActionResult GetByCampaign(long campaignId)
     {
@@ -53,11 +55,12 @@ public class CharacterController : ControllerBase
     /// <summary>
     /// Retrieves characters connected to a specific character by ID.
     /// </summary>
+    /// <param name="id">The ID of the character to find connections for.</param>
     [HttpGet("connected/{id}")]
-    public IActionResult GetConnectedCharacters(long Id)
+    public IActionResult GetConnectedCharacters(long id)
     {
         var characters = _dbContext.Characters
-            .Where(c => c.CharCharConnectionIds.Contains(Id))
+            .Where(c => c.CharCharConnectionIds.Contains(id))
             .ToDto();
         return characters != null ? Ok(characters) : NotFound("No connected characters found.");
     }
@@ -65,6 +68,7 @@ public class CharacterController : ControllerBase
     /// <summary>
     /// Creates a new character.
     /// </summary>
+    /// <param name="character">The character data to create.</param>  
     [HttpPost]
     public IActionResult Post([FromBody] CharacterDto character)
     {
@@ -85,6 +89,8 @@ public class CharacterController : ControllerBase
     /// <summary>
     /// Updates an existing character.
     /// </summary>
+    /// <param name="id">The ID of the character to update.</param>
+    /// <param name="character">The updated character data.</param>
     [HttpPut("{id}")]
     public IActionResult Put(long id, [FromBody] CharacterDto character)
     {
@@ -110,6 +116,7 @@ public class CharacterController : ControllerBase
     /// <summary>
     /// Deletes a character by its ID.
     /// </summary>
+    /// <param name="id">The ID of the character to delete.</param>
     [HttpDelete("{id}")]
     public IActionResult Delete(long id)
     {

@@ -16,6 +16,9 @@ public class UserController : ControllerBase
         _dbContext = dbContext;
     }
 
+    /// <summary>
+    /// Retrieves all users.
+    /// </summary>
     [HttpGet]
     public IActionResult Get()
     {
@@ -24,6 +27,10 @@ public class UserController : ControllerBase
             : NotFound("No users found.");
     }
 
+    /// <summary>
+    /// Retrieves a user by its ID.
+    /// </summary>
+    /// <param name="id">The ID of the user to retrieve.</param>
     [HttpGet("{id}")]
     public IActionResult Get(long id)
     {
@@ -35,6 +42,12 @@ public class UserController : ControllerBase
         return user != null ? Ok(user) : NotFound($"User with ID {id} not found.");
     }
 
+    /// <summary>
+    /// Adds a new user.
+    /// </summary>
+    /// <param name="user">
+    /// The user data to add. Can be null; if null, a BadRequest response is returned.
+    /// </param>
     [HttpPost]
     public IActionResult Post([FromBody] UserDto? user)
     {
@@ -51,23 +64,23 @@ public class UserController : ControllerBase
         _dbContext.Users.Add(newUser);
         _dbContext.SaveChanges();
         // Automatically create a UserSetting for the new user
-        if (newUser == null)
-        {
-            return BadRequest("Failed to create user.");
-        }
         var usersetting = new UserSetting
         {
             UserId = newUser.Id,
-            User = newUser,
             DefaultCampaignId = null,
             SelectLastCampaign = true,
             SameNameWarning = true
         };
         _dbContext.UserSettings.Add(usersetting);
         _dbContext.SaveChanges();
-        return CreatedAtAction(nameof(Get), new { id = user.Id }, user);
+        return CreatedAtAction(nameof(Get), new { id = newUser.Id }, user);
     }
 
+    /// <summary>
+    /// Updates an existing user.
+    /// </summary>
+    /// <param name="id">The ID of the user to update.</param>
+    /// <param name="user">The updated user data.</param>
     [HttpPut("{id}")]
     public IActionResult Put(long id, [FromBody] UserDto? user)
     {
@@ -90,6 +103,13 @@ public class UserController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Deletes a user by its ID.
+    /// </summary>
+    /// <param name="id">The ID of the user to delete.</param>
+    /// <remarks>
+    /// This action will remove the user from the database.
+    /// </remarks>
     [HttpDelete("{id}")]
     public IActionResult Delete(long id)
     {

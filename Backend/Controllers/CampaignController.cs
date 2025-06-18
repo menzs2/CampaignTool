@@ -49,8 +49,9 @@ public class CampaignController : ControllerBase
     /// <summary>
     /// Adds a new campaign.
     /// </summary>
-    [HttpPost]  
-    public IActionResult Post([FromBody] CampaignDto campaign)
+    /// <param name="campaign">The campaign data to add.</param>
+    [HttpPost]
+    public async Task<IActionResult> Post([FromBody] CampaignDto campaign)
     {
         if (campaign == null)
         {
@@ -62,22 +63,23 @@ public class CampaignController : ControllerBase
             return BadRequest("Invalid campaign data.");
         }
         _dbContext.Campaigns.Add(newCampaign);
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
         return CreatedAtAction(nameof(Get), new { id = newCampaign.Id }, campaign);
     }
-
     /// <summary>
     /// Updates an existing campaign by its ID.
     /// </summary>
+    /// <param name="id">The ID of the campaign to update.</param>
+    /// <param name="campaign">The updated campaign data.</param>
     [HttpPut("{id}")]
-    public IActionResult Put(long id, [FromBody] CampaignDto campaign)
+    public async Task<IActionResult> Put(long id, [FromBody] CampaignDto campaign)
     {
         if (campaign == null || campaign.Id != id)
         {
             return BadRequest("Campaign data is invalid.");
         }
 
-        var existingCampaign = _dbContext.Campaigns.Find(id);
+        var existingCampaign = await _dbContext.Campaigns.FindAsync(id);
         if (existingCampaign == null)
         {
             return NotFound($"Campaign with ID {id} not found.");
@@ -88,24 +90,25 @@ public class CampaignController : ControllerBase
         existingCampaign.DescriptionShort = campaign.DescriptionShort;
         existingCampaign.GmOnlyDescription = campaign.GmOnlyDescription;
         existingCampaign.Gm = campaign.Gm;
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
         return NoContent();
     }
 
     /// <summary>
     /// Deletes a campaign by its ID.
     /// </summary>
+    /// <param name="id">The ID of the campaign to delete.</param>
     [HttpDelete("{id}")]
-    public IActionResult Delete(long id)
+    public async Task<IActionResult> Delete(long id)
     {
-        var campaign = _dbContext.Campaigns.Find(id);
+        var campaign = await _dbContext.Campaigns.FindAsync(id);
         if (campaign == null)
         {
             return NotFound($"Campaign with ID {id} not found.");
         }
 
         _dbContext.Campaigns.Remove(campaign);
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
         return NoContent();
     }
 }

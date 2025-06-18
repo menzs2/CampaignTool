@@ -13,6 +13,9 @@ public class UserSettingController : ControllerBase
         _dbContext = dbContext;
     }
 
+    /// <summary>
+    /// Gets user settings.
+    /// </summary>
     [HttpGet]
     public IActionResult Get()
     {
@@ -24,6 +27,10 @@ public class UserSettingController : ControllerBase
         return Ok(userSetting);
     }
 
+    /// <summary>
+    /// Gets a user setting by its ID.
+    /// </summary>
+    /// <param name="id">The ID of the user setting to retrieve.</param>
     [HttpGet("{id}")]
     public IActionResult Get(long id)
     {
@@ -35,6 +42,12 @@ public class UserSettingController : ControllerBase
         return Ok(userSetting);
     }
 
+    /// <summary>
+    /// Creates a new user setting.
+    /// </summary>
+    /// <param name="userSetting">
+    /// The user setting data to create. Can be null; if null, a BadRequest response is returned.
+    /// </param>
     [HttpPost]
     public IActionResult Post([FromBody] UserSettingDto? userSetting)
     {
@@ -53,6 +66,13 @@ public class UserSettingController : ControllerBase
         return CreatedAtAction(nameof(Get), new { id = userSetting.Id }, userSetting);
     }
 
+    /// <summary>
+    /// Updates an existing user setting.
+    /// </summary>
+    /// <param name="id">The ID of the user setting to update.</param>
+    /// <param name="userSetting">
+    /// The user setting data to update. Must not be null and must match the ID.
+    /// </param>
     [HttpPut("{id}")]
     public IActionResult Put(long id, [FromBody] UserSettingDto? userSetting)
     {
@@ -75,6 +95,10 @@ public class UserSettingController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Deletes a user setting by its ID.
+    /// </summary>
+    /// <param name="id">The ID of the user setting to delete.</param>
     [HttpDelete("{id}")]
     public IActionResult Delete(long id)
     {

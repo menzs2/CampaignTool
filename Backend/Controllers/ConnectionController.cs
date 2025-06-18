@@ -1,7 +1,7 @@
 ﻿using Backend.Data;
-using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Shared;
+
 namespace Backend.Controllers;
 
 [Route("api/[controller]")]
@@ -14,7 +14,12 @@ public class ConnectionController : ControllerBase
     {
         _dbContext = campaignToolContext;
     }
+
     #region Connections
+
+    /// <summary>
+    /// Gets all connections.
+    /// </summary>
     [HttpGet]
     public IActionResult Get()
     {
@@ -22,6 +27,11 @@ public class ConnectionController : ControllerBase
             ? Ok(_dbContext.Connections.ToDto())
             : NotFound("No connections found.");
     }
+
+    /// <summary>
+    /// Gets a connection by its ID.
+    /// </summary>
+    /// <param name="id">The ID of the connection.</param>
     [HttpGet("{id}")]
     public IActionResult Get(int id)
     {
@@ -30,6 +40,11 @@ public class ConnectionController : ControllerBase
             ? Ok(connection.ToDto())
             : NotFound($"Connection with ID {id} not found.");
     }
+
+    /// <summary>
+    /// Adds a new connection.
+    /// </summary>
+    /// <param name="connection">The connection data to add.</param>
     [HttpPost]
     public IActionResult Post([FromBody] ConnectionDto connection)
     {
@@ -37,12 +52,21 @@ public class ConnectionController : ControllerBase
         {
             return BadRequest("Connection data is required.");
         }
-
-        _dbContext.Connections.Add(connection.ToModel());
+        var model = connection.ToModel();
+        if (model == null)
+        {
+            return BadRequest("Invalid connection data.");
+        }
+        var entity = _dbContext.Connections.Add(model).Entity;
         _dbContext.SaveChanges();
-        return CreatedAtAction(nameof(Get), new { id = connection.Id }, connection);
+        return CreatedAtAction(nameof(Get), new { id = entity.Id }, connection);
     }
 
+    /// <summary>
+    /// Updates an existing connection.
+    /// </summary>
+    /// <param name="id">The ID of the connection to update.</param>
+    /// <param name="connection">The updated connection data.</param>
     [HttpPut("{id}")]
     public IActionResult Put(int id, [FromBody] ConnectionDto connection)
     {
@@ -67,6 +91,10 @@ public class ConnectionController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Deletes a connection by its ID.
+    /// </summary>
+    /// <param name="id">The ID of the connection to delete.</param>
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
@@ -81,6 +109,13 @@ public class ConnectionController : ControllerBase
         return NoContent();
     }
 
+    #endregion
+
+    #region Character-Character
+
+    /// <summary>
+    /// Gets all character-character connections.
+    /// </summary>
     [HttpGet("charchar")]
     public IActionResult GetAll()
     {
@@ -88,6 +123,11 @@ public class ConnectionController : ControllerBase
             ? Ok(_dbContext.CharCharConnections.ToDto())
             : NotFound("No connections found.");
     }
+
+    /// <summary>
+    /// Gets a character-character connection by its ID.
+    /// </summary>
+    /// <param name="id">The ID of the character-character connection.</param>
     [HttpGet("charchar/{id}")]
     public IActionResult GetCharCharConnection(int id)
     {
@@ -96,6 +136,11 @@ public class ConnectionController : ControllerBase
             ? Ok(connection.ToDto())
             : NotFound($"Character-Character connection with ID {id} not found.");
     }
+
+    /// <summary>
+    /// Adds a new character-character connection.
+    /// </summary>
+    /// <param name="connection">The character-character connection data to add.</param>
     [HttpPost("charchar")]
     public IActionResult PostCharCharConnection([FromBody] CharCharConnectionDto connection)
     {
@@ -103,11 +148,25 @@ public class ConnectionController : ControllerBase
         {
             return BadRequest("Character-Character connection data is required.");
         }
-
-        _dbContext.CharCharConnections.Add(connection.ToModel());
+        if (connection.CharOneId == connection.CharTwoId)
+        {
+            return BadRequest("Character-Character connections cannot connect the same character to itself.");
+        }
+        var model = connection.ToModel();
+        if (model == null)
+        {
+            return BadRequest("Invalid Character-Character connection data.");
+        }
+        var entity = _dbContext.CharCharConnections.Add(model);
         _dbContext.SaveChanges();
-        return CreatedAtAction(nameof(GetCharCharConnection), new { id = connection.Id }, connection);
+        return CreatedAtAction(nameof(GetCharCharConnection), new { id = entity.Entity.Id }, connection);
     }
+
+    /// <summary>
+    /// Updates an existing character-character connection by its ID.
+    /// </summary>
+    /// <param name="id">The ID of the character-character connection to update.</param>
+    /// <param name="connection">The updated character-character connection data.</param>
     [HttpPut("charchar/{id}")]
     public IActionResult PutCharCharConnection(int id, [FromBody] CharCharConnectionDto connection)
     {
@@ -134,6 +193,10 @@ public class ConnectionController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Deletes a character-character connection by its ID.
+    /// </summary>
+    /// <param name="id">The ID of the character-character connection to delete.</param>
     [HttpDelete("charchar/{id}")]
     public IActionResult DeleteCharCharConnection(int id)
     {
@@ -147,7 +210,13 @@ public class ConnectionController : ControllerBase
         _dbContext.SaveChanges();
         return NoContent();
     }
+    #endregion
 
+    #region Character-Organization
+
+    /// <summary>
+    /// Gets all character-organization connections.
+    /// </summary>
     [HttpGet("charorg")]
     public IActionResult GetAllCharOrgConnections()
     {
@@ -155,7 +224,11 @@ public class ConnectionController : ControllerBase
             ? Ok(_dbContext.CharOrgConnections.ToDto())
             : NotFound("No character-organization connections found.");
     }
-    
+
+    /// <summary>
+    /// Gets a character-organization connection by its ID.
+    /// </summary>
+    /// <param name="id">The ID of the character-organization connection.</param>
     [HttpGet("charorg/{id}")]
     public IActionResult GetCharOrgConnection(int id)
     {
@@ -165,6 +238,10 @@ public class ConnectionController : ControllerBase
             : NotFound($"Character-Organization connection with ID {id} not found.");
     }
 
+    /// <summary>
+    /// Adds a new character-organization connection.
+    /// </summary>
+    /// <param name="connection">The character-organization connection data to add.</param>
     [HttpPost("charorg")]
     public IActionResult PostCharOrgConnection([FromBody] CharOrgConnectionDto connection)
     {
@@ -172,12 +249,21 @@ public class ConnectionController : ControllerBase
         {
             return BadRequest("Character-Organization connection data is required.");
         }
-
-        _dbContext.CharOrgConnections.Add(connection.ToModel());
+        var model = connection.ToModel();
+        if (model == null)
+        {
+            return BadRequest("Invalid Character-Organization connection data.");
+        }
+        var entity = _dbContext.CharOrgConnections.Add(model).Entity;
         _dbContext.SaveChanges();
-        return CreatedAtAction(nameof(GetCharOrgConnection), new { id = connection.Id }, connection);
+        return CreatedAtAction(nameof(GetCharOrgConnection), new { id = entity.Id }, connection);
     }
 
+    /// <summary>
+    /// Updates an existing character-organization connection by its ID.
+    /// </summary>
+    /// <param name="id">The ID of the character-organization connection to update.</param>
+    /// <param name="connection">The updated character-organization connection data.</param>
     [HttpPut("charorg/{id}")]
     public IActionResult PutCharOrgConnection(int id, [FromBody] CharOrgConnectionDto connection)
     {
@@ -204,6 +290,10 @@ public class ConnectionController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Deletes a character-organization connection by its ID.
+    /// /// </summary>
+    /// <param name="id">The ID of the character-organization connection to delete.</param>
     [HttpDelete("charorg/{id}")]
     public IActionResult DeleteCharOrgConnection(int id)
     {
