@@ -65,9 +65,10 @@ namespace Backend.Data.Tests
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(2, result.Count);
-            Assert.Equal("Test Campaign", result[0].CampaignName);
-            Assert.Equal("Another Campaign", result[1].CampaignName);
+            Assert.Equal(2, result.Count());
+            var resultList = result.ToList();
+            Assert.Equal("Test Campaign", resultList[0].CampaignName);
+            Assert.Equal("Another Campaign", resultList[1].CampaignName);
         }
 
         [Fact]
@@ -93,7 +94,8 @@ namespace Backend.Data.Tests
 
             // Assert
             Assert.Single(result);
-            Assert.Equal(3, result[0].Id);
+            var resultList = result.ToList();
+            Assert.Equal(3, resultList[0].Id);
         }
         [Fact]
         public void Character_ToDto_WithNullCharacter_ReturnsNull()
@@ -258,6 +260,50 @@ namespace Backend.Data.Tests
             Assert.Equal(userSetting.SelectLastCampaign, dto.SelectLastCampaign);
             Assert.Equal(userSetting.SameNameWarning, dto.SameNameWarning);
             Assert.Equal(userSetting.DefaultCampaignId, dto.DefaultCampaignId);
+        }
+
+        [Fact]
+        public void ToDto_WithNullUser_ReturnsNull()
+        {
+            // Arrange
+            User? user = null;
+
+            // Act
+            var result = user.ToDto();
+
+            // Assert
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void ToDto_WithValidUser_ReturnsDtoWithSameValues()
+        {
+            // Arrange
+            var user = new User
+            {
+                Id = 1,
+                FirstName = "Alice",
+                LastName = "Smith",
+                UserName = "asmith",
+                Email = "alice@example.com",
+                HasLogin = true,
+                Password = "securepassword",
+                Role = 2
+            };
+
+            // Act
+            var dto = user.ToDto();
+
+            // Assert
+            Assert.NotNull(dto);
+            Assert.Equal(user.Id, dto.Id);
+            Assert.Equal(user.FirstName, dto.FirstName);
+            Assert.Equal(user.LastName, dto.LastName);
+            Assert.Equal(user.UserName, dto.UserName);
+            Assert.Equal(user.Email, dto.Email);
+            Assert.Equal(user.HasLogin, dto.HasLogin);
+            Assert.Equal(user.Password, dto.Password);
+            Assert.Equal(user.Role, dto.Role);
         }
     }
 }
