@@ -39,4 +39,8 @@ public partial class User
 
     [InverseProperty("User")]
     public virtual UserSetting UserSetting { get; set; } = null!;
+
+    [InverseProperty("User")]
+    public virtual ICollection<Campaign> Campaign { get; set; } = new List<Campaign>();
+
 }

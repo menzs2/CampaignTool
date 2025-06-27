@@ -26,15 +26,15 @@ public partial class Campaign
     [Column("description")]
     public string? Description { get; set; }
 
+    [ForeignKey("User")]
     [Column("gm")]
     public long Gm { get; set; }
 
     [Column("gm_only_description")]
     public string? GmOnlyDescription { get; set; }
-
-    [ForeignKey("Gm")]
+    
     [InverseProperty("Campaign")]
-    public virtual User GmUser { get; set; } = null!;
+    public virtual User User { get; set; } = null!;
 
     [InverseProperty("Campaign")]
     public virtual ICollection<Character> Characters { get; set; } = new List<Character>();

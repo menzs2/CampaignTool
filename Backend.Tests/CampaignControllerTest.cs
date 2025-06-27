@@ -1,15 +1,19 @@
-using Backend.Data;
-using Backend.Models; // Ensure this is imported
-using Shared; // Ensure this is imported if CampaignDto is here
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Xunit;
 using Backend.Controllers;
+using Backend.Data;
+using Backend.Models;
+using Shared;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace Backend.Tests // Update namespace to match folder structure
+namespace Backend.Tests
 {
     public class CampaignControllerTest
     {
-        private static CampaignToolContext GetDbContextWithData(List<Campaign> campaigns)
+        private CampaignToolContext GetDbContextWithData(List<Campaign> campaigns)
         {
             var options = new DbContextOptionsBuilder<CampaignToolContext>()
                 .UseInMemoryDatabase(databaseName: "CampaignTestDb" + System.Guid.NewGuid())
@@ -20,16 +24,26 @@ namespace Backend.Tests // Update namespace to match folder structure
             return context;
         }
 
+        private CampaignDto ToDto(Campaign c) => new CampaignDto
+        {
+            Id = c.Id,
+            CampaignName = c.CampaignName,
+            Description = c.Description,
+            DescriptionShort = c.DescriptionShort,
+            GmOnlyDescription = c.GmOnlyDescription,
+            Gm = c.Gm
+        };
+
         [Fact]
         public void Get_ReturnsAllCampaigns_WhenCampaignsExist()
         {
             // Arrange
             var campaigns = new List<Campaign>
             {
-                new Campaign { Id = 1, CampaignName = "Test1", Gm = 1 },
-                new Campaign { Id = 2, CampaignName = "Test2", Gm = 2 }
+                new Campaign { Id = 1L, CampaignName = "C1", Gm = 1, DescriptionShort = "Short1" },
+                new Campaign { Id = 2L, CampaignName = "C2", Gm = 2, DescriptionShort = "Short2" }
             };
-            var context = GetDbContextWithData(campaigns);
+            using var context = GetDbContextWithData(campaigns);
             var controller = new CampaignController(context);
 
             // Act
@@ -37,14 +51,14 @@ namespace Backend.Tests // Update namespace to match folder structure
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var returnedCampaigns = Assert.IsAssignableFrom<IEnumerable<CampaignDto>>(okResult.Value);
-            Assert.Equal(2, returnedCampaigns.Count());
+            var returned = Assert.IsAssignableFrom<IEnumerable<CampaignDto>>(okResult.Value);
+            Assert.Equal(2, returned.Count());
         }
 
         [Fact]
         public void Get_ReturnsNotFound_WhenNoCampaignsExist()
         {
-            var context = GetDbContextWithData(new List<Campaign>());
+            using var context = GetDbContextWithData(new List<Campaign>());
             var controller = new CampaignController(context);
 
             var result = controller.Get();
@@ -55,44 +69,45 @@ namespace Backend.Tests // Update namespace to match folder structure
         [Fact]
         public void Get_ById_ReturnsCampaign_WhenExists()
         {
-            var campaign = new Campaign { Id = 1, CampaignName = "Test", Gm = 1 };
-            var context = GetDbContextWithData(new List<Campaign> { campaign });
+            var campaign = new Campaign { Id = 1L, CampaignName = "C1", Gm = 1, DescriptionShort = "Short1" };
+            using var context = GetDbContextWithData(new List<Campaign> { campaign });
             var controller = new CampaignController(context);
 
             var result = controller.Get(1);
 
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var returnedCampaign = Assert.IsType<CampaignDto>(okResult.Value);
-            Assert.Equal(1, returnedCampaign.Id);
+            var returned = Assert.IsType<CampaignDto>(okResult.Value);
+            Assert.Equal(campaign.Id, returned.Id);
         }
 
         [Fact]
         public void Get_ById_ReturnsNotFound_WhenNotExists()
         {
-            var context = GetDbContextWithData(new List<Campaign>());
+            using var context = GetDbContextWithData(new List<Campaign>());
             var controller = new CampaignController(context);
 
-            var result = controller.Get(1);
+            var result = controller.Get(99);
 
             Assert.IsType<NotFoundObjectResult>(result);
         }
 
         [Fact]
-        public void GetByGmId_ReturnsCampaigns_WhenExist()
+        public void GetByGmId_ReturnsCampaigns_WhenExists()
         {
             var campaigns = new List<Campaign>
             {
-                new Campaign { Id = 1, CampaignName = "Test1", Gm = 1 },
-                new Campaign { Id = 2, CampaignName = "Test2", Gm = 1 }
+                new Campaign { Id = 1L, CampaignName = "C1", Gm = 1, DescriptionShort = "Short1" },
+                new Campaign { Id = 2L, CampaignName = "C2", Gm = 1, DescriptionShort = "Short2" },
+                new Campaign { Id = 3L, CampaignName = "C3", Gm = 2, DescriptionShort = "Short3" }
             };
-            var context = GetDbContextWithData(campaigns);
+            using var context = GetDbContextWithData(campaigns);
             var controller = new CampaignController(context);
 
             var result = controller.GetByGmId(1);
 
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var returnedCampaigns = Assert.IsAssignableFrom<IEnumerable<CampaignDto>>(okResult.Value);
-            Assert.Equal(2, returnedCampaigns.Count());
+            var returned = Assert.IsAssignableFrom<IEnumerable<CampaignDto>>(okResult.Value);
+            Assert.Equal(2, returned.Count());
         }
 
         [Fact]
@@ -100,33 +115,42 @@ namespace Backend.Tests // Update namespace to match folder structure
         {
             var campaigns = new List<Campaign>
             {
-                new Campaign { Id = 1, CampaignName = "Test1", Gm = 2 }
+                new Campaign { Id = 1L, CampaignName = "C1", Gm = 2, DescriptionShort = "Short1" }
             };
-            var context = GetDbContextWithData(campaigns);
+            using var context = GetDbContextWithData(campaigns);
             var controller = new CampaignController(context);
 
-            var result = controller.GetByGmId(1);
+            var result = controller.GetByGmId(99);
 
             Assert.IsType<NotFoundObjectResult>(result);
         }
 
         [Fact]
-        public async Task Post_ReturnsCreated_WhenValid()
+        public async Task Post_CreatesCampaign_WhenValid()
         {
-            var context = GetDbContextWithData(new List<Campaign>());
+            using var context = GetDbContextWithData(new List<Campaign>());
             var controller = new CampaignController(context);
-            var dto = new CampaignDto { Id = 0, CampaignName = "New", Gm = 1 };
+
+            var dto = new CampaignDto
+            {
+                CampaignName = "New",
+                Description = "Desc",
+                DescriptionShort = "Short",
+                GmOnlyDescription = "GM",
+                Gm = 1
+            };
 
             var result = await controller.Post(dto);
 
-            var createdResult = Assert.IsType<CreatedAtActionResult>(result);
-            Assert.Equal("Get", createdResult.ActionName);
+            var created = Assert.IsType<CreatedAtActionResult>(result);
+            Assert.Equal("Get", created.ActionName);
+            Assert.NotNull(context.Campaigns.FirstOrDefault(c => c.CampaignName == "New"));
         }
 
         [Fact]
         public async Task Post_ReturnsBadRequest_WhenNull()
         {
-            var context = GetDbContextWithData(new List<Campaign>());
+            using var context = GetDbContextWithData(new List<Campaign>());
             var controller = new CampaignController(context);
 
             var result = await controller.Post(null);
@@ -137,23 +161,39 @@ namespace Backend.Tests // Update namespace to match folder structure
         [Fact]
         public async Task Put_UpdatesCampaign_WhenValid()
         {
-            var campaign = new Campaign { Id = 1, CampaignName = "Old", Gm = 1 };
-            var context = GetDbContextWithData(new List<Campaign> { campaign });
+            var campaign = new Campaign { Id = 1L, CampaignName = "Old", Gm = 1, DescriptionShort = "Short1" };
+            using var context = GetDbContextWithData(new List<Campaign> { campaign });
             var controller = new CampaignController(context);
-            var dto = new CampaignDto { Id = 1, CampaignName = "Updated", Gm = 1 };
+
+            var dto = new CampaignDto
+            {
+                Id = 1,
+                CampaignName = "Updated",
+                Description = "Desc",
+                DescriptionShort = "Short",
+                GmOnlyDescription = "GM",
+                Gm = 2
+            };
 
             var result = await controller.Put(1, dto);
 
             Assert.IsType<NoContentResult>(result);
-            Assert.Equal("Updated", context.Campaigns.Find(1).CampaignName);
+            Assert.Equal("Updated", context.Campaigns.Find(1L).CampaignName);
         }
 
         [Fact]
         public async Task Put_ReturnsBadRequest_WhenIdMismatch()
         {
-            var context = GetDbContextWithData(new List<Campaign>());
+            var campaign = new Campaign { Id = 1L, CampaignName = "Old", Gm = 1, DescriptionShort = "Short1" };
+            using var context = GetDbContextWithData(new List<Campaign> { campaign });
             var controller = new CampaignController(context);
-            var dto = new CampaignDto { Id = 2, CampaignName = "Test", Gm = 1 };
+
+            var dto = new CampaignDto
+            {
+                Id = 2,
+                CampaignName = "Updated",
+                Gm = 2
+            };
 
             var result = await controller.Put(1, dto);
 
@@ -161,11 +201,17 @@ namespace Backend.Tests // Update namespace to match folder structure
         }
 
         [Fact]
-        public async Task Put_ReturnsNotFound_WhenCampaignNotExist()
+        public async Task Put_ReturnsNotFound_WhenNotExists()
         {
-            var context = GetDbContextWithData(new List<Campaign>());
+            using var context = GetDbContextWithData(new List<Campaign>());
             var controller = new CampaignController(context);
-            var dto = new CampaignDto { Id = 1, CampaignName = "Test", Gm = 1 };
+
+            var dto = new CampaignDto
+            {
+                Id = 1,
+                CampaignName = "Updated",
+                Gm = 2
+            };
 
             var result = await controller.Put(1, dto);
 
@@ -175,20 +221,20 @@ namespace Backend.Tests // Update namespace to match folder structure
         [Fact]
         public async Task Delete_RemovesCampaign_WhenExists()
         {
-            var campaign = new Campaign { Id = 1, CampaignName = "Test", Gm = 1 };
-            var context = GetDbContextWithData(new List<Campaign> { campaign });
+            var campaign = new Campaign { Id = 1L, CampaignName = "ToDelete", Gm = 1, DescriptionShort = "Short1" };
+            using var context = GetDbContextWithData(new List<Campaign> { campaign });
             var controller = new CampaignController(context);
 
             var result = await controller.Delete(1);
 
             Assert.IsType<NoContentResult>(result);
-            Assert.Null(context.Campaigns.Find(1));
+            Assert.Null(context.Campaigns.Find(1L));
         }
 
         [Fact]
         public async Task Delete_ReturnsNotFound_WhenNotExists()
         {
-            var context = GetDbContextWithData(new List<Campaign>());
+            using var context = GetDbContextWithData(new List<Campaign>());
             var controller = new CampaignController(context);
 
             var result = await controller.Delete(1);
@@ -196,5 +242,4 @@ namespace Backend.Tests // Update namespace to match folder structure
             Assert.IsType<NotFoundObjectResult>(result);
         }
     }
-
 }
