@@ -5,9 +5,7 @@ using Backend.Models;
 using Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace Backend.Tests
 {
@@ -178,7 +176,9 @@ namespace Backend.Tests
             var result = await controller.Put(1, dto);
 
             Assert.IsType<NoContentResult>(result);
-            Assert.Equal("Updated", context.Campaigns.Find(1L).CampaignName);
+            var updatedCampaign = context.Campaigns.Find(1L);
+            Assert.NotNull(updatedCampaign);
+            Assert.Equal("Updated", updatedCampaign.CampaignName);
         }
 
         [Fact]

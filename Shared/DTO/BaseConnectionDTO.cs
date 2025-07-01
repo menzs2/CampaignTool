@@ -3,7 +3,7 @@
 public class BaseConnectionDto
 {
     public long? Id { get; set; }
-    public byte[] Direction { get; set; } = null!;
+    public byte Direction { get; set; }
 
     public string? Description { get; set; }
 
