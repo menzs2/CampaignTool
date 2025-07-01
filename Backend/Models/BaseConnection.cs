@@ -12,7 +12,7 @@ public abstract class BaseConnection
 
     [Column("direction")]
     [Required]
-    public byte[] Direction { get; set; } = null!;
+    public byte Direction { get; set; }
 
     [Column("description")]
     [StringLength(500)]

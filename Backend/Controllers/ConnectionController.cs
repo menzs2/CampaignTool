@@ -33,7 +33,7 @@ public class ConnectionController : ControllerBase
     /// </summary>
     /// <param name="id">The ID of the connection.</param>
     [HttpGet("{id}")]
-    public IActionResult Get(int id)
+    public IActionResult Get(long id)
     {
         var connection = _dbContext.Connections.Find(id);
         return connection != null
@@ -68,7 +68,7 @@ public class ConnectionController : ControllerBase
     /// <param name="id">The ID of the connection to update.</param>
     /// <param name="connection">The updated connection data.</param>
     [HttpPut("{id}")]
-    public IActionResult Put(int id, [FromBody] ConnectionDto connection)
+    public IActionResult Put(long id, [FromBody] ConnectionDto connection)
     {
         if (connection == null || connection.Id != id)
         {
@@ -96,12 +96,21 @@ public class ConnectionController : ControllerBase
     /// </summary>
     /// <param name="id">The ID of the connection to delete.</param>
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    public IActionResult Delete(long id)
     {
         var connection = _dbContext.Connections.Find(id);
         if (connection == null)
         {
             return NotFound($"Connection with ID {id} not found.");
+        }
+
+        // Check for references in CharOrgConnection or CharCharConnection
+        bool isUsed = _dbContext.CharOrgConnections.Any(c => c.ConnectionId == id)
+                   || _dbContext.CharCharConnections.Any(c => c.ConnectionId == id);
+
+        if (isUsed)
+        {
+            return BadRequest("Cannot delete: Connection is in use by other entities.");
         }
 
         _dbContext.Connections.Remove(connection);
@@ -129,7 +138,7 @@ public class ConnectionController : ControllerBase
     /// </summary>
     /// <param name="id">The ID of the character-character connection.</param>
     [HttpGet("charchar/{id}")]
-    public IActionResult GetCharCharConnection(int id)
+    public IActionResult GetCharCharConnection(long id)
     {
         var connection = _dbContext.CharCharConnections.Find(id);
         return connection != null
@@ -168,7 +177,7 @@ public class ConnectionController : ControllerBase
     /// <param name="id">The ID of the character-character connection to update.</param>
     /// <param name="connection">The updated character-character connection data.</param>
     [HttpPut("charchar/{id}")]
-    public IActionResult PutCharCharConnection(int id, [FromBody] CharCharConnectionDto connection)
+    public IActionResult PutCharCharConnection(long id, [FromBody] CharCharConnectionDto connection)
     {
         if (connection == null || connection.Id != id)
         {
@@ -198,7 +207,7 @@ public class ConnectionController : ControllerBase
     /// </summary>
     /// <param name="id">The ID of the character-character connection to delete.</param>
     [HttpDelete("charchar/{id}")]
-    public IActionResult DeleteCharCharConnection(int id)
+    public IActionResult DeleteCharCharConnection(long id)
     {
         var connection = _dbContext.CharCharConnections.Find(id);
         if (connection == null)
@@ -230,7 +239,7 @@ public class ConnectionController : ControllerBase
     /// </summary>
     /// <param name="id">The ID of the character-organization connection.</param>
     [HttpGet("charorg/{id}")]
-    public IActionResult GetCharOrgConnection(int id)
+    public IActionResult GetCharOrgConnection(long id)
     {
         var connection = _dbContext.CharOrgConnections.Find(id);
         return connection != null
@@ -265,7 +274,7 @@ public class ConnectionController : ControllerBase
     /// <param name="id">The ID of the character-organization connection to update.</param>
     /// <param name="connection">The updated character-organization connection data.</param>
     [HttpPut("charorg/{id}")]
-    public IActionResult PutCharOrgConnection(int id, [FromBody] CharOrgConnectionDto connection)
+    public IActionResult PutCharOrgConnection(long id, [FromBody] CharOrgConnectionDto connection)
     {
         if (connection == null || connection.Id != id)
         {
@@ -295,7 +304,7 @@ public class ConnectionController : ControllerBase
     /// /// </summary>
     /// <param name="id">The ID of the character-organization connection to delete.</param>
     [HttpDelete("charorg/{id}")]
-    public IActionResult DeleteCharOrgConnection(int id)
+    public IActionResult DeleteCharOrgConnection(long id)
     {
         var connection = _dbContext.CharOrgConnections.Find(id);
         if (connection == null)

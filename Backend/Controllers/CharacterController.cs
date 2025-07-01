@@ -37,8 +37,8 @@ public class CharacterController : ControllerBase
     [HttpGet("{id}")]
     public IActionResult Get(long id)
     {
-        var character = _dbContext.Characters.Where(c => c.Id == id).ToDto();
-        return character != null ? Ok(character) : NotFound($"Character with ID {id} not found.");
+        var character = _dbContext.Characters.FirstOrDefault(c => c.Id == id)?.ToDto();
+        return character == null ? NotFound($"Character with ID {id} not found.") : Ok(character);
     }
 
     /// <summary>
@@ -48,8 +48,8 @@ public class CharacterController : ControllerBase
     [HttpGet("campaign/{campaignId}")]
     public IActionResult GetByCampaign(long campaignId)
     {
-        var characters = _dbContext.Characters.Where(c => c.CampaignId == campaignId).ToDto();
-        return characters.Any() ? Ok(characters) : NotFound($"No characters found for campaign ID {campaignId}.");
+        var characters = _dbContext.Characters.Where(c => c.CampaignId == campaignId)?.ToDto();
+        return characters != null && characters.Any() ? Ok(characters) : NotFound($"No characters found for campaign ID {campaignId}.");
     }
 
     /// <summary>
@@ -60,7 +60,7 @@ public class CharacterController : ControllerBase
     public IActionResult GetConnectedCharacters(long id)
     {
         var characters = _dbContext.Characters
-            .Where(c => c.CharCharConnectionIds.Contains(id))
+            .Where(c => c.CharCharConnectionIds.Contains(id))?
             .ToDto();
         return characters != null ? Ok(characters) : NotFound("No connected characters found.");
     }
