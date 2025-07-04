@@ -67,3 +67,37 @@ Das Tool soll helfen, Kampagnenwelten konsistent darzustellen, Informationen eff
 - Vorerst nur Deutsch
 - Internationalisierung (i18n) für spätere Sprachoptionen vorgesehen
 - Erweiterbarkeit modular über Features wie Orte, Karten, Regelsysteme
+## 4. Technische Architektur
+
+### 4.1 Systemübersicht
+CampaignTool basiert auf einer Three-Tier-Architektur mit separatem Frontend (Blazor WebAssembly), Backend (ASP.NET Core) und PostgreSQL-Datenbank. Die Applikation wird als Single Page Application (SPA) realisiert und nutzt eine REST-API zur Kommunikation zwischen Front- und Backend. Eine Containerisierung mit Docker ist vorgesehen.
+
+### 4.2 Technologiestack
+- **Frontend**: Blazor WebAssembly (alternativ React)
+- **Backend**: ASP.NET Core, C#
+- **Datenbank**: PostgreSQL + EntityFrameworkCore
+- **Containerisierung**: Docker
+- **Styling**: Tailwind CSS oder Bootstrap
+- **Testframework**: xUnit
+- **Deployment**: bevorzugt Azure oder ein EU-Hosting-Provider
+
+### 4.3 Datenbankmodell
+Die Datenbank speichert Benutzer, Kampagnen und Entitäten (SC, NSC, Organisationen, Ereignisse, Items). Beziehungen zwischen Entitäten sind als eigene Verbindungstabellen modelliert. Tags ermöglichen zusätzliche Klassifikation.
+
+*Beispiel-Tabellenstruktur:*
+- **User**, **UserRole**, **Campaign**, **Character**, **Organisation**, **Event**, **Item**
+- **ConnectionBetweenEntities**
+- **Tags** (n-n-Beziehung mit Entitäten)
+- **History** (z. B. Zustände, Beziehungen über Zeit)
+
+### 4.4 API-Design & Endpunkte
+REST-Endpunkte strukturieren sich nach Ressourcentyp:
+- `Campaign`, `Character`, `Organisation`, `Event`, `Item`
+- Zugriff und Änderung von Verbindungen (`/Connections`)
+- Zugriff auf User- und Kampagneneinstellungen (`/Setting`)
+- Authentifizierung via Token (Login/Logout Endpunkte)
+
+Die API folgt dem CRUD-Prinzip mit spezifischen Routen z. B.:
+```http
+GET /character/bycampaign/{id}
+POST /organisation/connection
