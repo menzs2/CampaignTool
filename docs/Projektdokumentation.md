@@ -1,6 +1,7 @@
 # CampaignTool – Projektdokumentation
 
 ## 1. Einleitung
+Dieses Dokument beschreibt die Konzeption, Zielsetzung und Struktur der WebApp CampaignTool. Es führt Schritt für Schritt durch die funktionalen und nicht-funktionalen Anforderungen, die technische Architektur, Benutzeroberfläche, Teststrategie sowie das Projektmanagement. Es bildet die Grundlage für die Entwicklung und Weiterentwicklung des Tools. Ergänzende Inhalte zur UI-Gestaltung und technischen Umsetzung sind in separaten Dokumenten enthalten (siehe Design-Dokument und technischer Anhang). 
 
 ### 1.1 Projektüberblick
 CampaignTool ist eine WebApp zur Dokumentation und Verwaltung von Pen-&-Paper-Kampagnen. Das zentrale Element bildet die strukturierte Darstellung von NSCs, SCs, Organisationen und deren Beziehungen. Ziel ist es, Spielleiter:innen ein Werkzeug zur Seite zu stellen, um komplexe Kampagnen übersichtlich, kollaborativ und regelneutral zu managen.
