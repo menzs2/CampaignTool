@@ -28,4 +28,4 @@ public class CharOrgConnection : BaseConnection
     [ForeignKey("ConnectionId")]
     [InverseProperty("CharOrgConnections")]
     public virtual Connection Connection { get; set; } = null!;
-}
+}   

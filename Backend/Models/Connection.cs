@@ -1,5 +1,4 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Backend.Models;
@@ -39,4 +38,7 @@ public partial class Connection
 
     [InverseProperty("Connection")]
     public virtual ICollection<CharOrgConnection> CharOrgConnections { get; set; } = new List<CharOrgConnection>();
+
+    [InverseProperty("Connection")]
+    public virtual ICollection<OrgOrgConnection> OrgOrgConnections { get; set; } = new List<OrgOrgConnection>();
 }
