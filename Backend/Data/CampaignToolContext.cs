@@ -170,6 +170,48 @@ public partial class CampaignToolContext : DbContext
                 .HasForeignKey<UserSetting>(us => us.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
+        // CharOrgConnection
+        modelBuilder.Entity<CharOrgConnection>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("char_org_connection_pkey");
+            entity.ToTable("char_org_connection");
+            entity.Property(e => e.Id).UseIdentityAlwaysColumn();
+            entity.Property(e => e.CharId).IsRequired();
+            entity.Property(e => e.OrganisationId).IsRequired();
+
+            entity.HasOne(d => d.Character)
+                .WithMany(p => p.CharOrgConnections)
+                .HasForeignKey(d => d.CharId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("character_fkey");
+
+            entity.HasOne(d => d.Organisation)
+                .WithMany(p => p.CharOrgConnections)
+                .HasForeignKey(d => d.OrganisationId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("organisation_fkey");
+        });
+        // OrgOrgConnection
+        modelBuilder.Entity<OrgOrgConnection>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("org_org_connection_pkey");
+            entity.ToTable("org_org_connection");
+            entity.Property(e => e.Id).UseIdentityAlwaysColumn();
+            entity.Property(e => e.OrgOneId).IsRequired();
+            entity.Property(e => e.OrgTwoId ).IsRequired();
+
+            entity.HasOne(d => d.OrgOne)
+                .WithMany(p => p.OrgOrgConnectionOrgOnes)
+                .HasForeignKey(d => d.OrgOneId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("organisation_a_fkey");
+
+            entity.HasOne(d => d.OrgTwo)
+                .WithMany(p => p.OrgOrgConnectionOrgTwos)
+                .HasForeignKey(d => d.OrgTwoId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("organisation_b_fkey");
+        });
 
         OnModelCreatingPartial(modelBuilder);
     }
