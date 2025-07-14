@@ -413,5 +413,56 @@ public static class Extensions
             .ToList();
     }
 
+    public static OrgOrgConnectionDto? ToDto(this OrgOrgConnection orgOrgConnection)
+    {
+        if (orgOrgConnection == null) return null;
+
+        return new OrgOrgConnectionDto
+        {
+            Id = orgOrgConnection.Id,
+            Direction = orgOrgConnection.Direction,
+            Description = orgOrgConnection.Description,
+            GmOnlyDescription = orgOrgConnection.GmOnlyDescription,
+            GmOnly = orgOrgConnection.GmOnly,
+            OrgOneId = orgOrgConnection.OrgOneId,
+            OrgTwoId = orgOrgConnection.OrgTwoId
+        };
+    }
+
+    public static IEnumerable<OrgOrgConnectionDto> ToDto(this IEnumerable<OrgOrgConnection> orgOrgConnections)
+    {
+        return orgOrgConnections
+            .Where(c => c != null)
+            .Select(c => c!.ToDto()!)
+            .ToList();
+    }
+
+    public static OrgOrgConnection? ToModel(this OrgOrgConnectionDto? orgOrgConnectionDto)
+    {
+        if (orgOrgConnectionDto == null) return null;
+        var newOrgOrgConnection = new OrgOrgConnection
+        {
+            Direction = orgOrgConnectionDto.Direction,
+            Description = orgOrgConnectionDto.Description,
+            GmOnlyDescription = orgOrgConnectionDto.GmOnlyDescription,
+            GmOnly = orgOrgConnectionDto.GmOnly,
+            OrgOneId = orgOrgConnectionDto.OrgOneId,
+            OrgTwoId = orgOrgConnectionDto.OrgTwoId
+        };
+        if (orgOrgConnectionDto.Id.HasValue)
+        {
+            newOrgOrgConnection.Id = orgOrgConnectionDto.Id.Value;
+        }
+        return newOrgOrgConnection;
+    }
+
+    public static IEnumerable<OrgOrgConnection> ToModel(this IEnumerable<OrgOrgConnectionDto?> orgOrgConnectionDtos)
+    {
+        return orgOrgConnectionDtos
+            .Where(c => c != null)
+            .Select(c => c!.ToModel()!)
+            .ToList();
+    }
+
     #endregion
 }
