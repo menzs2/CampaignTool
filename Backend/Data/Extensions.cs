@@ -324,7 +324,8 @@ public static class Extensions
             GmOnlyDescription = charCharConnection.GmOnlyDescription,
             GmOnly = charCharConnection.GmOnly,
             CharOneId = charCharConnection.CharOneId,
-            CharTwoId = charCharConnection.CharTwoId
+            CharTwoId = charCharConnection.CharTwoId,
+            ConnectionId = charCharConnection.ConnectionId,
         };
     }
     public static IEnumerable<CharCharConnectionDto> ToDto(this IEnumerable<CharCharConnection> charCharConnections)
@@ -345,7 +346,8 @@ public static class Extensions
             GmOnlyDescription = charCharConnectionDto.GmOnlyDescription,
             GmOnly = charCharConnectionDto.GmOnly,
             CharOneId = charCharConnectionDto.CharOneId,
-            CharTwoId = charCharConnectionDto.CharTwoId
+            CharTwoId = charCharConnectionDto.CharTwoId,
+            ConnectionId = charCharConnectionDto.ConnectionId
         };
         if (charCharConnectionDto.Id.HasValue)
         {

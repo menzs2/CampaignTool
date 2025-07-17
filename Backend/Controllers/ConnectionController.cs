@@ -1,5 +1,6 @@
 ﻿using Backend.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Shared;
 
 namespace Backend.Controllers;
@@ -129,7 +130,7 @@ public class ConnectionController : ControllerBase
     public IActionResult GetAll()
     {
         return _dbContext.CharCharConnections.Any()
-            ? Ok(_dbContext.CharCharConnections.ToDto())
+            ? Ok(_dbContext.CharCharConnections.Include(ch => ch.CharOne).Include(ch => ch.CharTwo).ToDto())
             : NotFound("No connections found.");
     }
 

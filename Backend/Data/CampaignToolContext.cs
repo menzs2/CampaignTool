@@ -97,7 +97,7 @@ public partial class CampaignToolContext : DbContext
             entity.HasOne(d => d.Campaign)
                 .WithMany(p => p.Characters)
                 .HasForeignKey(d => d.CampaignId)
-                .HasConstraintName("campaign_fkey");
+                .HasConstraintName("campaign_fkey").OnDelete(DeleteBehavior.Cascade);
         });
 
         // Connection

@@ -26,6 +26,8 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddDbContext<CampaignToolContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddScoped<CreateDefaultCampaign>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
@@ -38,5 +40,5 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
-
+//app.Services.CreateScope().ServiceProvider.GetRequiredService<CreateDefaultCampaign>().Execute();
 app.Run();
