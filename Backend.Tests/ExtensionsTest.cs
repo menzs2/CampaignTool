@@ -305,5 +305,90 @@ namespace Backend.Data.Tests
             Assert.Equal(user.Password, dto.Password);
             Assert.Equal(user.Role, dto.Role);
         }
+
+        [Fact]
+        public void CharCharConnection_ToDto_WithNullConnection_ReturnsNull()
+        {
+            // Arrange
+            CharCharConnection? connection = null;
+
+            // Act
+            var result = connection.ToDto();
+
+            // Assert
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void CharCharConnection_ToDto_WithValidConnection_ReturnsDtoWithSameValues()
+        {
+            // Arrange
+            var connection = new CharCharConnection
+            {
+                Id = 1,
+                Description = "A strong bond between characters.",
+                GmOnly = false,
+                GmOnlyDescription = "Visible only to GM",
+                CharOneId = 10,
+                CharTwoId = 20,
+                ConnectionId = 5
+            };
+
+            // Act
+            var dto = connection.ToDto();
+
+            // Assert
+            Assert.NotNull(dto);
+            Assert.Equal(connection.Id, dto.Id);
+            Assert.Equal(connection.Description, dto.Description);
+            Assert.Equal(connection.GmOnly, dto.GmOnly);
+            Assert.Equal(connection.GmOnlyDescription, dto.GmOnlyDescription);
+            Assert.Equal(connection.CharOneId, dto.CharOneId);
+            Assert.Equal(connection.CharTwoId, dto.CharTwoId);
+            Assert.Equal(connection.ConnectionId, dto.ConnectionId);
+        }
+
+        [Fact]
+       public void CharCharConnection_ToModel_WithNullDto_ReturnsNull()
+        {
+            // Arrange
+            CharCharConnectionDto? dto = null;
+
+            // Act
+            var result = dto.ToModel();
+
+            // Assert
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void CharCharConnection_ToModel_WithValidDto_ReturnsModelWithSameValues()
+        {
+            // Arrange
+            var dto = new CharCharConnectionDto
+            {
+                Id = 1,
+                Description = "A strong bond between characters.",
+                GmOnly = false,
+                GmOnlyDescription = "Visible only to GM",
+                CharOneId = 10,
+                CharTwoId = 20,
+                ConnectionId = 5
+            };
+
+            // Act
+            var model = dto.ToModel();
+
+            // Assert
+            Assert.NotNull(model);
+            Assert.Equal(dto.Id, model.Id);
+            Assert.Equal(dto.Description, model.Description);
+            Assert.Equal(dto.GmOnly, model.GmOnly);
+            Assert.Equal(dto.GmOnlyDescription, model.GmOnlyDescription);
+            Assert.Equal(dto.CharOneId, model.CharOneId);
+            Assert.Equal(dto.CharTwoId, model.CharTwoId);
+            Assert.Equal(dto.ConnectionId, model.ConnectionId);
+        }
+
     }
 }
