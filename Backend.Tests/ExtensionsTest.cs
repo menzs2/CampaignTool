@@ -117,7 +117,7 @@ namespace Backend.Data.Tests
             var character = new Character
             {
                 Id = 10,
-                CharacterName = "Hero",
+                Name = "Hero",
                 Description = "A brave hero",
                 CampaignId = 5,
                 PlayerId = 2,
@@ -130,7 +130,7 @@ namespace Backend.Data.Tests
             // Assert
             Assert.NotNull(dto);
             Assert.Equal(character.Id, dto.Id);
-            Assert.Equal(character.CharacterName, dto.CharacterName);
+            Assert.Equal(character.Name, dto.Name);
             Assert.Equal(character.Description, dto.Description);
             Assert.Equal(character.CampaignId, dto.CampaignId);
             Assert.Equal(character.PlayerId, dto.PlayerId);
@@ -158,7 +158,7 @@ namespace Backend.Data.Tests
             var organisation = new Organisation
             {
                 Id = 42,
-                OrganisationName = "Guild of Heroes",
+                Name = "Guild of Heroes",
                 DescriptionShort = "Short desc",
                 Description = "A guild for heroes.",
                 State = "Active",
@@ -173,7 +173,7 @@ namespace Backend.Data.Tests
             // Assert
             Assert.NotNull(dto);
             Assert.Equal(organisation.Id, dto.Id);
-            Assert.Equal(organisation.OrganisationName, dto.OrganisationName);
+            Assert.Equal(organisation.Name, dto.Name);
             Assert.Equal(organisation.DescriptionShort, dto.DescriptionShort);
             Assert.Equal(organisation.Description, dto.Description);
             Assert.Equal(organisation.State, dto.State);
