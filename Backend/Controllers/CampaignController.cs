@@ -1,4 +1,4 @@
-﻿using Backend.Data;
+﻿using Backend.Services;
 using Microsoft.AspNetCore.Mvc;
 using Shared;
 
@@ -8,20 +8,29 @@ namespace Backend.Controllers;
 [ApiController]
 public class CampaignController : ControllerBase
 {
-    private readonly CampaignToolContext _dbContext;
-    // Constructor to inject DbContext if needed
-    public CampaignController(CampaignToolContext dbContext)
+    private readonly CampaignService _campaignService;
+
+    public CampaignController(CampaignService campaignService)
     {
-        _dbContext = dbContext;
+        _campaignService = campaignService;
     }
+
     /// <summary>
     /// Gets all campaigns.
     /// </summary>
     [HttpGet]
     public IActionResult Get()
     {
-        var campaigns = _dbContext.Campaigns.ToDto().ToList();
-        return campaigns.Any() ? Ok(campaigns) : NotFound("No campaigns found.");
+        try
+        {
+            var campaigns = _campaignService.GetAllCampaigns();
+            return campaigns.Any() ? Ok(campaigns) : NotFound("No campaigns found.");
+        }
+        catch
+        {
+            // Log the exception (not implemented here)
+            return StatusCode(500, "Internal server error");
+        }
     }
 
     /// <summary>
@@ -30,8 +39,7 @@ public class CampaignController : ControllerBase
     [HttpGet("{id}")]
     public IActionResult Get(long id)
     {
-        var campaign = _dbContext.Campaigns
-            .Where(c => c.Id == id).FirstOrDefault()?.ToDto();
+        var campaign = _campaignService.GetCampaignById(id);
         return campaign != null ? Ok(campaign) : NotFound($"Campaign with ID {id} not found.");
     }
 
@@ -41,8 +49,7 @@ public class CampaignController : ControllerBase
     [HttpGet("gm/{gmId}")]
     public IActionResult GetByGmId(long gmId)
     {
-        var campaigns = _dbContext.Campaigns
-            .Where(c => c.Gm == gmId).ToDto().ToList();
+        var campaigns = _campaignService.GetCampaignsByGmId(gmId);
         return campaigns.Any() ? Ok(campaigns) : NotFound($"No campaigns found for GM with ID {gmId}.");
     }
 
@@ -53,19 +60,18 @@ public class CampaignController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] CampaignDto campaign)
     {
-        if (campaign == null)
+        try
         {
-            return BadRequest("Campaign data is null.");
+            var newCampaign = await _campaignService.AddCampaignAsync(campaign);
+            return CreatedAtAction(nameof(Get), new { id = newCampaign.Id }, newCampaign);
         }
-        var newCampaign = campaign.ToModel();
-        if (newCampaign == null)
+        catch
         {
-            return BadRequest("Invalid campaign data.");
+            // TODO: Log the exception.
+            return StatusCode(500, "Internal server error");
         }
-        _dbContext.Campaigns.Add(newCampaign);
-        await _dbContext.SaveChangesAsync();
-        return CreatedAtAction(nameof(Get), new { id = newCampaign.Id }, campaign);
     }
+
     /// <summary>
     /// Updates an existing campaign by its ID.
     /// </summary>
@@ -74,24 +80,16 @@ public class CampaignController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(long id, [FromBody] CampaignDto campaign)
     {
-        if (campaign == null || campaign.Id != id)
+        try
         {
-            return BadRequest("Campaign data is invalid.");
+            var updatedCampaign = await _campaignService.UpdateCampaignAsync(campaign);
+            return NoContent();
         }
-
-        var existingCampaign = await _dbContext.Campaigns.FindAsync(id);
-        if (existingCampaign == null)
+        catch
         {
-            return NotFound($"Campaign with ID {id} not found.");
+            // TODO: Log the exception.
+            return StatusCode(500, "Internal server error");
         }
-
-        existingCampaign.CampaignName = campaign.CampaignName;
-        existingCampaign.Description = campaign.Description;
-        existingCampaign.DescriptionShort = campaign.DescriptionShort;
-        existingCampaign.GmOnlyDescription = campaign.GmOnlyDescription;
-        existingCampaign.Gm = campaign.Gm;
-        await _dbContext.SaveChangesAsync();
-        return NoContent();
     }
 
     /// <summary>
@@ -101,14 +99,19 @@ public class CampaignController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(long id)
     {
-        var campaign = await _dbContext.Campaigns.FindAsync(id);
-        if (campaign == null)
+        try
+        {
+            await _campaignService.DeleteCampaignAsync(id);
+            return NoContent();
+        }
+        catch (KeyNotFoundException)
         {
             return NotFound($"Campaign with ID {id} not found.");
         }
-
-        _dbContext.Campaigns.Remove(campaign);
-        await _dbContext.SaveChangesAsync();
-        return NoContent();
+        catch
+        {
+            // TODO: Log the exception.
+            return StatusCode(500, "Internal server error");
+        }
     }
 }
