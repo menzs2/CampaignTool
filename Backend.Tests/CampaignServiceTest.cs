@@ -1,17 +1,12 @@
-using Xunit;
-using Backend.Controllers;
 using Backend.Data;
 using Backend.Models;
 using Shared;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
 using Backend.Services;
-using System.Threading.Tasks;
-
 
 namespace Backend.Tests
 {
-    public class CampaignControllerTest
+    public class CampaignServiceTest
     {
         private CampaignToolContext GetDbContextWithData(List<Campaign> campaigns)
         {
@@ -44,10 +39,10 @@ namespace Backend.Tests
                 new Campaign { Id = 2L, CampaignName = "C2", Gm = 2, DescriptionShort = "Short2" }
             };
             using var context = GetDbContextWithData(campaigns);
-            var controller = new CampaignService(context);
+            var service = new CampaignService(context);
 
             // Act
-            var result = await controller.GetAllCampaigns();
+            var result = await service.GetAllCampaigns();
             // Assert
             Assert.NotNull(result);
             Assert.Equal(2, result.Count());
@@ -57,9 +52,9 @@ namespace Backend.Tests
         public async Task Get_ReturnsNotFound_WhenNoCampaignsExist()
         {
             using var context = GetDbContextWithData(new List<Campaign>());
-            var controller = new CampaignService(context);
+            var service = new CampaignService(context);
 
-            var result = await controller.GetAllCampaigns();
+            var result = await service.GetAllCampaigns();
 
             Assert.Equal(0, result.Count());
         }
@@ -69,9 +64,9 @@ namespace Backend.Tests
         {
             var campaign = new Campaign { Id = 1L, CampaignName = "C1", Gm = 1, DescriptionShort = "Short1" };
             using var context = GetDbContextWithData(new List<Campaign> { campaign });
-            var controller = new CampaignService(context);
+            var service = new CampaignService(context);
 
-            var result = await controller.GetCampaignById(1);
+            var result = await service.GetCampaignById(1);
 
             Assert.NotNull(result);
             var returned = Assert.IsType<CampaignDto>(result);
@@ -82,9 +77,9 @@ namespace Backend.Tests
         public async Task Get_ById_ReturnsNotFound_WhenNotExists()
         {
             using var context = GetDbContextWithData(new List<Campaign>());
-            var controller = new CampaignService(context);
+            var service = new CampaignService(context);
 
-            var result = await controller.GetCampaignById(99);
+            var result = await service.GetCampaignById(99);
 
             Assert.Null(result);
         }
@@ -99,9 +94,9 @@ namespace Backend.Tests
                 new Campaign { Id = 3L, CampaignName = "C3", Gm = 2, DescriptionShort = "Short3" }
             };
             using var context = GetDbContextWithData(campaigns);
-            var controller = new CampaignService(context);
+            var service = new CampaignService(context);
 
-            var result = await controller.GetCampaignsByGmId(1);
+            var result = await service.GetCampaignsByGmId(1);
 
             var returned = Assert.IsType<List<CampaignDto>>(result);
             Assert.NotNull(returned);
@@ -116,9 +111,9 @@ namespace Backend.Tests
                 new Campaign { Id = 1L, CampaignName = "C1", Gm = 2, DescriptionShort = "Short1" }
             };
             using var context = GetDbContextWithData(campaigns);
-            var controller = new CampaignService(context);
+            var service = new CampaignService(context);
 
-            var result = await controller.GetCampaignsByGmId(99);
+            var result = await service.GetCampaignsByGmId(99);
 
             Assert.Empty(result);
         }
@@ -127,7 +122,7 @@ namespace Backend.Tests
         public async Task Post_CreatesCampaign_WhenValid()
         {
             using var context = GetDbContextWithData(new List<Campaign>());
-            var controller = new CampaignService(context);
+            var service = new CampaignService(context);
 
             var dto = new CampaignDto
             {
@@ -138,7 +133,7 @@ namespace Backend.Tests
                 Gm = 1
             };
 
-            var result = await controller.AddCampaignAsync(dto);
+            var result = await service.AddCampaignAsync(dto);
 
             var created = Assert.IsType<CampaignDto>(result);
             Assert.NotNull(context.Campaigns.FirstOrDefault(c => c.CampaignName == "New"));
@@ -148,11 +143,11 @@ namespace Backend.Tests
         public async Task Post_ReturnsBadRequest_WhenNull()
         {
             using var context = GetDbContextWithData(new List<Campaign>());
-            var controller = new CampaignService(context);
+            var service = new CampaignService(context);
 
             try
             {
-                var result = await controller.AddCampaignAsync(null);
+                var result = await service.AddCampaignAsync(null);
             }
             catch (ArgumentNullException)
             {
@@ -166,7 +161,7 @@ namespace Backend.Tests
         {
             var campaign = new Campaign { Id = 1L, CampaignName = "Old", Gm = 1, DescriptionShort = "Short1" };
             using var context = GetDbContextWithData(new List<Campaign> { campaign });
-            var controller = new CampaignService(context);
+            var service = new CampaignService(context);
             var dto = new CampaignDto
             {
                 Id = 1,
@@ -177,7 +172,7 @@ namespace Backend.Tests
                 Gm = 2
             };
 
-            var result = await controller.UpdateCampaignAsync(dto);
+            var result = await service.UpdateCampaignAsync(dto);
 
             var updatedCampaign = context.Campaigns.Find(1L);
             Assert.NotNull(updatedCampaign);
@@ -188,7 +183,7 @@ namespace Backend.Tests
         public async Task Put_ReturnsNotFound_WhenNotExists()
         {
             using var context = GetDbContextWithData(new List<Campaign>());
-            var controller = new CampaignService(context);
+            var service = new CampaignService(context);
 
             var dto = new CampaignDto
             {
@@ -199,7 +194,7 @@ namespace Backend.Tests
 
             try
             {
-                var result = await controller.UpdateCampaignAsync(dto);
+                var result = await service.UpdateCampaignAsync(dto);
             }
             catch (KeyNotFoundException)
             {
@@ -213,9 +208,9 @@ namespace Backend.Tests
         {
             var campaign = new Campaign { Id = 1L, CampaignName = "ToDelete", Gm = 1, DescriptionShort = "Short1" };
             using var context = GetDbContextWithData(new List<Campaign> { campaign });
-            var controller = new CampaignService(context);
+            var service = new CampaignService(context);
 
-            await controller.DeleteCampaignAsync(1);
+            await service.DeleteCampaignAsync(1);
 
             Assert.Null(context.Campaigns.Find(1L));
         }
@@ -224,10 +219,10 @@ namespace Backend.Tests
         public async Task Delete_ReturnsNotFound_WhenNotExists()
         {
             using var context = GetDbContextWithData(new List<Campaign>());
-            var controller = new CampaignService(context);
+            var service = new CampaignService(context);
             try
             {
-                await controller.DeleteCampaignAsync(1);
+                await service.DeleteCampaignAsync(1);
 
             }
             catch (KeyNotFoundException)
