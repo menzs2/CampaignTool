@@ -32,8 +32,18 @@ public class CharacterService
             .ToListAsync();
         return entities.ToDto();
     }
+    public async Task<CharacterDto> GetCharacterByName(string name)
+    {
+        var entity = await _context.Characters.FirstOrDefaultAsync(c => c.Name == name);
+        return entity?.ToDto();
+    }
 
-    public async Task<CharacterDto> AddCharacterAsync(CharacterDto characterDto)
+    public async Task<bool> CharacterExists(long id)
+    {
+        return await _context.Characters.AnyAsync(c => c.Id == id);
+    }
+
+    public async Task<CharacterDto> AddCharacterAsync(CharacterDto? characterDto)
     {
         if (characterDto == null)
         {
@@ -50,7 +60,7 @@ public class CharacterService
         return newCharacter.ToDto();
     }
 
-    public async Task<CharacterDto> UpdateCharacterAsync(CharacterDto characterDto)
+    public async Task<CharacterDto> UpdateCharacterAsync(CharacterDto? characterDto)
     {
         if (characterDto == null)
         {

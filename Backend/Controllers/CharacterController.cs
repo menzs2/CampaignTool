@@ -1,4 +1,5 @@
 ﻿using Backend.Data;
+using Backend.Services;
 using Microsoft.AspNetCore.Mvc;
 using Shared;
 
@@ -13,21 +14,30 @@ namespace Backend.Controllers;
 public class CharacterController : ControllerBase
 {
     private readonly CampaignToolContext _dbContext;
+    private readonly CharacterService _characterService;
 
-    public CharacterController(CampaignToolContext campaignToolContext)
+    public CharacterController(CampaignToolContext campaignToolContext, CharacterService characterService)
     {
         _dbContext = campaignToolContext;
+        _characterService = characterService;
     }
 
     /// <summary>
     /// Retrieves all characters.   
     /// </summary>
     [HttpGet]
-    public IActionResult Get()
+    public async Task<IActionResult> Get()
     {
-        return _dbContext.Characters.Any()
-            ? Ok(_dbContext.Characters.ToDto())
-            : NotFound("No characters found.");
+        try
+        {
+            var characters = await _characterService.GetAllCharacters();
+            return characters.Any() ? Ok(characters) : NotFound("No characters found.");
+        }
+        catch (Exception ex)
+        {
+            // TODO: Log the exception (ex) here
+            return StatusCode(500, "Internal server error");
+        }   
     }
 
     /// <summary>
@@ -35,10 +45,18 @@ public class CharacterController : ControllerBase
     /// </summary>
     /// <param name="id">The ID of the character to retrieve.</param>
     [HttpGet("{id}")]
-    public IActionResult Get(long id)
+    public async Task<IActionResult> Get(long id)
     {
-        var character = _dbContext.Characters.FirstOrDefault(c => c.Id == id)?.ToDto();
-        return character == null ? NotFound($"Character with ID {id} not found.") : Ok(character);
+        try
+        {
+            var character = await _characterService.GetCharacterById(id);
+            return character == null ? NotFound($"Character with ID {id} not found.") : Ok(character);
+        }
+        catch (Exception ex)
+        {
+            // Log the exception (ex) here
+            return StatusCode(500, "Internal server error");
+        }
     }
 
     /// <summary>
@@ -46,10 +64,18 @@ public class CharacterController : ControllerBase
     /// </summary>
     /// <param name="campaignId">The ID of the campaign to retrieve characters for.</param>
     [HttpGet("campaign/{campaignId}")]
-    public IActionResult GetByCampaign(long campaignId)
+    public async Task<IActionResult> GetByCampaign(long campaignId)
     {
-        var characters = _dbContext.Characters.Where(c => c.CampaignId == campaignId)?.ToDto();
-        return characters != null && characters.Any() ? Ok(characters) : NotFound($"No characters found for campaign ID {campaignId}.");
+        try
+        {
+            var characters = await _characterService.GetCharactersByCampaignId(campaignId);
+            return characters != null && characters.Any() ? Ok(characters) : NotFound($"No characters found for campaign ID {campaignId}.");
+        }
+        catch (Exception ex)
+        {
+            // TODO: Log the exception (ex) here
+            return StatusCode(500, "Internal server error");
+        }
     }
 
     /// <summary>
