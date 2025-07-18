@@ -25,10 +25,31 @@ builder.Services.AddSwaggerGen(c =>
 // Configure EF Core with PostgreSQL
 builder.Services.AddDbContext<CampaignToolContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 builder.Services.AddScoped<CreateDefaultCampaign>();
 
 var app = builder.Build();
+
+// Apply migrations at startup
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<CampaignToolContext>();
+    if (dbContext.Database.EnsureCreated())
+    {
+        // If the database is created, we can seed it with default data
+        // Ensure the database is created and truncate tables if they exist 
+        app.Services.CreateScope().ServiceProvider.GetRequiredService<CreateDefaultCampaign>().Execute();
+
+    }
+    else if (!dbContext.Database.GetPendingMigrations().Any())
+    {
+        // If the database is created but no migrations are pending, we can still ensure it's up to date
+        dbContext.Database.Migrate();
+    }
+    else if (dbContext.Database.GetPendingMigrations().Any())
+    {
+        dbContext.Database.Migrate();
+    }
+}
 
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
