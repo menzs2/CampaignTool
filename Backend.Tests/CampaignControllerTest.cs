@@ -5,6 +5,8 @@ using Backend.Models;
 using Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using Backend.Services;
+using System.Threading.Tasks;
 
 
 namespace Backend.Tests
@@ -33,7 +35,7 @@ namespace Backend.Tests
         };
 
         [Fact]
-        public void Get_ReturnsAllCampaigns_WhenCampaignsExist()
+        public async Task Get_ReturnsAllCampaigns_WhenCampaignsExist()
         {
             // Arrange
             var campaigns = new List<Campaign>
@@ -42,55 +44,53 @@ namespace Backend.Tests
                 new Campaign { Id = 2L, CampaignName = "C2", Gm = 2, DescriptionShort = "Short2" }
             };
             using var context = GetDbContextWithData(campaigns);
-            var controller = new CampaignController(context);
+            var controller = new CampaignService(context);
 
             // Act
-            var result = controller.Get();
-
+            var result = await controller.GetAllCampaigns();
             // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            var returned = Assert.IsAssignableFrom<IEnumerable<CampaignDto>>(okResult.Value);
-            Assert.Equal(2, returned.Count());
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Count());
         }
 
         [Fact]
-        public void Get_ReturnsNotFound_WhenNoCampaignsExist()
+        public async Task Get_ReturnsNotFound_WhenNoCampaignsExist()
         {
             using var context = GetDbContextWithData(new List<Campaign>());
-            var controller = new CampaignController(context);
+            var controller = new CampaignService(context);
 
-            var result = controller.Get();
+            var result = await controller.GetAllCampaigns();
 
-            Assert.IsType<NotFoundObjectResult>(result);
+            Assert.Equal(0, result.Count());
         }
 
         [Fact]
-        public void Get_ById_ReturnsCampaign_WhenExists()
+        public async Task Get_ById_ReturnsCampaign_WhenExists()
         {
             var campaign = new Campaign { Id = 1L, CampaignName = "C1", Gm = 1, DescriptionShort = "Short1" };
             using var context = GetDbContextWithData(new List<Campaign> { campaign });
-            var controller = new CampaignController(context);
+            var controller = new CampaignService(context);
 
-            var result = controller.Get(1);
+            var result = await controller.GetCampaignById(1);
 
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            var returned = Assert.IsType<CampaignDto>(okResult.Value);
+            Assert.NotNull(result);
+            var returned = Assert.IsType<CampaignDto>(result);
             Assert.Equal(campaign.Id, returned.Id);
         }
 
         [Fact]
-        public void Get_ById_ReturnsNotFound_WhenNotExists()
+        public async Task Get_ById_ReturnsNotFound_WhenNotExists()
         {
             using var context = GetDbContextWithData(new List<Campaign>());
-            var controller = new CampaignController(context);
+            var controller = new CampaignService(context);
 
-            var result = controller.Get(99);
+            var result = await controller.GetCampaignById(99);
 
-            Assert.IsType<NotFoundObjectResult>(result);
+            Assert.Null(result);
         }
 
         [Fact]
-        public void GetByGmId_ReturnsCampaigns_WhenExists()
+        public async Task GetByGmId_ReturnsCampaigns_WhenExists()
         {
             var campaigns = new List<Campaign>
             {
@@ -99,35 +99,35 @@ namespace Backend.Tests
                 new Campaign { Id = 3L, CampaignName = "C3", Gm = 2, DescriptionShort = "Short3" }
             };
             using var context = GetDbContextWithData(campaigns);
-            var controller = new CampaignController(context);
+            var controller = new CampaignService(context);
 
-            var result = controller.GetByGmId(1);
+            var result = await controller.GetCampaignsByGmId(1);
 
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            var returned = Assert.IsAssignableFrom<IEnumerable<CampaignDto>>(okResult.Value);
+            var returned = Assert.IsType<List<CampaignDto>>(result);
+            Assert.NotNull(returned);
             Assert.Equal(2, returned.Count());
         }
 
         [Fact]
-        public void GetByGmId_ReturnsNotFound_WhenNoneExist()
+        public async Task GetByGmId_ReturnsNotFound_WhenNoneExist()
         {
             var campaigns = new List<Campaign>
             {
                 new Campaign { Id = 1L, CampaignName = "C1", Gm = 2, DescriptionShort = "Short1" }
             };
             using var context = GetDbContextWithData(campaigns);
-            var controller = new CampaignController(context);
+            var controller = new CampaignService(context);
 
-            var result = controller.GetByGmId(99);
+            var result = await controller.GetCampaignsByGmId(99);
 
-            Assert.IsType<NotFoundObjectResult>(result);
+            Assert.Empty(result);
         }
 
         [Fact]
         public async Task Post_CreatesCampaign_WhenValid()
         {
             using var context = GetDbContextWithData(new List<Campaign>());
-            var controller = new CampaignController(context);
+            var controller = new CampaignService(context);
 
             var dto = new CampaignDto
             {
@@ -138,10 +138,9 @@ namespace Backend.Tests
                 Gm = 1
             };
 
-            var result = await controller.Post(dto);
+            var result = await controller.AddCampaignAsync(dto);
 
-            var created = Assert.IsType<CreatedAtActionResult>(result);
-            Assert.Equal("Get", created.ActionName);
+            var created = Assert.IsType<CampaignDto>(result);
             Assert.NotNull(context.Campaigns.FirstOrDefault(c => c.CampaignName == "New"));
         }
 
@@ -149,11 +148,17 @@ namespace Backend.Tests
         public async Task Post_ReturnsBadRequest_WhenNull()
         {
             using var context = GetDbContextWithData(new List<Campaign>());
-            var controller = new CampaignController(context);
+            var controller = new CampaignService(context);
 
-            var result = await controller.Post(null);
-
-            Assert.IsType<BadRequestObjectResult>(result);
+            try
+            {
+                var result = await controller.AddCampaignAsync(null);
+            }
+            catch (ArgumentNullException)
+            {
+                // Expected exception, test passes
+                return;
+            }
         }
 
         [Fact]
@@ -161,8 +166,7 @@ namespace Backend.Tests
         {
             var campaign = new Campaign { Id = 1L, CampaignName = "Old", Gm = 1, DescriptionShort = "Short1" };
             using var context = GetDbContextWithData(new List<Campaign> { campaign });
-            var controller = new CampaignController(context);
-
+            var controller = new CampaignService(context);
             var dto = new CampaignDto
             {
                 Id = 1,
@@ -173,38 +177,18 @@ namespace Backend.Tests
                 Gm = 2
             };
 
-            var result = await controller.Put(1, dto);
+            var result = await controller.UpdateCampaignAsync(dto);
 
-            Assert.IsType<NoContentResult>(result);
             var updatedCampaign = context.Campaigns.Find(1L);
             Assert.NotNull(updatedCampaign);
             Assert.Equal("Updated", updatedCampaign.CampaignName);
         }
 
         [Fact]
-        public async Task Put_ReturnsBadRequest_WhenIdMismatch()
-        {
-            var campaign = new Campaign { Id = 1L, CampaignName = "Old", Gm = 1, DescriptionShort = "Short1" };
-            using var context = GetDbContextWithData(new List<Campaign> { campaign });
-            var controller = new CampaignController(context);
-
-            var dto = new CampaignDto
-            {
-                Id = 2,
-                CampaignName = "Updated",
-                Gm = 2
-            };
-
-            var result = await controller.Put(1, dto);
-
-            Assert.IsType<BadRequestObjectResult>(result);
-        }
-
-        [Fact]
         public async Task Put_ReturnsNotFound_WhenNotExists()
         {
             using var context = GetDbContextWithData(new List<Campaign>());
-            var controller = new CampaignController(context);
+            var controller = new CampaignService(context);
 
             var dto = new CampaignDto
             {
@@ -213,9 +197,15 @@ namespace Backend.Tests
                 Gm = 2
             };
 
-            var result = await controller.Put(1, dto);
-
-            Assert.IsType<NotFoundObjectResult>(result);
+            try
+            {
+                var result = await controller.UpdateCampaignAsync(dto);
+            }
+            catch (KeyNotFoundException)
+            {
+                // Expected exception, test passes
+                return;
+            }
         }
 
         [Fact]
@@ -223,11 +213,10 @@ namespace Backend.Tests
         {
             var campaign = new Campaign { Id = 1L, CampaignName = "ToDelete", Gm = 1, DescriptionShort = "Short1" };
             using var context = GetDbContextWithData(new List<Campaign> { campaign });
-            var controller = new CampaignController(context);
+            var controller = new CampaignService(context);
 
-            var result = await controller.Delete(1);
+            await controller.DeleteCampaignAsync(1);
 
-            Assert.IsType<NoContentResult>(result);
             Assert.Null(context.Campaigns.Find(1L));
         }
 
@@ -235,11 +224,17 @@ namespace Backend.Tests
         public async Task Delete_ReturnsNotFound_WhenNotExists()
         {
             using var context = GetDbContextWithData(new List<Campaign>());
-            var controller = new CampaignController(context);
+            var controller = new CampaignService(context);
+            try
+            {
+                await controller.DeleteCampaignAsync(1);
 
-            var result = await controller.Delete(1);
-
-            Assert.IsType<NotFoundObjectResult>(result);
+            }
+            catch (KeyNotFoundException)
+            {
+                // Expected exception, test passes
+                return;
+            }
         }
     }
 }

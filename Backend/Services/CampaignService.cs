@@ -1,5 +1,6 @@
 ﻿using Backend.Data;
 using Shared;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Services;
 
@@ -12,24 +13,26 @@ public class CampaignService
         DbContext = dbContext;
     }
 
-    public IEnumerable<CampaignDto> GetAllCampaigns()
+    public async Task<IEnumerable<CampaignDto>> GetAllCampaigns()
     {
-        return DbContext.Campaigns.ToDto().ToList();
+        var campaigns = await DbContext.Campaigns.ToListAsync();
+        return campaigns.ToDto();
     }
 
-    public CampaignDto? GetCampaignById(long id)
+    public async Task<CampaignDto?> GetCampaignById(long id)
     {
-        return DbContext.Campaigns
-            .Where(c => c.Id == id).FirstOrDefault()?.ToDto();
+        var campaign = await DbContext.Campaigns.FindAsync(id);
+        return campaign?.ToDto();
     }
 
-    public IEnumerable<CampaignDto> GetCampaignsByGmId(long gmId)
+    public async Task<IEnumerable<CampaignDto>> GetCampaignsByGmId(long gmId)
     {
-        return DbContext.Campaigns
-            .Where(c => c.Gm == gmId).ToDto().ToList();
+        var campaigns = await DbContext.Campaigns
+            .Where(c => c.Gm == gmId).ToListAsync();
+        return campaigns.ToDto();
     }
 
-    public async Task<CampaignDto> AddCampaignAsync(CampaignDto campaignDto)
+    public async Task<CampaignDto> AddCampaignAsync(CampaignDto? campaignDto)
     {
         if (campaignDto == null)
         {
@@ -46,7 +49,7 @@ public class CampaignService
         return newCampaign.ToDto();
     }
 
-    public async Task<CampaignDto> UpdateCampaignAsync(CampaignDto campaignDto)
+    public async Task<CampaignDto> UpdateCampaignAsync(CampaignDto? campaignDto)
     {
         if (campaignDto == null)
         {
