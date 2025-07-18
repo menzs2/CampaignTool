@@ -30,7 +30,7 @@ builder.Services.AddScoped<CreateDefaultCampaign>();
 
 // Register the Services
 builder.Services.AddScoped<CampaignService>();
-
+builder.Services.AddScoped<CharacterService>();
 
 var app = builder.Build();
 
