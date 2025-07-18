@@ -16,7 +16,7 @@ public class CreateDefaultCampaign
     {
         _dbContext.Database.EnsureCreated();
         //truncate the database tables if they exist
-        _dbContext.Database.ExecuteSqlRaw("TRUNCATE TABLE campaign, connection, \"user\", character, char_char_connection RESTART IDENTITY CASCADE");
+        _dbContext.Database.ExecuteSqlRaw("TRUNCATE TABLE campaign, connection, \"user\", character, char_char_connection, char_organisation_connection RESTART IDENTITY CASCADE");
         _dbContext.SaveChanges();
         // Create default users, campaigns, and connections if they do not exist
         CreateDefaultUsers();
@@ -180,8 +180,23 @@ public class CreateDefaultCampaign
                     GmOnlyDescription = "GM only info for rival organization connection.",
                     GmOnly = false,
                     CampaignId = 1, // Assuming the first campaign is the default one
+                },
+                new Connection
+                {
+                    ConnectionName = "Member",
+                    Description = "The Characters is part of the organization.",
+                    GmOnlyDescription = "GM only info for member of the same organization connection.",
+                    GmOnly = false,
+                    CampaignId = 1, // Assuming the first campaign is the default one
+                },
+                new Connection
+                {
+                    ConnectionName = "Love Interest",
+                    Description = "The Characters have a romantic relationship.",
+                    GmOnlyDescription = "GM only info for love interest connection.",
+                    GmOnly = false,
+                    CampaignId = 1, // Assuming the first campaign is the default one
                 }
-
             };
 
             _dbContext.Connections.AddRange(connections);
