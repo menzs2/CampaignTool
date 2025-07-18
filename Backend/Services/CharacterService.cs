@@ -38,6 +38,23 @@ public class CharacterService
         return entity?.ToDto();
     }
 
+    public async Task<IEnumerable<CharacterDto>> GetConnectedCharacters(long characterId)
+    {
+        var connections = await _context.CharCharConnections
+            .Where(cc => cc.CharOneId == characterId || cc.CharTwoId == characterId)
+            .ToListAsync();
+
+        var connectedCharacterIds = connections.SelectMany(cc => new[] { cc.CharOneId, cc.CharTwoId })
+            .Where(id => id != characterId)
+            .Distinct();
+
+        var connectedCharacters = await _context.Characters
+            .Where(c => connectedCharacterIds.Contains(c.Id))
+            .ToListAsync();
+       
+        return connectedCharacters.ToDto();
+    }
+
     public async Task<bool> CharacterExists(long id)
     {
         return await _context.Characters.AnyAsync(c => c.Id == id);
