@@ -1,4 +1,5 @@
 using Backend.Data;
+using Backend.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -26,6 +27,10 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddDbContext<CampaignToolContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<CreateDefaultCampaign>();
+
+// Register the Services
+builder.Services.AddScoped<CampaignService>();
+
 
 var app = builder.Build();
 
