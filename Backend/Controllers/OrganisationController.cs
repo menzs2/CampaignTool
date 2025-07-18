@@ -101,7 +101,7 @@ public class OrganisationController : ControllerBase
             return NotFound($"Organisation with ID {id} not found.");
         }
 
-        existingOrganisation.OrganisationName = organisation.OrganisationName;
+        existingOrganisation.Name = organisation.Name;
         existingOrganisation.Description = organisation.Description;
         existingOrganisation.GmOnlyDescription = organisation.GmOnlyDescription;
         existingOrganisation.GmOnly = organisation.GmOnly;

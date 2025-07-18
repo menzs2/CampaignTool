@@ -105,7 +105,7 @@ public class CharacterController : ControllerBase
             return NotFound($"Character with ID {id} not found.");
         }
 
-        existingCharacter.CharacterName = character.CharacterName;
+        existingCharacter.Name = character.Name;
         existingCharacter.Description = character.Description;
         existingCharacter.CampaignId = character.CampaignId;
 

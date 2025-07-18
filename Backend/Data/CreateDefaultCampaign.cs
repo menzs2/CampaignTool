@@ -197,35 +197,35 @@ public class CreateDefaultCampaign
             {
                 new Character
                 {
-                    CharacterName = "Lord Willowdale",
+                    Name = "Lord Willowdale",
                     DescriptionShort = "Minor noble with a penchant for occultism.",
                     CampaignId = 1, // Assuming the first campaign is the default one
                     PlayerId = 2 // Assuming the second user is the owner
                 },
                 new Character
                 {
-                    CharacterName = "Michael Jaeger",
+                    Name = "Michael Jaeger",
                     DescriptionShort = "A Witcher in training.",
                     CampaignId = 1, // Assuming the first campaign is the default one
                     PlayerId = 3 // Assuming the third user is the owner
                 },
                 new Character
                 {
-                    CharacterName = "Anne",
+                    Name = "Anne",
                     DescriptionShort = "A young women with mysterious powers. Twin sister of Antonia.",
                     CampaignId = 1, // Assuming the first campaign is the default one
                     PlayerId = 4 // Assuming the fourth user is the owner
                 },
                 new Character
                 {
-                    CharacterName = "Antonia",
+                    Name = "Antonia",
                     DescriptionShort = "A young women, dressing as a paper boy. Twin sister of Anne.",
                     CampaignId = 1, // Assuming the first campaign is the default one
                     PlayerId = 5 // Assuming the fifth user is the owner
                 },
                 new Character
                 {
-                    CharacterName = "Sister Agnes",
+                    Name = "Sister Agnes",
                     DescriptionShort = "A stern nun from Silesia.",
                     CampaignId = 1, // Assuming the first campaign is the default one
                     PlayerId = 6 // Assuming the sixth user is the owner
@@ -244,63 +244,63 @@ public class CreateDefaultCampaign
             {
                 new Character
                 {
-                    CharacterName = "Howard",
+                    Name = "Howard",
                     DescriptionShort = "the coachman of Lord Willowdale.",
                     CampaignId = 1, // Assuming the first campaign is the default one
                     PlayerId = 1 // Assuming the first user is the owner
                 },
                 new Character
                 {
-                    CharacterName = "Mary",
+                    Name = "Mary",
                     DescriptionShort = "Foster mother of Anne and Antonia.",
                     CampaignId = 1, // Assuming the first campaign is the default one
                     PlayerId = 1 // Assuming the first user is the owner
                 },
                 new Character
                 {
-                    CharacterName = "Elydion",
+                    Name = "Elydion",
                     DescriptionShort = "A demon and father of Anne and Antonia.",
                     CampaignId = 1, // Assuming the first campaign is the default one
                     PlayerId = 1 // Assuming the first user is the owner
                 },
                 new Character
                 {
-                    CharacterName = "Mary",
+                    Name = "Mary",
                     DescriptionShort = "Foster Mother of Anne and Antonia. Owner of a pub in London.",
                     CampaignId = 1, // Assuming the first campaign is the default one
                     PlayerId = 1 // Assuming the first user is the owner
                 },
                 new Character
                 {
-                    CharacterName = "Father Sheamus",
+                    Name = "Father Sheamus",
                     DescriptionShort = "A priest in London and friend of the PCs.",
                     CampaignId = 1, // Assuming the first campaign is the default one
                     PlayerId = 1 // Assuming the first user is the owner
                 },
                 new Character
                 {
-                    CharacterName = "The Apple Lady",
+                    Name = "The Apple Lady",
                     DescriptionShort = "A powerful Fae from the Summer Court.",
                     CampaignId = 1, // Assuming the first campaign is the default one
                     PlayerId = 1 // Assuming the first user is the owner
                 },
                 new Character
                 {
-                    CharacterName = "Sister Walpurga",
+                    Name = "Sister Walpurga",
                     DescriptionShort = "A amazonian nun and blacksmith.",
                     CampaignId = 1, // Assuming the first campaign is the default one
                     PlayerId = 1 // Assuming the first user is the owner
                 },
                 new Character
                 {
-                    CharacterName = "Gwydion",
+                    Name = "Gwydion",
                     DescriptionShort = "An angel and friend.",
                     CampaignId = 1, // Assuming the first campaign is the default one
                     PlayerId = 1 // Assuming the first user is the owner
                 },
                 new Character
                 {
-                    CharacterName = "Death",
+                    Name = "Death",
                     DescriptionShort = "The grim reaper. Sister Agnes is bound to him.",
                     CampaignId = 1, // Assuming the first campaign is the default one
                     PlayerId = 1 // Assuming the first user is the owner

@@ -87,7 +87,7 @@ public partial class CampaignToolContext : DbContext
             entity.HasKey(e => e.Id).HasName("character_pkey");
             entity.ToTable("character");
             entity.Property(e => e.Id).UseIdentityAlwaysColumn();
-            entity.Property(e => e.CharacterName).HasMaxLength(300);
+            entity.Property(e => e.Name).HasMaxLength(300);
             entity.Property(e => e.Description).HasColumnType("character varying");
             entity.Property(e => e.DescriptionShort).HasMaxLength(200);
             entity.Property(e => e.GmOnly).HasDefaultValue(true);
@@ -127,7 +127,7 @@ public partial class CampaignToolContext : DbContext
             entity.Property(e => e.DescriptionShort).HasMaxLength(200);
             entity.Property(e => e.GmOnly).HasDefaultValue(true);
             entity.Property(e => e.GmOnlyDescription).HasColumnType("character varying");
-            entity.Property(e => e.OrganisationName).HasMaxLength(300);
+            entity.Property(e => e.Name).HasMaxLength(300);
             entity.Property(e => e.State).HasMaxLength(200);
 
             entity.HasOne(d => d.Campaign)
@@ -198,7 +198,7 @@ public partial class CampaignToolContext : DbContext
             entity.ToTable("org_org_connection");
             entity.Property(e => e.Id).UseIdentityAlwaysColumn();
             entity.Property(e => e.OrgOneId).IsRequired();
-            entity.Property(e => e.OrgTwoId ).IsRequired();
+            entity.Property(e => e.OrgTwoId).IsRequired();
 
             entity.HasOne(d => d.OrgOne)
                 .WithMany(p => p.OrgOrgConnectionOrgOnes)

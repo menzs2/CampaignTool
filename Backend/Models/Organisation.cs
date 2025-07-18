@@ -5,37 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Backend.Models;
 
 [Table("organisation")]
-public partial class Organisation
+public partial class Organisation : BaseEntity
 {
-    [Key]
-    [Column("id")]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public long Id { get; set; }
-
-    [Column("organisation_name")]
-    [StringLength(200)]
-    [Required]
-    public string OrganisationName { get; set; } = null!;
-
-    [Column("description_short")]
-    [StringLength(200)]
-    public string DescriptionShort { get; set; } = null!;
-
-    [Column("description")]
-    public string? Description { get; set; }
-
-    [Column("state")]
-    [StringLength(200)]
-    public string? State { get; set; }
-
-    [Column("campaign_id")]
-    public long? CampaignId { get; set; }
-
-    [Column("gm_only")]
-    public bool GmOnly { get; set; }
-
-    [Column("gm_only_description")]
-    public string? GmOnlyDescription { get; set; }
 
     [ForeignKey("CampaignId")]
     [InverseProperty("Organisations")]
@@ -51,4 +22,5 @@ public partial class Organisation
     public virtual ICollection<OrgOrgConnection> OrgOrgConnectionOrgTwos { get; set; } = new List<OrgOrgConnection>();
 
     [NotMapped]
-    public long[]? CharIds => CharOrgConnections?.Select(c => c.CharId).ToArray();}
+    public long[]? CharIds => CharOrgConnections?.Select(c => c.CharId).ToArray();
+}

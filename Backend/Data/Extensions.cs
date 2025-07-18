@@ -65,11 +65,13 @@ public static class Extensions
         return new CharacterDto
         {
             Id = character.Id,
-            CharacterName = character.CharacterName,
+            Name = character.Name,
             Description = character.Description,
             CampaignId = character.CampaignId,
             PlayerId = character.PlayerId,
             DescriptionShort = character.DescriptionShort,
+            GmOnly = character.GmOnly,
+            GmOnlyDescription = character.GmOnlyDescription
         };
     }
 
@@ -86,11 +88,13 @@ public static class Extensions
         if (characterDto == null) return null;
         var newCharacter = new Character
         {
-            CharacterName = characterDto.CharacterName,
+            Name = characterDto.Name,
             Description = characterDto.Description,
             CampaignId = characterDto.CampaignId,
             PlayerId = characterDto.PlayerId,
             DescriptionShort = characterDto.DescriptionShort,
+            GmOnly = characterDto.GmOnly,
+            GmOnlyDescription = characterDto.GmOnlyDescription
         };
         if (characterDto.Id.HasValue)
         {
@@ -118,7 +122,7 @@ public static class Extensions
         return new OrganisationDto
         {
             Id = organisation.Id,
-            OrganisationName = organisation.OrganisationName,
+            Name = organisation.Name,
             DescriptionShort = organisation.DescriptionShort,
             Description = organisation.Description,
             State = organisation.State,
@@ -141,7 +145,7 @@ public static class Extensions
         if (organisationDto == null) return null;
         var newOrganisation = new Organisation
         {
-            OrganisationName = organisationDto.OrganisationName,
+            Name = organisationDto.Name,
             DescriptionShort = organisationDto.DescriptionShort,
             Description = organisationDto.Description,
             State = organisationDto.State,
