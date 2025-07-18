@@ -19,6 +19,9 @@ public partial class CampaignToolContext : DbContext
     public virtual DbSet<CharCharConnection> CharCharConnections { get; set; }
 
     public virtual DbSet<CharOrgConnection> CharOrgConnections { get; set; }
+
+    public virtual DbSet<OrgOrgConnection> OrgOrgConnections { get; set; }
+    
     public virtual DbSet<Character> Characters { get; set; }
 
     public virtual DbSet<Connection> Connections { get; set; }
