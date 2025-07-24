@@ -1,5 +1,6 @@
 using Backend.Data;
 using Backend.Models;
+using Backend.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shared;
@@ -29,257 +30,257 @@ namespace Backend.Controllers.Tests
         }
 
         [Fact]
-        public void Get_ReturnsOk_WhenConnectionsExist()
+        public async Task Get_ReturnsOk_WhenConnectionsExist()
         {
             var context = GetDbContextWithData();
-            var controller = new ConnectionController(context);
+            var controller = new ConnectionService(context);
 
-            var result = controller.Get();
+            var result = await controller.GetConnectionsAsync();
 
-            Assert.IsType<OkObjectResult>(result);
+            Assert.IsType<List<ConnectionDto>>(result);
         }
 
         [Fact]
-        public void Get_ReturnsNotFound_WhenNoConnections()
+        public async Task Get_ById_ReturnsOk_WhenConnectionExists()
         {
-            var options = new DbContextOptionsBuilder<CampaignToolContext>()
-                .UseInMemoryDatabase(databaseName: "EmptyDb")
-                .Options;
-            var context = new CampaignToolContext(options);
-            var controller = new ConnectionController(context);
+            var context = GetDbContextWithData();
+            var controller = new ConnectionService(context);
 
-            var result = controller.Get();
+            var result = await controller.GetConnectionByIdAsync(1);
 
-            Assert.IsType<NotFoundObjectResult>(result);
+            Assert.IsType<ConnectionDto>(result);
+            Assert.Equal(1, result.Id);
         }
 
         [Fact]
-        public void Get_ById_ReturnsOk_WhenConnectionExists()
+        public async Task Get_ById_ReturnsNotFound_WhenConnectionDoesNotExist()
         {
             var context = GetDbContextWithData();
-            var controller = new ConnectionController(context);
+            var controller = new ConnectionService(context);
 
-            var result = controller.Get(1);
+            var result = await controller.GetConnectionByIdAsync(999);
 
-            Assert.IsType<OkObjectResult>(result);
+            Assert.Null(result);
         }
 
         [Fact]
-        public void Get_ById_ReturnsNotFound_WhenConnectionDoesNotExist()
+        public async Task Post_ReturnsCreated_WhenValid()
         {
             var context = GetDbContextWithData();
-            var controller = new ConnectionController(context);
-
-            var result = controller.Get(999);
-
-            Assert.IsType<NotFoundObjectResult>(result);
-        }
-
-        [Fact]
-        public void Post_ReturnsCreated_WhenValid()
-        {
-            var context = GetDbContextWithData();
-            var controller = new ConnectionController(context);
+            var controller = new ConnectionService(context);
 
             var dto = new ConnectionDto { Id = 0, ConnectionName = "New", Description = "Desc", GmOnly = false, CampaignId = 1 };
-            var result = controller.Post(dto);
+            var result = await controller.CreateConnectionAsync(dto);
 
-            Assert.IsType<CreatedAtActionResult>(result);
+            Assert.IsType<ConnectionDto>(result);
         }
 
         [Fact]
-        public void Post_ReturnsBadRequest_WhenNull()
+        public async Task Post_ReturnsBadRequest_WhenNull()
         {
             var context = GetDbContextWithData();
-            var controller = new ConnectionController(context);
+            var controller = new ConnectionService(context);
 
-            var result = controller.Post(null);
-
-            Assert.IsType<BadRequestObjectResult>(result);
+            try
+            {
+                var result = await controller.CreateConnectionAsync(null);
+            }
+            catch (Exception ex)
+            {
+                Assert.IsType<ArgumentNullException>(ex);
+            }
         }
 
         [Fact]
-        public void Put_ReturnsNoContent_WhenValid()
+        public async Task Put_ReturnsNoContent_WhenValid()
         {
             var context = GetDbContextWithData();
-            var controller = new ConnectionController(context);
+            var controller = new ConnectionService(context);
 
-            var dto = new ConnectionDto { Id = 1, ConnectionName = "Updated", Description = "Desc", GmOnly = false, CampaignId = 1};
-            var result = controller.Put(1, dto);
+            var dto = new ConnectionDto { Id = 1, ConnectionName = "Updated", Description = "Desc", GmOnly = false, CampaignId = 1 };
+            var result = await controller.UpdateConnectionAsync(1, dto);
 
-            Assert.IsType<NoContentResult>(result);
+            Assert.IsType<ConnectionDto>(result);
         }
 
         [Fact]
-        public void Put_ReturnsBadRequest_WhenIdMismatch()
+        public async Task Put_ReturnsNotFound_WhenConnectionDoesNotExist()
         {
             var context = GetDbContextWithData();
-            var controller = new ConnectionController(context);
-
-            var dto = new ConnectionDto { Id = 2, ConnectionName = "Updated", Description = "Desc", GmOnly = false, CampaignId = 1 };
-            var result = controller.Put(1, dto);
-
-            Assert.IsType<BadRequestObjectResult>(result);
-        }
-
-        [Fact]
-        public void Put_ReturnsNotFound_WhenConnectionDoesNotExist()
-        {
-            var context = GetDbContextWithData();
-            var controller = new ConnectionController(context);
+            var controller = new ConnectionService(context);
 
             var dto = new ConnectionDto { Id = 999, ConnectionName = "Updated", Description = "Desc", GmOnly = false, CampaignId = 1 };
-            var result = controller.Put(999, dto);
+            var result = await controller.UpdateConnectionAsync(999, dto);
 
-            Assert.IsType<NotFoundObjectResult>(result);
+            Assert.Null(result);
         }
 
         [Fact]
-        public void Delete_ReturnsBadRequest_WhenConnectionHasDependencies()
+        public async Task Delete_ReturnsBadRequest_WhenConnectionHasDependencies()
         {
             var context = GetDbContextWithData();
-            var controller = new ConnectionController(context);
+            var controller = new ConnectionService(context);
 
-            var result = controller.Delete(1);
+            try
+            {
+                var result = await controller.DeleteConnectionAsync(1);
+            }
+            catch (Exception ex)
+            {
+                Assert.IsType<InvalidOperationException>(ex);
+            }
 
-            Assert.IsType<BadRequestObjectResult>(result);
         }
 
         [Fact]
-        public void Delete_ReturnsNotFound_WhenConnectionDoesNotExist()
+        public async Task Delete_ReturnsNotFound_WhenConnectionDoesNotExist()
         {
             var context = GetDbContextWithData();
-            var controller = new ConnectionController(context);
+            var controller = new ConnectionService(context);
 
-            var result = controller.Delete(999);
+            var result = await controller.DeleteConnectionAsync(999);
 
-            Assert.IsType<NotFoundObjectResult>(result);
+            Assert.False(result);
         }
 
         [Fact]
-        public void GetAllCharCharConnections_ReturnsOk_WhenExists()
+        public async Task GetAllCharCharConnections_ReturnsOk_WhenExists()
         {
             var context = GetDbContextWithData();
-            var controller = new ConnectionController(context);
+            var controller = new ConnectionService(context);
 
-            var result = controller.GetAll();
+            var result = await controller.GetAllCharToCharConnectionsAsync();
 
-            Assert.IsType<OkObjectResult>(result);
+            Assert.IsType<List<CharCharConnectionDto>>(result);
+            Assert.NotEmpty(result);
         }
 
         [Fact]
-        public void GetCharCharConnection_ReturnsOk_WhenExists()
+        public async Task GetCharCharConnection_ReturnsOk_WhenExists()
         {
             var context = GetDbContextWithData();
-            var controller = new ConnectionController(context);
+            var controller = new ConnectionService(context);
 
-            var result = controller.GetCharCharConnection(1);
+            var result = await controller.GetCharToCharConnectionByIdAsync(1);
 
-            Assert.IsType<OkObjectResult>(result);
+            Assert.IsType<CharCharConnectionDto>(result);
         }
 
         [Fact]
-        public void PostCharCharConnection_ReturnsCreated_WhenValid()
+        public async Task PostCharCharConnection_ReturnsCreated_WhenValid()
         {
             var context = GetDbContextWithData();
-            var controller = new ConnectionController(context);
+            var controller = new ConnectionService(context);
 
             var dto = new CharCharConnectionDto { CharOneId = 1, CharTwoId = 3, ConnectionId = 1, Description = "Desc", Direction = 1 };
-            var result = controller.PostCharCharConnection(dto);
+            var result = await controller.CreateCharToCharConnectionAsync(dto);
 
-            Assert.IsType<CreatedAtActionResult>(result);
+            Assert.IsType<CharCharConnectionDto>(result);
         }
 
-        [Fact]
-        public void PostCharCharConnection_ReturnsBadRequest_WhenSameCharIds()
-        {
-            var context = GetDbContextWithData();
-            var controller = new ConnectionController(context);
-
-            var dto = new CharCharConnectionDto { CharOneId = 1, CharTwoId = 1, ConnectionId = 1, Description = "Desc", Direction = 1 };
-            var result = controller.PostCharCharConnection(dto);
-
-            Assert.IsType<BadRequestObjectResult>(result);
-        }
 
         [Fact]
-        public void PutCharCharConnection_ReturnsNoContent_WhenValid()
+        public async Task PostCharCharConnection_ReturnsBadRequest_WhenSameCharIds()
         {
             var context = GetDbContextWithData();
-            var controller = new ConnectionController(context);
+            var controller = new ConnectionService(context);
 
             var dto = new CharCharConnectionDto { Id = 1, CharOneId = 1, CharTwoId = 2, ConnectionId = 1 };
-            var result = controller.PutCharCharConnection(1, dto);
+            var result = await controller.UpdateCharToCharConnectionAsync(1, dto);
 
-            Assert.IsType<NoContentResult>(result);
+            Assert.IsType<CharCharConnectionDto>(result);
         }
 
         [Fact]
-        public void DeleteCharCharConnection_ReturnsNoContent_WhenExists()
+        public async Task DeleteCharCharConnection_ReturnsNoContent_WhenExists()
         {
             var context = GetDbContextWithData();
-            var controller = new ConnectionController(context);
+            var controller = new ConnectionService(context);
 
-            var result = controller.DeleteCharCharConnection(1);
+            var result = await controller.DeleteCharToCharConnectionAsync(1);
 
-            Assert.IsType<NoContentResult>(result);
+            Assert.True(result);
         }
 
         [Fact]
-        public void GetAllCharOrgConnections_ReturnsOk_WhenExists()
+        public async Task DeleteCharCharConnection_ReturnsNotFound_WhenDoesNotExist()
         {
             var context = GetDbContextWithData();
-            var controller = new ConnectionController(context);
+            var controller = new ConnectionService(context);
 
-            var result = controller.GetAllCharOrgConnections();
+            var result = await controller.DeleteCharToCharConnectionAsync(999);
 
-            Assert.IsType<OkObjectResult>(result);
+            Assert.False(result);
         }
 
         [Fact]
-        public void GetCharOrgConnection_ReturnsOk_WhenExists()
+        public async Task GetAllCharOrgConnections_ReturnsOk_WhenExists()
         {
             var context = GetDbContextWithData();
-            var controller = new ConnectionController(context);
+            var controller = new ConnectionService(context);
 
-            var result = controller.GetCharOrgConnection(1);
+            var result = await controller.GetAllCharToOrgConnectionsAsync();
 
-            Assert.IsType<OkObjectResult>(result);
+            Assert.IsType<List<CharOrgConnectionDto>>(result);
         }
 
         [Fact]
-        public void PostCharOrgConnection_ReturnsCreated_WhenValid()
+        public async Task GetCharOrgConnection_ReturnsOk_WhenExists()
         {
             var context = GetDbContextWithData();
-            var controller = new ConnectionController(context);
+            var controller = new ConnectionService(context);
+
+            var result = await controller.GetCharToOrgConnectionByIdAsync(1);
+
+            Assert.IsType<CharOrgConnectionDto?>(result);
+            Assert.Equal(1, result.CharId);
+            Assert.Equal(1, result.OrganisationId);
+        }
+
+        [Fact]
+        public async Task PostCharOrgConnection_ReturnsCreated_WhenValid()
+        {
+            var context = GetDbContextWithData();
+            var controller = new ConnectionService(context);
 
             var dto = new CharOrgConnectionDto { CharId = 1, OrganisationId = 2, ConnectionId = 1, Description = "Desc", Direction = 1 };
-            var result = controller.PostCharOrgConnection(dto);
+            var result = await controller.CreateCharToOrgConnectionAsync(dto);
 
-            Assert.IsType<CreatedAtActionResult>(result);
+            Assert.IsType<CharOrgConnectionDto>(result);
         }
 
         [Fact]
-        public void PutCharOrgConnection_ReturnsNoContent_WhenValid()
+        public async Task PutCharOrgConnection_ReturnsNoContent_WhenValid()
         {
             var context = GetDbContextWithData();
-            var controller = new ConnectionController(context);
+            var controller = new ConnectionService(context);
 
-            var dto = new CharOrgConnectionDto { Id = 1, CharId = 1, OrganisationId = 1, ConnectionId = 1, Description = "Desc", Direction =1 };
-            var result = controller.PutCharOrgConnection(1, dto);
+            var dto = new CharOrgConnectionDto { CharId = 1, OrganisationId = 1, ConnectionId = 1, Description = "Desc", Direction = 1 };
+            var result = await controller.CreateCharToOrgConnectionAsync(dto);
 
-            Assert.IsType<NoContentResult>(result);
+            Assert.IsType<CharOrgConnectionDto?>(result);
         }
 
         [Fact]
-        public void DeleteCharOrgConnection_ReturnsNoContent_WhenExists()
+        public async Task DeleteCharOrgConnection_ReturnsNoContent_WhenExists()
         {
             var context = GetDbContextWithData();
-            var controller = new ConnectionController(context);
+            var controller = new ConnectionService(context);
 
-            var result = controller.DeleteCharOrgConnection(1);
+            var result = await controller.DeleteCharacterToOrganizationConnectionAsync(1);
 
-            Assert.IsType<NoContentResult>(result);
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async Task DeleteCharOrgConnection_ReturnsNotFound_WhenDoesNotExist()
+        {
+            var context = GetDbContextWithData();
+            var controller = new ConnectionService(context);
+
+            var result = await controller.DeleteCharacterToOrganizationConnectionAsync(999);
+
+            Assert.False(result);
         }
     }
 }

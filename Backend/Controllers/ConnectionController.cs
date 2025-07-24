@@ -1,4 +1,5 @@
 ﻿using Backend.Data;
+using Backend.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shared;
@@ -10,10 +11,12 @@ namespace Backend.Controllers;
 public class ConnectionController : ControllerBase
 {
     private readonly CampaignToolContext _dbContext;
+    private readonly ConnectionService _service;
 
-    public ConnectionController(CampaignToolContext campaignToolContext)
+    public ConnectionController(CampaignToolContext campaignToolContext, ConnectionService connectionService)
     {
         _dbContext = campaignToolContext;
+        _service = connectionService;
     }
 
     #region Connections
@@ -24,8 +27,8 @@ public class ConnectionController : ControllerBase
     [HttpGet]
     public IActionResult Get()
     {
-        return _dbContext.Connections.Any()
-            ? Ok(_dbContext.Connections.ToDto())
+        return _service.GetConnectionsAsync().Result is { } connections
+            ? Ok(connections)
             : NotFound("No connections found.");
     }
 
@@ -34,11 +37,11 @@ public class ConnectionController : ControllerBase
     /// </summary>
     /// <param name="id">The ID of the connection.</param>
     [HttpGet("{id}")]
-    public IActionResult Get(long id)
+    public async Task<IActionResult> Get(long id)
     {
-        var connection = _dbContext.Connections.Find(id);
+        var connection = await _service.GetConnectionByIdAsync(id);
         return connection != null
-            ? Ok(connection.ToDto())
+            ? Ok(connection)
             : NotFound($"Connection with ID {id} not found.");
     }
 
@@ -47,20 +50,17 @@ public class ConnectionController : ControllerBase
     /// </summary>
     /// <param name="connection">The connection data to add.</param>
     [HttpPost]
-    public IActionResult Post([FromBody] ConnectionDto connection)
+    public async Task<IActionResult> Post([FromBody] ConnectionDto connection)
     {
-        if (connection == null)
+        try
         {
-            return BadRequest("Connection data is required.");
+            var entity = await _service.CreateConnectionAsync(connection);
+            return CreatedAtAction(nameof(Get), new { id = entity.Id }, connection);
         }
-        var model = connection.ToModel();
-        if (model == null)
+        catch (Exception ex)
         {
-            return BadRequest("Invalid connection data.");
+            return BadRequest($"Error creating connection: {ex.Message}");
         }
-        var entity = _dbContext.Connections.Add(model).Entity;
-        _dbContext.SaveChanges();
-        return CreatedAtAction(nameof(Get), new { id = entity.Id }, connection);
     }
 
     /// <summary>
@@ -69,26 +69,16 @@ public class ConnectionController : ControllerBase
     /// <param name="id">The ID of the connection to update.</param>
     /// <param name="connection">The updated connection data.</param>
     [HttpPut("{id}")]
-    public IActionResult Put(long id, [FromBody] ConnectionDto connection)
+    public async Task<IActionResult> Put(long id, [FromBody] ConnectionDto connection)
     {
-        if (connection == null || connection.Id != id)
+        try
         {
-            return BadRequest("Invalid connection data.");
+            await _service.UpdateConnectionAsync(id,connection);
         }
-
-        var existingConnection = _dbContext.Connections.Find(id);
-        if (existingConnection == null)
+        catch (Exception ex)
         {
-            return NotFound($"Connection with ID {id} not found.");
+            return BadRequest($"Error updating connection: {ex.Message}");
         }
-
-        existingConnection.ConnectionName = connection.ConnectionName;
-        existingConnection.Description = connection.Description;
-        existingConnection.GmOnlyDescription = connection.GmOnlyDescription;
-        existingConnection.GmOnly = connection.GmOnly;
-        existingConnection.CampaignId = connection.CampaignId;
-        _dbContext.Connections.Update(existingConnection);
-        _dbContext.SaveChanges();
         return NoContent();
     }
 
@@ -97,26 +87,10 @@ public class ConnectionController : ControllerBase
     /// </summary>
     /// <param name="id">The ID of the connection to delete.</param>
     [HttpDelete("{id}")]
-    public IActionResult Delete(long id)
+    public async Task<IActionResult> Delete(long id)
     {
-        var connection = _dbContext.Connections.Find(id);
-        if (connection == null)
-        {
-            return NotFound($"Connection with ID {id} not found.");
-        }
-
-        // Check for references in CharOrgConnection or CharCharConnection
-        bool isUsed = _dbContext.CharOrgConnections.Any(c => c.ConnectionId == id)
-                   || _dbContext.CharCharConnections.Any(c => c.ConnectionId == id);
-
-        if (isUsed)
-        {
-            return BadRequest("Cannot delete: Connection is in use by other entities.");
-        }
-
-        _dbContext.Connections.Remove(connection);
-        _dbContext.SaveChanges();
-        return NoContent();
+        var result = await _service.DeleteConnectionAsync(id);
+        return result ? NoContent() : BadRequest($"Connection with ID {id} not found.");
     }
 
     #endregion

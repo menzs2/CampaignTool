@@ -20,7 +20,7 @@ namespace Backend.Services
             return connections?.ToDto();
         }
 
-        public async Task<ConnectionDto?> GetConnectionByIdAsync(int id)
+        public async Task<ConnectionDto?> GetConnectionByIdAsync(long id)
         {
             var connection = await _context.Connections.FindAsync(id);
             return connection?.ToDto();
@@ -41,7 +41,7 @@ namespace Backend.Services
             await _context.SaveChangesAsync();
             return connection.ToDto();
         }
-        public async Task<ConnectionDto?> UpdateConnectionAsync(int id, ConnectionDto connectionDto)
+        public async Task<ConnectionDto?> UpdateConnectionAsync(long id, ConnectionDto connectionDto)
         {
             if (connectionDto == null)
             {
@@ -57,7 +57,7 @@ namespace Backend.Services
             return existingConnection.ToDto();
         }
 
-        public async Task<bool> DeleteConnectionAsync(int id)
+        public async Task<bool> DeleteConnectionAsync(long id)
         {
             var connection = await _context.Connections.FindAsync(id);
             if (connection == null)
@@ -73,19 +73,19 @@ namespace Backend.Services
 
         #region Character to Character Connection Methods
 
-        public async Task<IEnumerable<CharCharConnectionDto>?> GetCharacterToCharacterConnectionsAsync()
+        public async Task<IEnumerable<CharCharConnectionDto>?> GetAllCharToCharConnectionsAsync()
         {
             var connections = await _context.CharCharConnections.ToListAsync();
             return connections?.ToDto();
         }
 
-        public async Task<CharCharConnectionDto?> GetCharacterToCharacterConnectionByIdAsync(int id)
+        public async Task<CharCharConnectionDto?> GetCharToCharConnectionByIdAsync(long id)
         {
             var connection = await _context.CharCharConnections.FindAsync(id);
             return connection?.ToDto();
         }
 
-        public async Task<CharCharConnectionDto> CreateCharacterToCharacterConnectionAsync(CharCharConnectionDto connectionDto)
+        public async Task<CharCharConnectionDto> CreateCharToCharConnectionAsync(CharCharConnectionDto connectionDto)
         {
             if (connectionDto == null)
             {
@@ -101,7 +101,7 @@ namespace Backend.Services
             return connection.ToDto();
         }
 
-        public async Task<CharCharConnectionDto?> UpdateCharacterToCharacterConnectionAsync(int id, CharCharConnectionDto connectionDto)
+        public async Task<CharCharConnectionDto?> UpdateCharToCharConnectionAsync(long id, CharCharConnectionDto connectionDto)
         {
             if (connectionDto == null)
             {
@@ -117,7 +117,7 @@ namespace Backend.Services
             return existingConnection.ToDto();
         }
 
-        public async Task<bool> DeleteCharacterToCharacterConnectionAsync(int id)
+        public async Task<bool> DeleteCharToCharConnectionAsync(long id)
         {
             var connection = await _context.CharCharConnections.FindAsync(id);
             if (connection == null)
@@ -133,19 +133,19 @@ namespace Backend.Services
 
         #region Character to Organization Connection Methods
 
-        public async Task<IEnumerable<CharOrgConnectionDto>?> GetCharacterToOrganizationConnectionsAsync()
+        public async Task<IEnumerable<CharOrgConnectionDto>?> GetAllCharToOrgConnectionsAsync()
         {
             var connections = await _context.CharOrgConnections.ToListAsync();
             return connections?.ToDto();
         }
 
-        public async Task<CharOrgConnectionDto?> GetCharacterToOrganizationConnectionByIdAsync(int id)
+        public async Task<CharOrgConnectionDto?> GetCharToOrgConnectionByIdAsync(long id)
         {
             var connection = await _context.CharOrgConnections.FindAsync(id);
             return connection?.ToDto();
         }
 
-        public async Task<CharOrgConnectionDto> CreateCharacterToOrganizationConnectionAsync(CharOrgConnectionDto connectionDto)
+        public async Task<CharOrgConnectionDto> CreateCharToOrgConnectionAsync(CharOrgConnectionDto connectionDto)
         {
             if (connectionDto == null)
             {
@@ -177,7 +177,7 @@ namespace Backend.Services
             return existingConnection.ToDto();
         }
 
-        public async Task<bool> DeleteCharacterToOrganizationConnectionAsync(int id)
+        public async Task<bool> DeleteCharacterToOrganizationConnectionAsync(long id)
         {
             var connection = await _context.CharOrgConnections.FindAsync(id);
             if (connection == null)
