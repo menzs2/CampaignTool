@@ -22,16 +22,8 @@ public class CampaignController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> Get()
     {
-        try
-        {
-            var campaigns = await _campaignService.GetAllCampaigns();
-            return campaigns.Any() ? Ok(campaigns) : NotFound("No campaigns found.");
-        }
-        catch
-        {
-            // Log the exception (not implemented here)
-            return StatusCode(500, "Internal server error");
-        }
+        var campaigns = await _campaignService.GetAllCampaigns();
+        return campaigns.Any() ? Ok(campaigns) : NotFound("No campaigns found.");
     }
 
     /// <summary>
@@ -85,6 +77,10 @@ public class CampaignController : ControllerBase
         {
             var updatedCampaign = await _campaignService.UpdateCampaignAsync(campaign);
             return NoContent();
+        }
+        catch (KeyNotFoundException)
+        {
+            return BadRequest($"Campaign with key '{id}' not found.");
         }
         catch
         {
