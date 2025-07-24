@@ -118,6 +118,10 @@ public class CharacterController : ControllerBase
             await _service.UpdateCharacterAsync(character);
             return NoContent();
         }
+        catch (KeyNotFoundException ex)
+        {
+            return BadRequest(ex.Message);
+        }
         catch (Exception ex)
         {
             // TODO: Log the exception (ex) here
@@ -136,6 +140,10 @@ public class CharacterController : ControllerBase
         {
             await _service.DeleteCharacterAsync(id);
             return NoContent();
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return BadRequest(ex.Message);
         }
         catch (Exception ex)
         {
