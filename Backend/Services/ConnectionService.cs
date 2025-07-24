@@ -50,7 +50,7 @@ namespace Backend.Services
             var existingConnection = await _context.Connections.FindAsync(id);
             if (existingConnection == null)
             {
-                throw new KeyNotFoundException();
+                throw new KeyNotFoundException($"Connection with ID {id} not found.");
             }
             _context.Update(existingConnection);
             await _context.SaveChangesAsync();
@@ -62,7 +62,7 @@ namespace Backend.Services
             var connection = await _context.Connections.FindAsync(id);
             if (connection == null)
             {
-                throw new KeyNotFoundException();
+                throw new KeyNotFoundException($"Connection with ID {id} not found.");
             }
             _context.Connections.Remove(connection);
             await _context.SaveChangesAsync();
@@ -109,7 +109,7 @@ namespace Backend.Services
             var existingConnection = await _context.CharCharConnections.FindAsync(id);
             if (existingConnection == null)
             {
-                throw new KeyNotFoundException();
+                throw new KeyNotFoundException($"Connection with ID {id} not found.");
             }
             _context.Update(existingConnection);
             await _context.SaveChangesAsync();
@@ -121,7 +121,7 @@ namespace Backend.Services
             var connection = await _context.CharCharConnections.FindAsync(id);
             if (connection == null)
             {
-                throw new KeyNotFoundException();
+                throw new KeyNotFoundException($"Connection with ID {id} not found.");
             }
             _context.CharCharConnections.Remove(connection);
             await _context.SaveChangesAsync();
@@ -168,7 +168,7 @@ namespace Backend.Services
             var existingConnection = await _context.CharOrgConnections.FindAsync(id);
             if (existingConnection == null)
             {
-                throw new KeyNotFoundException();
+                throw new KeyNotFoundException($"Connection with ID {id} not found.");
             }
             existingConnection.Description = connectionDto.Description;
             existingConnection.GmOnlyDescription = connectionDto.GmOnlyDescription;
@@ -187,7 +187,7 @@ namespace Backend.Services
             var connection = await _context.CharOrgConnections.FindAsync(id);
             if (connection == null)
             {
-                throw new KeyNotFoundException();
+                throw new KeyNotFoundException($"Connection with ID {id} not found.");
             }
             _context.CharOrgConnections.Remove(connection);
             await _context.SaveChangesAsync();
@@ -234,7 +234,7 @@ namespace Backend.Services
             var existingConnection = await _context.OrgOrgConnections.FindAsync(id);
             if (existingConnection == null)
             {
-                throw new KeyNotFoundException();
+                throw new KeyNotFoundException($"Connection with ID {id} not found.");
             }
             _context.Update(existingConnection);
             await _context.SaveChangesAsync();
@@ -246,7 +246,7 @@ namespace Backend.Services
             var connection = await _context.OrgOrgConnections.FindAsync(id);
             if (connection == null)
             {
-                throw new KeyNotFoundException();
+                throw new KeyNotFoundException($"Connection with ID {id} not found.");
             }
             _context.OrgOrgConnections.Remove(connection);
             await _context.SaveChangesAsync();

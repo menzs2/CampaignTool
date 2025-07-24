@@ -1,5 +1,6 @@
 ﻿using Backend.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Differencing;
 using Shared;
 
 namespace Backend.Controllers;
@@ -71,9 +72,9 @@ public class ConnectionController : ControllerBase
         {
             await _service.UpdateConnectionAsync(id, connection);
         }
-        catch (KeyNotFoundException)
+        catch (KeyNotFoundException ex)
         {
-            return BadRequest($"Connection with ID '{id}' not found.");
+            return BadRequest(ex.Message);
         }
         catch (Exception ex)
         {
@@ -94,9 +95,9 @@ public class ConnectionController : ControllerBase
         {
             await _service.DeleteConnectionAsync(id);
         }
-        catch (KeyNotFoundException)
+        catch (KeyNotFoundException ex)
         {
-            return BadRequest($"Connection with ID {id} not found.");
+            return BadRequest(ex.Message);
         }
         catch (Exception ex)
         {
@@ -179,9 +180,9 @@ public class ConnectionController : ControllerBase
         {
             await _service.UpdateCharToCharConnectionAsync(id, connection);
         }
-        catch (KeyNotFoundException)
+        catch (KeyNotFoundException ex)
         {
-            return BadRequest($"Connection with ID {id} not found.");
+            return BadRequest(ex.Message);
         }
         catch (Exception ex)
         {
@@ -202,9 +203,9 @@ public class ConnectionController : ControllerBase
         {
             await _service.DeleteCharToCharConnectionAsync(id);
         }
-        catch (KeyNotFoundException)
+        catch (KeyNotFoundException ex)
         {
-            return BadRequest($"Connection with ID {id} not found.");
+            return BadRequest(ex.Message);
         }
         catch (Exception ex)
         {
@@ -282,9 +283,9 @@ public class ConnectionController : ControllerBase
         {
             await _service.UpdateCharacterToOrganizationConnectionAsync(1, connection);
         }
-        catch (KeyNotFoundException)
+        catch (KeyNotFoundException ex)
         {
-            return BadRequest($"Connection with ID {id} not found.");
+            return BadRequest(ex.Message);
         }
         catch (Exception ex)
         {
@@ -305,9 +306,9 @@ public class ConnectionController : ControllerBase
         {
             var connection = _service.DeleteCharacterToOrganizationConnectionAsync(id);
         }
-        catch (KeyNotFoundException)
+        catch (KeyNotFoundException ex)
         {
-            return BadRequest($"Connection with ID {id} not found.");
+            return BadRequest(ex.Message);
         }
         catch (Exception ex)
         {
