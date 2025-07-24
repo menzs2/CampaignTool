@@ -1,4 +1,5 @@
-﻿using Backend.Services;
+﻿using System.Threading.Tasks;
+using Backend.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.Differencing;
 using Shared;
@@ -128,9 +129,9 @@ public class ConnectionController : ControllerBase
     /// </summary>
     /// <param name="id">The ID of the character-character connection.</param>
     [HttpGet("charchar/{id}")]
-    public IActionResult GetCharCharConnection(long id)
+    public async Task<IActionResult> GetCharCharConnection(long id)
     {
-        var connection = _service.GetCharToCharConnectionByIdAsync(id);
+        var connection = await _service.GetCharToCharConnectionByIdAsync(id);
         return connection != null
             ? Ok(connection)
             : NotFound($"Character-Character connection with ID {id} not found.");

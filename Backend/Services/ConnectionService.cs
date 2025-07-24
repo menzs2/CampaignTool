@@ -111,6 +111,14 @@ namespace Backend.Services
             {
                 throw new KeyNotFoundException($"Connection with ID {id} not found.");
             }
+            existingConnection.Description = connectionDto.Description;
+            existingConnection.GmOnlyDescription = connectionDto.GmOnlyDescription;
+            existingConnection.GmOnly = connectionDto.GmOnly;
+            existingConnection.Direction = connectionDto.Direction;
+            existingConnection.CharOneId = connectionDto.CharOneId;
+            existingConnection.CharTwoId = connectionDto.CharTwoId;
+            existingConnection.ConnectionId = connectionDto.ConnectionId;
+
             _context.Update(existingConnection);
             await _context.SaveChangesAsync();
             return existingConnection.ToDto();
