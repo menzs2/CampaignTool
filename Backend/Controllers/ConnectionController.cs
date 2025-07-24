@@ -175,11 +175,9 @@ public class ConnectionController : ControllerBase
         {
             return BadRequest("Invalid Character-Character connection data.");
         }
-
-        
         try
         {
-            await _service.UpdateCharToCharConnectionAsync(id, existingConnection);
+            await _service.UpdateCharToCharConnectionAsync(id, connection);
         }
         catch (KeyNotFoundException)
         {
