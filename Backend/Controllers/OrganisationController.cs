@@ -9,10 +9,12 @@ namespace Backend;
 public class OrganisationController : ControllerBase
 {
     private readonly CampaignToolContext _dbContext;
+    private readonly OrganisationService _service;
 
-    public OrganisationController(CampaignToolContext dbContext)
+    public OrganisationController(CampaignToolContext dbContext, OrganisationService service)
     {
         _dbContext = dbContext;
+        _service = service;
     }
 
     /// <summary>
