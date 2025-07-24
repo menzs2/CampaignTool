@@ -1,7 +1,5 @@
-﻿using Backend.Data;
-using Backend.Services;
+﻿using Backend.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Shared;
 
 namespace Backend.Controllers;
@@ -10,12 +8,10 @@ namespace Backend.Controllers;
 [ApiController]
 public class ConnectionController : ControllerBase
 {
-    private readonly CampaignToolContext _dbContext;
     private readonly ConnectionService _service;
 
-    public ConnectionController(CampaignToolContext campaignToolContext, ConnectionService connectionService)
+    public ConnectionController(ConnectionService connectionService)
     {
-        _dbContext = campaignToolContext;
         _service = connectionService;
     }
 
@@ -73,11 +69,16 @@ public class ConnectionController : ControllerBase
     {
         try
         {
-            await _service.UpdateConnectionAsync(id,connection);
+            await _service.UpdateConnectionAsync(id, connection);
+        }
+        catch (KeyNotFoundException)
+        {
+            return BadRequest($"Connection with ID '{id}' not found.");
         }
         catch (Exception ex)
         {
-            return BadRequest($"Error updating connection: {ex.Message}");
+            // TODO: Log the exception (ex) here
+            return StatusCode(500, "Internal server error");
         }
         return NoContent();
     }
@@ -89,8 +90,20 @@ public class ConnectionController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(long id)
     {
-        var result = await _service.DeleteConnectionAsync(id);
-        return result ? NoContent() : BadRequest($"Connection with ID {id} not found.");
+        try
+        {
+            await _service.DeleteConnectionAsync(id);
+        }
+        catch (KeyNotFoundException)
+        {
+            return BadRequest($"Connection with ID {id} not found.");
+        }
+        catch (Exception ex)
+        {
+            // TODO: Log the exception (ex) here
+            return StatusCode(500, "Internal server error");
+        }
+        return NoContent();
     }
 
     #endregion
@@ -101,10 +114,11 @@ public class ConnectionController : ControllerBase
     /// Gets all character-character connections.
     /// </summary>
     [HttpGet("charchar")]
-    public IActionResult GetAll()
+    public async Task<IActionResult> GetAll()
     {
-        return _dbContext.CharCharConnections.Any()
-            ? Ok(_dbContext.CharCharConnections.Include(ch => ch.CharOne).Include(ch => ch.CharTwo).ToDto())
+        var charCharConnections = await _service.GetAllCharToCharConnectionsAsync();
+        return charCharConnections is not null && charCharConnections.Any()
+            ? Ok(charCharConnections)
             : NotFound("No connections found.");
     }
 
@@ -115,9 +129,9 @@ public class ConnectionController : ControllerBase
     [HttpGet("charchar/{id}")]
     public IActionResult GetCharCharConnection(long id)
     {
-        var connection = _dbContext.CharCharConnections.Find(id);
+        var connection = _service.GetCharToCharConnectionByIdAsync(id);
         return connection != null
-            ? Ok(connection.ToDto())
+            ? Ok(connection)
             : NotFound($"Character-Character connection with ID {id} not found.");
     }
 
@@ -126,7 +140,7 @@ public class ConnectionController : ControllerBase
     /// </summary>
     /// <param name="connection">The character-character connection data to add.</param>
     [HttpPost("charchar")]
-    public IActionResult PostCharCharConnection([FromBody] CharCharConnectionDto connection)
+    public async Task<IActionResult> PostCharCharConnection([FromBody] CharCharConnectionDto connection)
     {
         if (connection == null)
         {
@@ -136,14 +150,17 @@ public class ConnectionController : ControllerBase
         {
             return BadRequest("Character-Character connections cannot connect the same character to itself.");
         }
-        var model = connection.ToModel();
-        if (model == null)
+
+        try
         {
-            return BadRequest("Invalid Character-Character connection data.");
+            var entity = await _service.CreateCharToCharConnectionAsync(connection);
+            return CreatedAtAction(nameof(GetCharCharConnection), new { id = entity.Id }, connection);
         }
-        var entity = _dbContext.CharCharConnections.Add(model);
-        _dbContext.SaveChanges();
-        return CreatedAtAction(nameof(GetCharCharConnection), new { id = entity.Entity.Id }, connection);
+        catch (Exception ex)
+        {
+            // TODO: Log the exception (ex) here
+            return StatusCode(500, "Internal server error");
+        }
     }
 
     /// <summary>
@@ -152,28 +169,27 @@ public class ConnectionController : ControllerBase
     /// <param name="id">The ID of the character-character connection to update.</param>
     /// <param name="connection">The updated character-character connection data.</param>
     [HttpPut("charchar/{id}")]
-    public IActionResult PutCharCharConnection(long id, [FromBody] CharCharConnectionDto connection)
+    public async Task<IActionResult> PutCharCharConnection(long id, [FromBody] CharCharConnectionDto connection)
     {
         if (connection == null || connection.Id != id)
         {
             return BadRequest("Invalid Character-Character connection data.");
         }
 
-        var existingConnection = _dbContext.CharCharConnections.Find(id);
-        if (existingConnection == null)
+        
+        try
         {
-            return NotFound($"Character-Character connection with ID {id} not found.");
+            await _service.UpdateCharToCharConnectionAsync(id, existingConnection);
         }
-        existingConnection.Description = connection.Description;
-        existingConnection.GmOnlyDescription = connection.GmOnlyDescription;
-        existingConnection.GmOnly = connection.GmOnly;
-        existingConnection.Direction = connection.Direction;
-        existingConnection.CharOneId = connection.CharOneId;
-        existingConnection.CharTwoId = connection.CharTwoId;
-        existingConnection.ConnectionId = connection.ConnectionId;
-
-        _dbContext.CharCharConnections.Update(existingConnection);
-        _dbContext.SaveChanges();
+        catch (KeyNotFoundException)
+        {
+            return BadRequest($"Connection with ID {id} not found.");
+        }
+        catch (Exception ex)
+        {
+            // TODO: Log the exception (ex) here
+            return StatusCode(500, "Internal server error");
+        }
         return NoContent();
     }
 
@@ -182,16 +198,21 @@ public class ConnectionController : ControllerBase
     /// </summary>
     /// <param name="id">The ID of the character-character connection to delete.</param>
     [HttpDelete("charchar/{id}")]
-    public IActionResult DeleteCharCharConnection(long id)
+    public async Task<IActionResult> DeleteCharCharConnection(long id)
     {
-        var connection = _dbContext.CharCharConnections.Find(id);
-        if (connection == null)
+        try
         {
-            return NotFound($"Character-Character connection with ID {id} not found.");
+            await _service.DeleteCharToCharConnectionAsync(id);
         }
-
-        _dbContext.CharCharConnections.Remove(connection);
-        _dbContext.SaveChanges();
+        catch (KeyNotFoundException)
+        {
+            return BadRequest($"Connection with ID {id} not found.");
+        }
+        catch (Exception ex)
+        {
+            // TODO: Log the exception (ex) here
+            return StatusCode(500, "Internal server error");
+        }
         return NoContent();
     }
     #endregion
@@ -202,10 +223,11 @@ public class ConnectionController : ControllerBase
     /// Gets all character-organization connections.
     /// </summary>
     [HttpGet("charorg")]
-    public IActionResult GetAllCharOrgConnections()
+    public async Task<IActionResult> GetAllCharOrgConnections()
     {
-        return _dbContext.CharOrgConnections.Any()
-            ? Ok(_dbContext.CharOrgConnections.ToDto())
+        var connections = await _service.GetAllCharToOrgConnectionsAsync();
+        return connections is not null && connections.Any()
+            ? Ok(connections)
             : NotFound("No character-organization connections found.");
     }
 
@@ -214,11 +236,11 @@ public class ConnectionController : ControllerBase
     /// </summary>
     /// <param name="id">The ID of the character-organization connection.</param>
     [HttpGet("charorg/{id}")]
-    public IActionResult GetCharOrgConnection(long id)
+    public async Task<IActionResult> GetCharOrgConnection(long id)
     {
-        var connection = _dbContext.CharOrgConnections.Find(id);
+        var connection = await _service.GetCharToOrgConnectionByIdAsync(id);
         return connection != null
-            ? Ok(connection.ToDto())
+            ? Ok(connection)
             : NotFound($"Character-Organization connection with ID {id} not found.");
     }
 
@@ -227,20 +249,23 @@ public class ConnectionController : ControllerBase
     /// </summary>
     /// <param name="connection">The character-organization connection data to add.</param>
     [HttpPost("charorg")]
-    public IActionResult PostCharOrgConnection([FromBody] CharOrgConnectionDto connection)
+    public async Task<IActionResult> PostCharOrgConnection([FromBody] CharOrgConnectionDto connection)
     {
         if (connection == null)
         {
             return BadRequest("Character-Organization connection data is required.");
         }
-        var model = connection.ToModel();
-        if (model == null)
+        try
         {
-            return BadRequest("Invalid Character-Organization connection data.");
+            var entity = await _service.CreateCharToOrgConnectionAsync(connection);
+            return CreatedAtAction(nameof(GetCharOrgConnection), new { id = entity.Id }, connection);
+
         }
-        var entity = _dbContext.CharOrgConnections.Add(model).Entity;
-        _dbContext.SaveChanges();
-        return CreatedAtAction(nameof(GetCharOrgConnection), new { id = entity.Id }, connection);
+        catch (Exception ex)
+        {
+            // TODO: Log the exception (ex) here
+            return StatusCode(500, "Internal server error");
+        }
     }
 
     /// <summary>
@@ -249,28 +274,25 @@ public class ConnectionController : ControllerBase
     /// <param name="id">The ID of the character-organization connection to update.</param>
     /// <param name="connection">The updated character-organization connection data.</param>
     [HttpPut("charorg/{id}")]
-    public IActionResult PutCharOrgConnection(long id, [FromBody] CharOrgConnectionDto connection)
+    public async Task<IActionResult> PutCharOrgConnection(long id, [FromBody] CharOrgConnectionDto connection)
     {
         if (connection == null || connection.Id != id)
         {
             return BadRequest("Invalid Character-Organization connection data.");
         }
-
-        var existingConnection = _dbContext.CharOrgConnections.Find(id);
-        if (existingConnection == null)
+        try
         {
-            return NotFound($"Character-Organization connection with ID {id} not found.");
+            await _service.UpdateCharacterToOrganizationConnectionAsync(1, connection);
         }
-        existingConnection.Description = connection.Description;
-        existingConnection.GmOnlyDescription = connection.GmOnlyDescription;
-        existingConnection.GmOnly = connection.GmOnly;
-        existingConnection.Direction = connection.Direction;
-        existingConnection.CharId = connection.CharId;
-        existingConnection.OrganisationId = connection.OrganisationId;
-        existingConnection.ConnectionId = connection.ConnectionId;
-
-        _dbContext.CharOrgConnections.Update(existingConnection);
-        _dbContext.SaveChanges();
+        catch (KeyNotFoundException)
+        {
+            return BadRequest($"Connection with ID {id} not found.");
+        }
+        catch (Exception ex)
+        {
+            // TODO: Log the exception (ex) here
+            return StatusCode(500, "Internal server error");
+        }
         return NoContent();
     }
 
@@ -281,14 +303,19 @@ public class ConnectionController : ControllerBase
     [HttpDelete("charorg/{id}")]
     public IActionResult DeleteCharOrgConnection(long id)
     {
-        var connection = _dbContext.CharOrgConnections.Find(id);
-        if (connection == null)
+        try
         {
-            return NotFound($"Character-Organization connection with ID {id} not found.");
+            var connection = _service.DeleteCharacterToOrganizationConnectionAsync(id);
         }
-
-        _dbContext.CharOrgConnections.Remove(connection);
-        _dbContext.SaveChanges();
+        catch (KeyNotFoundException)
+        {
+            return BadRequest($"Connection with ID {id} not found.");
+        }
+        catch (Exception ex)
+        {
+            // TODO: Log the exception (ex) here
+            return StatusCode(500, "Internal server error");
+        }
         return NoContent();
     }
 

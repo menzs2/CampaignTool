@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Backend.Data;
 using Backend.Models;
 using Backend.Services;
@@ -123,7 +124,7 @@ namespace Backend.Controllers.Tests
 
             try
             {
-                var result = await controller.DeleteConnectionAsync(1);
+                await controller.DeleteConnectionAsync(1);
             }
             catch (Exception ex)
             {
@@ -138,9 +139,16 @@ namespace Backend.Controllers.Tests
             var context = GetDbContextWithData();
             var controller = new ConnectionService(context);
 
-            var result = await controller.DeleteConnectionAsync(999);
+            try
+            {
+                await controller.DeleteConnectionAsync(999);
+            }
+            catch (Exception ex)
+            {
+                Assert.IsType<KeyNotFoundException>(ex);
+            }
 
-            Assert.False(result);
+
         }
 
         [Fact]
@@ -197,9 +205,9 @@ namespace Backend.Controllers.Tests
             var context = GetDbContextWithData();
             var controller = new ConnectionService(context);
 
-            var result = await controller.DeleteCharToCharConnectionAsync(1);
-
-            Assert.True(result);
+            await controller.DeleteCharToCharConnectionAsync(1);
+            var record = await controller.GetCharToCharConnectionByIdAsync(1);
+            Assert.Null(record);
         }
 
         [Fact]
@@ -208,9 +216,11 @@ namespace Backend.Controllers.Tests
             var context = GetDbContextWithData();
             var controller = new ConnectionService(context);
 
-            var result = await controller.DeleteCharToCharConnectionAsync(999);
-
-            Assert.False(result);
+            try
+            {
+                await controller.DeleteCharToCharConnectionAsync(999);
+            }
+            catch (KeyNotFoundException){}
         }
 
         [Fact]
@@ -267,9 +277,9 @@ namespace Backend.Controllers.Tests
             var context = GetDbContextWithData();
             var controller = new ConnectionService(context);
 
-            var result = await controller.DeleteCharacterToOrganizationConnectionAsync(1);
-
-            Assert.True(result);
+            await controller.DeleteCharacterToOrganizationConnectionAsync(1);
+            var record = await controller.GetCharToOrgConnectionByIdAsync(1);
+            Assert.Null(record);
         }
 
         [Fact]
@@ -278,9 +288,11 @@ namespace Backend.Controllers.Tests
             var context = GetDbContextWithData();
             var controller = new ConnectionService(context);
 
-            var result = await controller.DeleteCharacterToOrganizationConnectionAsync(999);
-
-            Assert.False(result);
+            try
+            {
+                await controller.DeleteCharacterToOrganizationConnectionAsync(999);
+            }
+            catch (KeyNotFoundException) { }
         }
     }
 }

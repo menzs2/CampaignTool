@@ -26,7 +26,7 @@ namespace Backend.Services
             return connection?.ToDto();
         }
 
-        public async Task<ConnectionDto> CreateConnectionAsync(ConnectionDto connectionDto)
+        public async Task<ConnectionDto?> CreateConnectionAsync(ConnectionDto connectionDto)
         {
             if (connectionDto == null)
             {
@@ -39,7 +39,7 @@ namespace Backend.Services
             }
             _context.Connections.Add(connection);
             await _context.SaveChangesAsync();
-            return connection.ToDto();
+            return connection?.ToDto();
         }
         public async Task<ConnectionDto?> UpdateConnectionAsync(long id, ConnectionDto connectionDto)
         {
@@ -50,23 +50,22 @@ namespace Backend.Services
             var existingConnection = await _context.Connections.FindAsync(id);
             if (existingConnection == null)
             {
-                return null; // Connection not found
+                throw new KeyNotFoundException();
             }
             _context.Update(existingConnection);
             await _context.SaveChangesAsync();
             return existingConnection.ToDto();
         }
 
-        public async Task<bool> DeleteConnectionAsync(long id)
+        public async Task DeleteConnectionAsync(long id)
         {
             var connection = await _context.Connections.FindAsync(id);
             if (connection == null)
             {
-                return false; // Connection not found
+                throw new KeyNotFoundException();
             }
             _context.Connections.Remove(connection);
             await _context.SaveChangesAsync();
-            return true;
         }
 
         #endregion
@@ -110,23 +109,22 @@ namespace Backend.Services
             var existingConnection = await _context.CharCharConnections.FindAsync(id);
             if (existingConnection == null)
             {
-                return null; // Connection not found
+                throw new KeyNotFoundException();
             }
             _context.Update(existingConnection);
             await _context.SaveChangesAsync();
             return existingConnection.ToDto();
         }
 
-        public async Task<bool> DeleteCharToCharConnectionAsync(long id)
+        public async Task DeleteCharToCharConnectionAsync(long id)
         {
             var connection = await _context.CharCharConnections.FindAsync(id);
             if (connection == null)
             {
-                return false; // Connection not found
+                throw new KeyNotFoundException();
             }
             _context.CharCharConnections.Remove(connection);
             await _context.SaveChangesAsync();
-            return true;
         }
 
         #endregion
@@ -161,7 +159,7 @@ namespace Backend.Services
             return connection.ToDto();
         }
 
-        public async Task<CharOrgConnectionDto?> UpdateCharacterToOrganizationConnectionAsync(int id, CharOrgConnectionDto connectionDto)
+        public async Task<CharOrgConnectionDto?> UpdateCharacterToOrganizationConnectionAsync(long id, CharOrgConnectionDto connectionDto)
         {
             if (connectionDto == null)
             {
@@ -170,23 +168,29 @@ namespace Backend.Services
             var existingConnection = await _context.CharOrgConnections.FindAsync(id);
             if (existingConnection == null)
             {
-                return null; // Connection not found
+                throw new KeyNotFoundException();
             }
+            existingConnection.Description = connectionDto.Description;
+            existingConnection.GmOnlyDescription = connectionDto.GmOnlyDescription;
+            existingConnection.GmOnly = connectionDto.GmOnly;
+            existingConnection.Direction = connectionDto.Direction;
+            existingConnection.CharId = connectionDto.CharId;
+            existingConnection.OrganisationId = connectionDto.OrganisationId;
+            existingConnection.ConnectionId = connectionDto.ConnectionId;
             _context.Update(existingConnection);
             await _context.SaveChangesAsync();
             return existingConnection.ToDto();
         }
 
-        public async Task<bool> DeleteCharacterToOrganizationConnectionAsync(long id)
+        public async Task DeleteCharacterToOrganizationConnectionAsync(long id)
         {
             var connection = await _context.CharOrgConnections.FindAsync(id);
             if (connection == null)
             {
-                return false; // Connection not found
+                throw new KeyNotFoundException();
             }
             _context.CharOrgConnections.Remove(connection);
             await _context.SaveChangesAsync();
-            return true;
         }
 
         #endregion
@@ -230,23 +234,22 @@ namespace Backend.Services
             var existingConnection = await _context.OrgOrgConnections.FindAsync(id);
             if (existingConnection == null)
             {
-                return null; // Connection not found
+                throw new KeyNotFoundException();
             }
             _context.Update(existingConnection);
             await _context.SaveChangesAsync();
             return existingConnection.ToDto();
         }
 
-        public async Task<bool> DeleteOrganizationToOrganizationConnectionAsync(int id)
+        public async Task DeleteOrganizationToOrganizationConnectionAsync(int id)
         {
             var connection = await _context.OrgOrgConnections.FindAsync(id);
             if (connection == null)
             {
-                return false; // Connection not found
+                throw new KeyNotFoundException();
             }
             _context.OrgOrgConnections.Remove(connection);
             await _context.SaveChangesAsync();
-            return true;
         }
 
         #endregion
