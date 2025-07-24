@@ -26,6 +26,12 @@ namespace Backend.Services
             return connection?.ToDto();
         }
 
+        public async Task<IEnumerable<ConnectionDto>?> GetConnectionByCampaignIdAsync(long id)
+        {
+            var connections = await _context.Connections.Where(c => c.CampaignId == id).ToListAsync();
+            return connections?.ToDto();
+        }
+
         public async Task<ConnectionDto?> CreateConnectionAsync(ConnectionDto connectionDto)
         {
             if (connectionDto == null)

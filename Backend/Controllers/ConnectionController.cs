@@ -44,6 +44,19 @@ public class ConnectionController : ControllerBase
     }
 
     /// <summary>
+    /// Gets connections for a campaign ID.
+    /// </summary>
+    /// <param name="Id">Id of the campaing</param>
+    [HttpGet("campaign/{Id}")]
+    public async Task<IActionResult> GetConnectionsByCampaignId(long Id)
+    {
+        var connection = await _service.GetConnectionByCampaignIdAsync(Id);
+        return connection != null
+            ? Ok(connection)
+            : NotFound($"Connection with ID {Id} not found.");
+    }
+
+    /// <summary>
     /// Adds a new connection.
     /// </summary>
     /// <param name="connection">The connection data to add.</param>
