@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Backend.Services;
+﻿using Backend.Services;
 using Microsoft.AspNetCore.Mvc;
 using Shared;
 
@@ -101,9 +100,9 @@ public class CampaignController : ControllerBase
             await _campaignService.DeleteCampaignAsync(id);
             return NoContent();
         }
-        catch (KeyNotFoundException)
+        catch (KeyNotFoundException ex)
         {
-            return NotFound($"Campaign with ID {id} not found.");
+            return NotFound(ex.Message);
         }
         catch
         {
