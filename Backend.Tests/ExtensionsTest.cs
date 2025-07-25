@@ -1,8 +1,9 @@
 
 using Backend.Models;
+using Backend.Data;
 using Shared;
 
-namespace Backend.Data.Tests
+namespace Backend.Tests
 {
     public class ExtensionsTest
     {
@@ -27,7 +28,7 @@ namespace Backend.Data.Tests
             var campaigns = new List<Campaign?> { null, null };
 
             // Act
-            var result = ((IEnumerable<Campaign>)campaigns).ToDto();
+            var result = campaigns.ToDto();
 
             // Assert
             Assert.NotNull(result);

@@ -1,10 +1,8 @@
 using Backend.Data;
 using Backend.Models;
 using Backend.Services;
-using Microsoft.AspNetCore.Mvc;
 using Shared;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Backend.Tests
 {
@@ -13,7 +11,7 @@ namespace Backend.Tests
         private CampaignToolContext GetDbContextWithData(List<Character> characters)
         {
             var options = new DbContextOptionsBuilder<CampaignToolContext>()
-                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .UseInMemoryDatabase(databaseName: "TestDb" + Guid.NewGuid())
                 .Options;
             var context = new CampaignToolContext(options);
             context.Database.EnsureDeleted();

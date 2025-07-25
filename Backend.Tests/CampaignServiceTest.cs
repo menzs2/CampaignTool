@@ -11,23 +11,13 @@ namespace Backend.Tests
         private CampaignToolContext GetDbContextWithData(List<Campaign> campaigns)
         {
             var options = new DbContextOptionsBuilder<CampaignToolContext>()
-                .UseInMemoryDatabase(databaseName: "CampaignTestDb" + System.Guid.NewGuid())
+                .UseInMemoryDatabase(databaseName: "TestDb" + Guid.NewGuid())
                 .Options;
             var context = new CampaignToolContext(options);
             context.Campaigns.AddRange(campaigns);
             context.SaveChanges();
             return context;
         }
-
-        private CampaignDto ToDto(Campaign c) => new CampaignDto
-        {
-            Id = c.Id,
-            CampaignName = c.CampaignName,
-            Description = c.Description,
-            DescriptionShort = c.DescriptionShort,
-            GmOnlyDescription = c.GmOnlyDescription,
-            Gm = c.Gm
-        };
 
         [Fact]
         public async Task Get_ReturnsAllCampaigns_WhenCampaignsExist()
@@ -56,7 +46,7 @@ namespace Backend.Tests
 
             var result = await service.GetAllCampaigns();
 
-            Assert.Equal(0, result.Count());
+            Assert.Empty(result);
         }
 
         [Fact]
@@ -100,6 +90,7 @@ namespace Backend.Tests
 
             var returned = Assert.IsType<List<CampaignDto>>(result);
             Assert.NotNull(returned);
+            Assert.NotEmpty(returned);
             Assert.Equal(2, returned.Count());
         }
 
@@ -140,7 +131,7 @@ namespace Backend.Tests
         }
 
         [Fact]
-        public async Task Post_ReturnsBadRequest_WhenNull()
+        public async Task Post_ThrowsException_WhenNull()
         {
             using var context = GetDbContextWithData(new List<Campaign>());
             var service = new CampaignService(context);
@@ -152,7 +143,6 @@ namespace Backend.Tests
             catch (ArgumentNullException)
             {
                 // Expected exception, test passes
-                return;
             }
         }
 
@@ -199,7 +189,6 @@ namespace Backend.Tests
             catch (KeyNotFoundException)
             {
                 // Expected exception, test passes
-                return;
             }
         }
 
@@ -216,7 +205,7 @@ namespace Backend.Tests
         }
 
         [Fact]
-        public async Task Delete_ReturnsNotFound_WhenNotExists()
+        public async Task Delete_ReturnsException_WhenNotExists()
         {
             using var context = GetDbContextWithData(new List<Campaign>());
             var service = new CampaignService(context);
@@ -228,7 +217,6 @@ namespace Backend.Tests
             catch (KeyNotFoundException)
             {
                 // Expected exception, test passes
-                return;
             }
         }
     }
