@@ -48,7 +48,7 @@ public class OrganisationService
         .Where(oi => oi != organisationId).Distinct();
 
         var organisations = await _context.Organisations
-        .Where(o => connectedOrgIds.Contains(organisationId)).ToListAsync();
+        .Where(o => connectedOrgIds.Contains(o.Id)).ToListAsync();
         return organisations?.ToDto();
     }
 
