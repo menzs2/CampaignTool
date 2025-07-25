@@ -226,14 +226,14 @@ public class CreateDefaultCampaign
                 },
                 new Character
                 {
-                    Name = "Anne",
+                    Name = "Anne Holmes",
                     DescriptionShort = "A young women with mysterious powers. Twin sister of Antonia.",
                     CampaignId = 1, // Assuming the first campaign is the default one
                     PlayerId = 4 // Assuming the fourth user is the owner
                 },
                 new Character
                 {
-                    Name = "Antonia",
+                    Name = "Antonia \"Toni\" Holmes",
                     DescriptionShort = "A young women, dressing as a paper boy. Twin sister of Anne.",
                     CampaignId = 1, // Assuming the first campaign is the default one
                     PlayerId = 5 // Assuming the fifth user is the owner
