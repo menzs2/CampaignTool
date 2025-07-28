@@ -34,6 +34,7 @@ builder.Services.AddScoped<CampaignService>();
 builder.Services.AddScoped<CharacterService>();
 builder.Services.AddScoped<ConnectionService>();
 builder.Services.AddScoped<OrganisationService>();
+builder.Services.AddScoped<UserService>();
 
 var app = builder.Build();
 

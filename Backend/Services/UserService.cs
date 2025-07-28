@@ -39,16 +39,7 @@ namespace Backend
             }
             _context.Users.Add(newUser);
             await _context.SaveChangesAsync();
-            // Automatically create a UserSetting for the new user
-            var usersetting = new UserSetting
-            {
-                UserId = newUser.Id,
-                DefaultCampaignId = null,
-                SelectLastCampaign = true,
-                SameNameWarning = true
-            };
-            _context.UserSettings.Add(usersetting);
-            await _context.SaveChangesAsync();
+            await CreateUserSetting(newUser.Id, null);
             return newUser?.ToDto();
         }
 
@@ -74,6 +65,50 @@ namespace Backend
                 throw new KeyNotFoundException($"User with id '{id}' not found.");
             }
             _context.Remove(exisitingUser);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<UserSettingDto>?> GetUserSettings()
+        {
+            var userSettings = await _context.UserSettings.ToListAsync();
+            return userSettings?.ToDto();
+        }
+
+        public async Task<UserSettingDto?> GetUserSettingById(long id)
+        {
+            var userSetting = await _context.UserSettings.FindAsync(id);
+            return userSetting?.ToDto();
+        }
+
+        public async Task<UserSettingDto> CreateUserSetting(long userId, UserSettingDto? userSettingDto = null)
+        {
+            var newSetting = userSettingDto ?? new UserSettingDto
+            {
+                UserId = userId,
+                DefaultCampaignId = null,
+                SelectLastCampaign = true,
+                SameNameWarning = true
+            };
+            if (_context.UserSettings.First(r => r.UserId == userId) is UserSetting existingUserSetting)
+            {
+                return existingUserSetting.ToDto();
+            }
+            _context.UserSettings.Add(newSetting.ToModel());
+            await _context.SaveChangesAsync();
+            return newSetting;
+        }
+
+        public async Task UpdateUserSetting(long id, UserSettingDto userSetting)
+        {
+            var exisitingUserSetting = await _context.UserSettings.FirstOrDefaultAsync(u => u.UserId == id);
+            if (exisitingUserSetting == null)
+            {
+                throw new KeyNotFoundException($"User setting for user with id '{id}'");
+            }
+            exisitingUserSetting.DefaultCampaignId = userSetting.DefaultCampaignId;
+            exisitingUserSetting.SelectLastCampaign = userSetting.SelectLastCampaign;
+            exisitingUserSetting.SameNameWarning = userSetting.SameNameWarning;
+            _context.Update(exisitingUserSetting);
             await _context.SaveChangesAsync();
         }
     }
