@@ -235,6 +235,7 @@ public static class Extensions
         return new UserSettingDto
         {
             Id = userSetting.Id,
+            UserId = userSetting.UserId,
             SelectLastCampaign = userSetting.SelectLastCampaign,
             SameNameWarning = userSetting.SameNameWarning,
             DefaultCampaignId = userSetting.DefaultCampaignId
@@ -254,6 +255,7 @@ public static class Extensions
         if (userSettingDto == null) return null;
         var userSetting = new UserSetting
         {
+            UserId = userSettingDto.UserId,
             SelectLastCampaign = userSettingDto.SelectLastCampaign,
             SameNameWarning = userSettingDto.SameNameWarning,
             DefaultCampaignId = userSettingDto.DefaultCampaignId
