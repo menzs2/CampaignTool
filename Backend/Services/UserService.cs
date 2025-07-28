@@ -39,7 +39,7 @@ namespace Backend
             }
             _context.Users.Add(newUser);
             await _context.SaveChangesAsync();
-            await CreateUserSetting(newUser.Id, null);
+            await CreateUserSetting(newUser.Id);
             return newUser?.ToDto();
         }
 
@@ -53,6 +53,7 @@ namespace Backend
             exisitingUser.FirstName = userDto.FirstName;
             exisitingUser.LastName = userDto.LastName;
             exisitingUser.HasLogin = userDto.HasLogin;
+            exisitingUser.Role = userDto.Role;
             _context.Update(exisitingUser);
             await _context.SaveChangesAsync();
         }
@@ -77,6 +78,10 @@ namespace Backend
         public async Task<UserSettingDto?> GetUserSettingById(long id)
         {
             var userSetting = await _context.UserSettings.FindAsync(id);
+            if (userSetting == null)
+            {
+                throw new KeyNotFoundException("User setting not found");
+            }
             return userSetting?.ToDto();
         }
 
@@ -89,7 +94,7 @@ namespace Backend
                 SelectLastCampaign = true,
                 SameNameWarning = true
             };
-            if (_context.UserSettings.First(r => r.UserId == userId) is UserSetting existingUserSetting)
+            if (_context.UserSettings.FirstOrDefault(r => r.UserId == userId) is UserSetting existingUserSetting)
             {
                 return existingUserSetting.ToDto();
             }
@@ -111,5 +116,7 @@ namespace Backend
             _context.Update(exisitingUserSetting);
             await _context.SaveChangesAsync();
         }
+
+        
     }
 }
