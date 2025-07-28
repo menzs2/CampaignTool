@@ -6,7 +6,7 @@ using Shared;
 
 namespace Backend.Tests
 {
-    public class ConnectionControllerTest
+    public class ConnectionServiceTest
     {
         private static CampaignToolContext GetDbContextWithData()
         {
