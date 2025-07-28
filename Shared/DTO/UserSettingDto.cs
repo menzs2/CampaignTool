@@ -4,6 +4,8 @@ public class UserSettingDto
 {
     public long? Id { get; set; }
 
+    public long UserId { get; set; }
+
     public bool SelectLastCampaign { get; set; }
 
     public bool SameNameWarning { get; set; }

@@ -1,5 +1,4 @@
-﻿using Backend.Data;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Shared;
 
 namespace Backend;
@@ -8,21 +7,23 @@ namespace Backend;
 [ApiController]
 public class OrganisationController : ControllerBase
 {
-    private readonly CampaignToolContext _dbContext;
+    //private readonly CampaignToolContext _dbContext;
+    private readonly OrganisationService _service;
 
-    public OrganisationController(CampaignToolContext dbContext)
+    public OrganisationController(OrganisationService service)
     {
-        _dbContext = dbContext;
+        _service = service;
     }
 
     /// <summary>
     /// gets all organisations.
     /// </summary>
     [HttpGet]
-    public IActionResult Get()
+    public async Task<IActionResult> Get()
     {
-        return _dbContext.Organisations.Any()
-            ? Ok(_dbContext.Organisations.ToDto())
+        var organisations = await _service.GetOrganisationDtoAsync();
+        return organisations != null && organisations.Any()
+            ? Ok(organisations)
             : NotFound("No organisations found.");
     }
 
@@ -31,9 +32,9 @@ public class OrganisationController : ControllerBase
     /// </summary>
     /// <param name="id">The ID of the organisation to retrieve.</param>
     [HttpGet("{id}")]
-    public IActionResult Get(long id)
+    public async Task<IActionResult> Get(long id)
     {
-        var organisation = _dbContext.Organisations.Where(o => o.Id == id).FirstOrDefault().ToDto();
+        var organisation = await _service.GetOrganisationDtoByIdAsync(id);
         return organisation != null ? Ok(organisation) : NotFound($"Organisation with ID {id} not found.");
     }
 
@@ -42,10 +43,10 @@ public class OrganisationController : ControllerBase
     /// </summary>
     /// <param name="campaignId">The ID of the campaign to retrieve organisations for.</param>
     [HttpGet("campaign/{campaignId}")]
-    public IActionResult GetByCampaign(long campaignId)
+    public async Task<IActionResult> GetByCampaign(long campaignId)
     {
-        var organisations = _dbContext.Organisations.Where(o => o.CampaignId == campaignId).ToDto();
-        return organisations.Any() ? Ok(organisations) : NotFound($"No organisations found for campaign ID {campaignId}.");
+        var organisations = await _service.GetOrganisationDtoAsync(campaignId);
+        return organisations != null && organisations.Any() ? Ok(organisations) : NotFound($"No organisations found for campaign ID {campaignId}.");
     }
 
     /// <summary>
@@ -53,12 +54,10 @@ public class OrganisationController : ControllerBase
     /// </summary>
     /// <param name="id">The ID of the organisation to find connections for.</param>
     [HttpGet("connected/{id}")]
-    public IActionResult GetConnectedOrganisations(long id)
+    public async Task<IActionResult> GetConnectedOrganisations(long id)
     {
-        var organisations = _dbContext.Organisations
-            .Where(o => o.Id != id && o.CharOrgConnections.Any(c => c.OrganisationId == id))
-            .ToDto();
-        return organisations.Any() ? Ok(organisations) : NotFound("No connected organisations found.");
+        var organisations = await _service.GetConnectedOrganisationsAsync(id);
+        return organisations != null && organisations.Any() ? Ok(organisations) : NotFound("No connected organisations found.");
     }
 
     /// <summary>
@@ -66,20 +65,23 @@ public class OrganisationController : ControllerBase
     /// </summary>
     /// <param name="organisation">The organisation data to create.</param>
     [HttpPost]
-    public IActionResult Post([FromBody] OrganisationDto? organisation)
+    public async Task<IActionResult> Post([FromBody] OrganisationDto? organisation)
     {
         if (organisation == null)
         {
             return BadRequest("Organisation data is null.");
         }
-        var newOrganisation = organisation.ToModel();
-        if (newOrganisation == null)
+        try
         {
-            return BadRequest("Invalid organisation data.");
+            await _service.CreateOrganisation(organisation);
+            return CreatedAtAction(nameof(Get), new { id = organisation.Id }, organisation);
+
         }
-        var organisationId = _dbContext.Organisations.Add(newOrganisation).Entity.Id;
-        _dbContext.SaveChanges();
-        return CreatedAtAction(nameof(Get), new { id = organisation.Id }, organisation);
+        catch (Exception ex)
+        {
+            // TODO: Log the exception (ex) here
+            return StatusCode(500, "Internal server error");
+        }
     }
 
     /// <summary>
@@ -88,26 +90,27 @@ public class OrganisationController : ControllerBase
     /// <param name="id">The ID of the organisation to update.</param>
     /// <param name="organisation">The updated organisation data.</param>
     [HttpPut("{id}")]
-    public IActionResult Put(long id, [FromBody] OrganisationDto? organisation)
+    public async Task<IActionResult> Put(long id, [FromBody] OrganisationDto? organisation)
     {
         if (organisation == null || organisation.Id != id)
         {
             return BadRequest("Organisation data is invalid.");
         }
 
-        var existingOrganisation = _dbContext.Organisations.Find(id);
-        if (existingOrganisation == null)
+        try
         {
-            return NotFound($"Organisation with ID {id} not found.");
+            await _service.UpdateOrganisation(id, organisation);
+            return NoContent();
         }
-
-        existingOrganisation.Name = organisation.Name;
-        existingOrganisation.Description = organisation.Description;
-        existingOrganisation.GmOnlyDescription = organisation.GmOnlyDescription;
-        existingOrganisation.GmOnly = organisation.GmOnly;
-
-        _dbContext.SaveChanges();
-        return NoContent();
+        catch (KeyNotFoundException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            // TODO: Log the exception (ex) here
+            return StatusCode(500, "Internal server error");
+        }
     }
 
     /// <summary>
@@ -115,16 +118,21 @@ public class OrganisationController : ControllerBase
     /// </summary>
     /// <param name="id">The ID of the organisation to delete.</param>
     [HttpDelete("{id}")]
-    public IActionResult Delete(long id)
+    public async Task<IActionResult> Delete(long id)
     {
-        var organisation = _dbContext.Organisations.Find(id);
-        if (organisation == null)
+        try
         {
-            return NotFound($"Organisation with ID {id} not found.");
+            await _service.DeleteOrganisation(id);
+            return NoContent();
         }
-
-        _dbContext.Organisations.Remove(organisation);
-        _dbContext.SaveChanges();
-        return NoContent();
+        catch (KeyNotFoundException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            // TODO: Log the exception (ex) here
+            return StatusCode(500, "Internal server error");
+        }
     }
 }

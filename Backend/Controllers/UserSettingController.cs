@@ -1,30 +1,26 @@
-﻿using Backend.Data;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Shared;
 
 namespace Backend;
 
 public class UserSettingController : ControllerBase
 {
-    private readonly CampaignToolContext _dbContext;
+    private readonly UserService _service;
 
-    public UserSettingController(CampaignToolContext dbContext)
+    public UserSettingController(UserService service)
     {
-        _dbContext = dbContext;
+        _service = service;
     }
 
     /// <summary>
     /// Gets user settings.
     /// </summary>
     [HttpGet]
-    public IActionResult Get()
+    public async Task<IActionResult> Get()
     {
-        var userSetting = _dbContext.UserSettings.FirstOrDefault()?.ToDto();
-        if (userSetting == null)
-        {
-            return NotFound("User settings not found.");
-        }
-        return Ok(userSetting);
+        var userSettings = await _service.GetUserSettings();
+
+        return userSettings.Any() ? Ok(userSettings) : NotFound("No users settings found."); ;
     }
 
     /// <summary>
@@ -32,14 +28,10 @@ public class UserSettingController : ControllerBase
     /// </summary>
     /// <param name="id">The ID of the user setting to retrieve.</param>
     [HttpGet("{id}")]
-    public IActionResult Get(long id)
+    public async Task<IActionResult> Get(long id)
     {
-        var userSetting = _dbContext.UserSettings.Where(us => us.Id == id).FirstOrDefault()?.ToDto();
-        if (userSetting == null)
-        {
-            return NotFound($"User setting with ID {id} not found.");
-        }
-        return Ok(userSetting);
+        var userSetting = await _service.GetUserSettingById(id);
+        return userSetting != null ? Ok(userSetting) : NotFound($"User setting with ID {id} not found.");
     }
 
     /// <summary>
@@ -49,20 +41,21 @@ public class UserSettingController : ControllerBase
     /// The user setting data to create. Can be null; if null, a BadRequest response is returned.
     /// </param>
     [HttpPost]
-    public IActionResult Post([FromBody] UserSettingDto? userSetting)
+    public async Task<IActionResult> Post(long id, [FromBody] UserSettingDto? userSetting)
     {
         if (userSetting == null)
         {
             return BadRequest("User setting data is null.");
         }
-        var newUserSetting = userSetting.ToModel();
-        if (newUserSetting == null)
+        try
         {
-            return BadRequest("Invalid user setting data.");
+            var newUserSetting = await _service.CreateUserSetting(id, userSetting);
         }
-
-        _dbContext.UserSettings.Add(newUserSetting);
-        _dbContext.SaveChanges();
+        catch (Exception ex)
+        {
+            // TODO: Log the exception (ex) here
+            return StatusCode(500, "Internal server error");
+        }
         return CreatedAtAction(nameof(Get), new { id = userSetting.Id }, userSetting);
     }
 
@@ -74,42 +67,26 @@ public class UserSettingController : ControllerBase
     /// The user setting data to update. Must not be null and must match the ID.
     /// </param>
     [HttpPut("{id}")]
-    public IActionResult Put(long id, [FromBody] UserSettingDto? userSetting)
+    public async Task<ActionResult> Put(long id, [FromBody] UserSettingDto? userSetting)
     {
-        if (userSetting == null || userSetting.Id != id)
-        {
-            return BadRequest("User setting data is invalid.");
-        }
-
-        var existingUserSetting = _dbContext.UserSettings.Find(id);
-        if (existingUserSetting == null)
-        {
-            return NotFound($"User setting with ID {id} not found.");
-        }
-
-        existingUserSetting.SelectLastCampaign = userSetting.SelectLastCampaign;
-        existingUserSetting.SameNameWarning = userSetting.SameNameWarning;
-        existingUserSetting.DefaultCampaignId = userSetting.DefaultCampaignId;
-
-        _dbContext.SaveChanges();
-        return NoContent();
-    }
-
-    /// <summary>
-    /// Deletes a user setting by its ID.
-    /// </summary>
-    /// <param name="id">The ID of the user setting to delete.</param>
-    [HttpDelete("{id}")]
-    public IActionResult Delete(long id)
-    {
-        var userSetting = _dbContext.UserSettings.Find(id);
         if (userSetting == null)
         {
-            return NotFound($"User setting with ID {id} not found.");
+            return BadRequest("User setting data is null.");
         }
-
-        _dbContext.UserSettings.Remove(userSetting);
-        _dbContext.SaveChanges();
-        return NoContent();
+        try
+        {
+            await _service.UpdateUserSetting(id, userSetting);
+            return NoContent();
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            // TODO: Log the exception (ex) here
+            return StatusCode(500, "Internal server error");
+        }
     }
+
 }

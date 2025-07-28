@@ -19,27 +19,19 @@ public class CampaignController : ControllerBase
     /// Gets all campaigns.
     /// </summary>
     [HttpGet]
-    public IActionResult Get()
+    public async Task<IActionResult> Get()
     {
-        try
-        {
-            var campaigns = _campaignService.GetAllCampaigns();
-            return campaigns.Any() ? Ok(campaigns) : NotFound("No campaigns found.");
-        }
-        catch
-        {
-            // Log the exception (not implemented here)
-            return StatusCode(500, "Internal server error");
-        }
+        var campaigns = await _campaignService.GetAllCampaigns();
+        return campaigns.Any() ? Ok(campaigns) : NotFound("No campaigns found.");
     }
 
     /// <summary>
     /// Gets a campaign by its ID.
     /// </summary>
     [HttpGet("{id}")]
-    public IActionResult Get(long id)
+    public async Task<IActionResult> Get(long id)
     {
-        var campaign = _campaignService.GetCampaignById(id);
+        var campaign = await _campaignService.GetCampaignById(id);
         return campaign != null ? Ok(campaign) : NotFound($"Campaign with ID {id} not found.");
     }
 
@@ -47,9 +39,9 @@ public class CampaignController : ControllerBase
     /// Gets campaigns associated with a specific GM by their ID.
     /// </summary>
     [HttpGet("gm/{gmId}")]
-    public IActionResult GetByGmId(long gmId)
+    public async Task<IActionResult> GetByGmId(long gmId)
     {
-        var campaigns = _campaignService.GetCampaignsByGmId(gmId);
+        var campaigns = await _campaignService.GetCampaignsByGmId(gmId);
         return campaigns.Any() ? Ok(campaigns) : NotFound($"No campaigns found for GM with ID {gmId}.");
     }
 
@@ -85,6 +77,10 @@ public class CampaignController : ControllerBase
             var updatedCampaign = await _campaignService.UpdateCampaignAsync(campaign);
             return NoContent();
         }
+        catch (KeyNotFoundException)
+        {
+            return BadRequest($"Campaign with key '{id}' not found.");
+        }
         catch
         {
             // TODO: Log the exception.
@@ -104,9 +100,9 @@ public class CampaignController : ControllerBase
             await _campaignService.DeleteCampaignAsync(id);
             return NoContent();
         }
-        catch (KeyNotFoundException)
+        catch (KeyNotFoundException ex)
         {
-            return NotFound($"Campaign with ID {id} not found.");
+            return NotFound(ex.Message);
         }
         catch
         {

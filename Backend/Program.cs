@@ -1,3 +1,4 @@
+using Backend;
 using Backend.Data;
 using Backend.Services;
 using Microsoft.EntityFrameworkCore;
@@ -30,7 +31,10 @@ builder.Services.AddScoped<CreateDefaultCampaign>();
 
 // Register the Services
 builder.Services.AddScoped<CampaignService>();
-
+builder.Services.AddScoped<CharacterService>();
+builder.Services.AddScoped<ConnectionService>();
+builder.Services.AddScoped<OrganisationService>();
+builder.Services.AddScoped<UserService>();
 
 var app = builder.Build();
 

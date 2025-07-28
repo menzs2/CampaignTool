@@ -1,6 +1,4 @@
-﻿using Backend.Data;
-using Backend.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Shared;
 
 namespace Backend;
@@ -9,21 +7,22 @@ namespace Backend;
 [ApiController]
 public class UserController : ControllerBase
 {
-    private readonly CampaignToolContext _dbContext;
+    private readonly UserService _service;
 
-    public UserController(CampaignToolContext dbContext)
+    public UserController(UserService service)
     {
-        _dbContext = dbContext;
+        _service = service;
     }
 
     /// <summary>
     /// Retrieves all users.
     /// </summary>
     [HttpGet]
-    public IActionResult Get()
+    public async Task<IActionResult> Get()
     {
-        return _dbContext.Users.Any()
-            ? Ok(_dbContext.Users.ToDto())
+        var users = await _service.GetAllUsers();
+        return users.Any()
+            ? Ok(users)
             : NotFound("No users found.");
     }
 
@@ -32,13 +31,9 @@ public class UserController : ControllerBase
     /// </summary>
     /// <param name="id">The ID of the user to retrieve.</param>
     [HttpGet("{id}")]
-    public IActionResult Get(long id)
+    public async Task<IActionResult> Get(long id)
     {
-        var user = _dbContext.Users.Where(u => u.Id == id).FirstOrDefault()?.ToDto();
-        if (user == null)
-        {
-            return NotFound($"User with ID {id} not found.");
-        }
+        var user = await _service.GetUserByID(id);
         return user != null ? Ok(user) : NotFound($"User with ID {id} not found.");
     }
 
@@ -49,31 +44,22 @@ public class UserController : ControllerBase
     /// The user data to add. Can be null; if null, a BadRequest response is returned.
     /// </param>
     [HttpPost]
-    public IActionResult Post([FromBody] UserDto? user)
+    public async Task<IActionResult> Post([FromBody] UserDto? user)
     {
         if (user == null)
         {
             return BadRequest("User data is null.");
         }
-        var newUser = user.ToModel();
-        if (newUser == null)
+        try
         {
-            return BadRequest("Invalid user data.");
+            var newUser = await _service.CreateUser(user);
+            return CreatedAtAction(nameof(Get), new { id = newUser.Id }, user);
         }
-
-        _dbContext.Users.Add(newUser);
-        _dbContext.SaveChanges();
-        // Automatically create a UserSetting for the new user
-        var usersetting = new UserSetting
+        catch (Exception ex)
         {
-            UserId = newUser.Id,
-            DefaultCampaignId = null,
-            SelectLastCampaign = true,
-            SameNameWarning = true
-        };
-        _dbContext.UserSettings.Add(usersetting);
-        _dbContext.SaveChanges();
-        return CreatedAtAction(nameof(Get), new { id = newUser.Id }, user);
+            // TODO: Log the exception (ex) here
+            return StatusCode(500, "Internal server error");
+        }
     }
 
     /// <summary>
@@ -82,25 +68,27 @@ public class UserController : ControllerBase
     /// <param name="id">The ID of the user to update.</param>
     /// <param name="user">The updated user data.</param>
     [HttpPut("{id}")]
-    public IActionResult Put(long id, [FromBody] UserDto? user)
+    public async Task<IActionResult> Put(long id, [FromBody] UserDto? user)
     {
         if (user == null || user.Id != id)
         {
             return BadRequest("User data is invalid.");
         }
 
-        var existingUser = _dbContext.Users.Find(id);
-        if (existingUser == null)
+        try
         {
-            return NotFound($"User with ID {id} not found.");
+            await _service.UpdateUser(id, user);
+            return NoContent();
         }
-
-        existingUser.UserName = user.UserName;
-        existingUser.Email = user.Email;
-        existingUser.Password = user.Password;
-
-        _dbContext.SaveChanges();
-        return NoContent();
+        catch (KeyNotFoundException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            // TODO: Log the exception (ex) here
+            return StatusCode(500, "Internal server error");
+        }
     }
 
     /// <summary>
@@ -111,16 +99,21 @@ public class UserController : ControllerBase
     /// This action will remove the user from the database.
     /// </remarks>
     [HttpDelete("{id}")]
-    public IActionResult Delete(long id)
+    public async Task<IActionResult> Delete(long id)
     {
-        var user = _dbContext.Users.Find(id);
-        if (user == null)
+        try
         {
-            return NotFound($"User with ID {id} not found.");
+            await _service.DeleteUser(id);
         }
-
-        _dbContext.Users.Remove(user);
-        _dbContext.SaveChanges();
+        catch (KeyNotFoundException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            // TODO: Log the exception (ex) here
+            return StatusCode(500, "Internal server error");
+        }
         return NoContent();
     }
 }
