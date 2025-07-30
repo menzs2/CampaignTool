@@ -24,6 +24,17 @@ builder.Services.AddSwaggerGen(c =>
     c.IncludeXmlComments(xmlPath);
 });
 
+// Add Cors policy
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("https://localhost:7099")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 // Configure EF Core with PostgreSQL
 builder.Services.AddDbContext<CampaignToolContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -70,4 +81,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+app.UseRouting();
+app.UseCors();
 app.Run();
