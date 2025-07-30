@@ -1,7 +1,22 @@
+@using Shared;
+
 <section class="entitylist">
+      @if (EntityList == null || !EntityList.Any()){
+        <h2>Keine Daten gefunden.</h2>
+      }
+      else{
+        <ul>
+            @foreach(var entity in EntityList){
+                <li>
+                    <ListEntityComponent Entity="entity"/>
+                </li>
+            }
+        </ul>
+      }
 
 </section>
 
-@code{
-    
+@code {
+    [Parameter]
+    public List<BaseEntityDto> EntityList { get; set; }
 }

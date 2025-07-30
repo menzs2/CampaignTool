@@ -1,9 +1,15 @@
 @using Shared
-<article class="entity">
+@using System.ComponentModel.DataAnnotations;
 
+<article class="entity px-1">
+    <p>@Entity.Name</p>
+    <p>@isCollapsed ? @Entity.DescriptionShort: @Entity.Description</p>
+    <button>OK</button>
 </article>
 
 @code {
     [Parameter]
-    public BaseEntityDto entity {get; set;}
+    public BaseEntityDto Entity {get; set;}
+
+    public bool isCollapsed = true;
 }
