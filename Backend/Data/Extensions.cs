@@ -13,10 +13,10 @@ public static class Extensions
         return new CampaignDto
         {
             Id = campaign.Id,
-            CampaignName = campaign.CampaignName,
+            Name = campaign.CampaignName,
             DescriptionShort = campaign.DescriptionShort,
             Description = campaign.Description,
-            Gm = campaign.Gm,
+            GmId = campaign.Gm,
             GmOnlyDescription = campaign.GmOnlyDescription
         };
     }

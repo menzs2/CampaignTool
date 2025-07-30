@@ -12,7 +12,6 @@ public class BaseEntityDto
 
     public string? State { get; set; }
 
-    public long? CampaignId { get; set; }
 
     public string? GmOnlyDescription { get; set; }
 
