@@ -62,11 +62,11 @@ public class CampaignService
             throw new KeyNotFoundException($"Campaign with ID {campaignDto.Id} not found.");
         }
 
-        existingCampaign.CampaignName = campaignDto.CampaignName;
+        existingCampaign.CampaignName = campaignDto.Name;
         existingCampaign.Description = campaignDto.Description;
         existingCampaign.DescriptionShort = campaignDto.DescriptionShort;
         existingCampaign.GmOnlyDescription = campaignDto.GmOnlyDescription;
-        existingCampaign.Gm = campaignDto.Gm;
+        existingCampaign.Gm = campaignDto.GmId;
         DbContext.Campaigns.Update(existingCampaign);
         await DbContext.SaveChangesAsync();
         return existingCampaign.ToDto();

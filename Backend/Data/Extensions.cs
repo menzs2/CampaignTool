@@ -29,10 +29,10 @@ public static class Extensions
         if (campaignDto == null) return null;
         var newCampaign = new Campaign
         {
-            CampaignName = campaignDto.CampaignName,
+            CampaignName = campaignDto.Name,
             DescriptionShort = campaignDto.DescriptionShort,
             Description = campaignDto.Description,
-            Gm = campaignDto.Gm,
+            Gm = campaignDto.GmId,
             GmOnlyDescription = campaignDto.GmOnlyDescription
         };
         if (campaignDto.Id.HasValue)
