@@ -111,6 +111,7 @@ namespace Backend.Tests
 
             Assert.NotNull(result);
             Assert.Equal(result.LastName, newUser.LastName);
+            Assert.NotNull(result.Id);
         }
 
         [Fact]
@@ -133,6 +134,7 @@ namespace Backend.Tests
 
             Assert.NotNull(result);
             Assert.IsType<UserSettingDto>(result);
+            Assert.NotNull(result.Id);
             Assert.Equal(result.SameNameWarning, newUser.UserSetting.SameNameWarning);
         }
 

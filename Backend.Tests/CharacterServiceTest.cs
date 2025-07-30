@@ -87,10 +87,11 @@ namespace Backend.Tests
 
             var result = await service.AddCharacterAsync(dto);
 
-            var addedCharacter = context.Characters.FirstOrDefault(c => c.Name == "NewChar");
-            Assert.NotNull(addedCharacter);
-            Assert.Equal("NewChar", addedCharacter.Name);
-            Assert.Equal(1, addedCharacter.CampaignId);
+            Assert.NotNull(result);
+            Assert.IsType<CharacterDto>(result);
+            Assert.NotNull(result.Id);
+            Assert.Equal("NewChar", result.Name);
+            Assert.Equal(1, result.CampaignId);
             Assert.NotNull(context.Characters.FirstOrDefault(c => c.Name == "NewChar"));
         }
 

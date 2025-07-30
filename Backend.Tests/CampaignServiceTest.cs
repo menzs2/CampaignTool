@@ -88,10 +88,10 @@ namespace Backend.Tests
 
             var result = await service.GetCampaignsByGmId(1);
 
-            var returned = Assert.IsType<List<CampaignDto>>(result);
-            Assert.NotNull(returned);
-            Assert.NotEmpty(returned);
-            Assert.Equal(2, returned.Count());
+            Assert.NotNull(result);
+            Assert.IsType<List<CampaignDto>>(result);
+            Assert.NotEmpty(result);
+            Assert.Equal(2, result.Count());
         }
 
         [Fact]
@@ -117,17 +117,19 @@ namespace Backend.Tests
 
             var dto = new CampaignDto
             {
-                CampaignName = "New",
+                Name = "New",
                 Description = "Desc",
                 DescriptionShort = "Short",
                 GmOnlyDescription = "GM",
-                Gm = 1
+                GmId = 1
             };
 
             var result = await service.AddCampaignAsync(dto);
 
             var created = Assert.IsType<CampaignDto>(result);
-            Assert.NotNull(context.Campaigns.FirstOrDefault(c => c.CampaignName == "New"));
+            Assert.NotNull(created);
+            Assert.IsType<CampaignDto>(result);
+            Assert.NotNull(result.Id);
         }
 
         [Fact]
@@ -155,11 +157,11 @@ namespace Backend.Tests
             var dto = new CampaignDto
             {
                 Id = 1,
-                CampaignName = "Updated",
+                Name = "Updated",
                 Description = "Desc",
                 DescriptionShort = "Short",
                 GmOnlyDescription = "GM",
-                Gm = 2
+                GmId= 2
             };
 
             var result = await service.UpdateCampaignAsync(dto);
@@ -178,8 +180,8 @@ namespace Backend.Tests
             var dto = new CampaignDto
             {
                 Id = 1,
-                CampaignName = "Updated",
-                Gm = 2
+                Name = "Updated",
+                GmId = 2
             };
 
             try

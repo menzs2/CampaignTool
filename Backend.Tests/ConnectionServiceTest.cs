@@ -67,10 +67,12 @@ namespace Backend.Tests
             var context = GetDbContextWithData();
             var controller = new ConnectionService(context);
 
-            var dto = new ConnectionDto { Id = 0, ConnectionName = "New", Description = "Desc", GmOnly = false, CampaignId = 1 };
+            var dto = new ConnectionDto {  ConnectionName = "New", Description = "Desc", GmOnly = false, CampaignId = 1 };
             var result = await controller.CreateConnectionAsync(dto);
 
             Assert.IsType<ConnectionDto>(result);
+            Assert.NotNull(result.Id);
+
         }
 
         [Fact]
@@ -219,7 +221,7 @@ namespace Backend.Tests
             {
                 await controller.DeleteCharToCharConnectionAsync(999);
             }
-            catch (KeyNotFoundException){}
+            catch (KeyNotFoundException) { }
         }
 
         [Fact]

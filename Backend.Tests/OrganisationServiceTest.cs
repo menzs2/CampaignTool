@@ -194,6 +194,7 @@ public class OrganisationServiceTest
         Assert.IsType<OrganisationDto>(result);
         Assert.Equal(newOrganisation.Name, result.Name);
         Assert.IsType<OrganisationDto>(OrgaFour);
+        Assert.NotNull(result.Id);
         Assert.Equal(newOrganisation.Name, OrgaFour.Name);
     }
 

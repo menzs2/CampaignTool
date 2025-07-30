@@ -20,7 +20,7 @@ public class UserSettingController : ControllerBase
     {
         var userSettings = await _service.GetUserSettings();
 
-        return userSettings.Any() ? Ok(userSettings) : NotFound("No users settings found."); ;
+        return userSettings != null && userSettings.Any() ? Ok(userSettings) : NotFound("No users settings found."); ;
     }
 
     /// <summary>
@@ -37,6 +37,9 @@ public class UserSettingController : ControllerBase
     /// <summary>
     /// Creates a new user setting.
     /// </summary>
+    /// <param name="id">
+    /// The id of the user
+    /// </param>
     /// <param name="userSetting">
     /// The user setting data to create. Can be null; if null, a BadRequest response is returned.
     /// </param>

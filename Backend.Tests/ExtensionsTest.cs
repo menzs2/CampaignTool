@@ -68,8 +68,8 @@ namespace Backend.Tests
             Assert.NotNull(result);
             Assert.Equal(2, result.Count());
             var resultList = result.ToList();
-            Assert.Equal("Test Campaign", resultList[0].CampaignName);
-            Assert.Equal("Another Campaign", resultList[1].CampaignName);
+            Assert.Equal("Test Campaign", resultList[0].Name);
+            Assert.Equal("Another Campaign", resultList[1].Name);
         }
 
         [Fact]
