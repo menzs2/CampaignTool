@@ -89,4 +89,31 @@ public class CharacterDataService : BaseDataService
             Console.WriteLine($"Error: {ex.Message}");
         }
     }
+
+    public async Task PutCharacterAsyinc(long id, CharacterDto character)
+    {
+        var content = JsonContent.Create(character);
+        try
+        {
+            using var respone = await HttpClient.PutAsJsonAsync($"http://localhost:5043/api/character/{id}", content);
+            respone.EnsureSuccessStatusCode();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+
+    public async Task DeleteCharacterAsync(long id)
+    {
+        try
+        {
+            using var respone = await HttpClient.DeleteAsync($"http://localhost:5043/api/character/{id}");
+            respone.EnsureSuccessStatusCode();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
 }
