@@ -9,4 +9,6 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5043") });
 builder.Services.AddScoped<CampaignDataService>();
 builder.Services.AddScoped<CharacterDataService>();
+builder.Services.AddScoped<ConnectionDataService>();
+
 await builder.Build().RunAsync();
