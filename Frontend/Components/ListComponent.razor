@@ -1,22 +1,30 @@
 @using Shared;
 
 <section class="entitylist">
-      @if (EntityList == null || !EntityList.Any()){
-        <h2>Keine Daten gefunden.</h2>
-      }
-      else{
-        <ul>
-            @foreach(var entity in EntityList){
-                <li>
-                    <ListEntityComponent Entity="entity"/>
-                </li>
-            }
-        </ul>
-      }
+  <div>
+    <p>@EntityType</p>
+    <button class="btn">+</button>
+  </div>
+
+  @if (EntityList == null || !EntityList.Any())
+  {
+    <h2>Keine Daten gefunden.</h2>
+  }
+  else
+  {
+    <Virtualize Items="@EntityList" ItemSize="50">
+      <ItemContent Context="e">
+        <ListEntityComponent Entity="e" />
+      </ItemContent>
+    </Virtualize>
+  }
 
 </section>
 
 @code {
-    [Parameter]
-    public List<BaseEntityDto> EntityList { get; set; }
+  [Parameter]
+  public List<BaseEntityDto> EntityList { get; set; }
+
+  [Parameter]
+  public string EntityType { get; set; }
 }
