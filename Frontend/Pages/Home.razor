@@ -1,5 +1,5 @@
 ﻿@page "/"
-@inject HttpClient Httpclient
+@inject CampaignDataService dataService
 @using System.Net.Http.Json
 @using System.Text.Json
 @using Shared;
@@ -28,14 +28,7 @@ else
     {
         try
         {
-            var response = await Httpclient.GetAsync("http://localhost:5043/api/campaign");
-            response.EnsureSuccessStatusCode();
-            var json = await response.Content.ReadAsStringAsync();
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            };
-            Campaigns = JsonSerializer.Deserialize<List<CampaignDto>>(json, options);
+            Campaigns = await dataService.GetCampaigns();
         }
         catch (Exception ex)
         {
