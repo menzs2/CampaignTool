@@ -1,6 +1,4 @@
-﻿using System.Net.Http.Json;
-using System.Text.Json;
-using Shared;
+﻿using System.Text.Json;
 
 namespace Frontend;
 
