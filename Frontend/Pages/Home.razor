@@ -9,18 +9,21 @@
 
 <h1>Hello, world!</h1>
 
-@if (campaigns != null && campaigns.Any())
+@if (Campaigns != null && Campaigns.Any())
 {
-     <ListComponent EntityList = campaigns></ListComponent>
+    <div>
+        <Frontend.Components.ListComponent EntityList="@(Campaigns?.Cast<BaseEntityDto>().ToList())" />
+    </div>
 }
-else{
+else
+{
     <p>Not data found.</p>
 }
 
 
 @code {
 
-    protected CampaignDto[] campaigns;
+    protected List<CampaignDto>? Campaigns;
     protected override async Task OnInitializedAsync()
     {
         try
@@ -28,7 +31,11 @@ else{
             var response = await Httpclient.GetAsync("http://localhost:5043/api/campaign");
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
-            campaigns = JsonSerializer.Deserialize<CampaignDto[]>(json);
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            Campaigns = JsonSerializer.Deserialize<List<CampaignDto>>(json, options);
         }
         catch (Exception ex)
         {

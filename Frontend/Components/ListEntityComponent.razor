@@ -3,13 +3,22 @@
 
 <article class="entity px-1">
     <p>@Entity.Name</p>
-    <p>@isCollapsed ? @Entity.DescriptionShort: @Entity.Description</p>
-    <button>OK</button>
+    <p>@Entity.DescriptionShort</p>
+    @if (Entity is CampaignDto campaignDto)
+    {
+        <p>SL @campaignDto.GmId</p>
+    }
+
 </article>
 
 @code {
     [Parameter]
-    public BaseEntityDto Entity {get; set;}
+    public BaseEntityDto Entity { get; set; } = new BaseEntityDto
+    {
+        Name = "BaseEntity",
+        DescriptionShort = "BaseDescription"
+    };
 
     public bool isCollapsed = true;
+
 }
