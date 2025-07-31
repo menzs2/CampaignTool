@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+﻿using System.Net.Http.Json;
 using Shared;
 
 namespace Frontend;
@@ -11,10 +11,9 @@ public class CampaignDataService : BaseDataService
     {
         try
         {
-            using var response = await HttpClient.GetAsync("http://localhost:5043/api/campaign");
+            using var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}api/campaign");
             response.EnsureSuccessStatusCode();
-            var json = await response.Content.ReadAsStringAsync();
-            var campaigns = JsonSerializer.Deserialize<List<CampaignDto>>(json, SerializerOptions);
+            var campaigns = await response.Content.ReadFromJsonAsync<List<CampaignDto>>();
             return campaigns;
         }
         catch (Exception ex)
@@ -28,10 +27,9 @@ public class CampaignDataService : BaseDataService
     {
         try
         {
-            var response = await HttpClient.GetAsync("http://localhost:5043/api/campaign");
+            var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}api/campaign");
             response.EnsureSuccessStatusCode();
-            var json = await response.Content.ReadAsStringAsync();
-            var campaigns = JsonSerializer.Deserialize<List<CampaignDto>>(json, SerializerOptions);
+            var campaigns = await response.Content.ReadFromJsonAsync<List<CampaignDto>>();
             return campaigns;
         }
         catch (Exception ex)

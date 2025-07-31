@@ -5,8 +5,8 @@ namespace Frontend;
 public abstract class BaseDataService
 {
     protected HttpClient HttpClient { get; set; }
-
-    protected JsonSerializerOptions SerializerOptions {get; set;}
+    
+    protected JsonSerializerOptions SerializerOptions { get; set; }
 
     public BaseDataService(HttpClient httpClient)
     {

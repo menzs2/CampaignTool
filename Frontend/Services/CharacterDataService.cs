@@ -1,5 +1,4 @@
 ﻿using System.Net.Http.Json;
-using System.Text.Json;
 using Shared;
 
 namespace Frontend;
@@ -12,10 +11,9 @@ public class CharacterDataService : BaseDataService
     {
         try
         {
-            var response = await HttpClient.GetAsync("http://localhost:5043/api/character");
+            var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}api/character");
             response.EnsureSuccessStatusCode();
-            var json = await response.Content.ReadAsStringAsync();
-            var characters = JsonSerializer.Deserialize<List<CharacterDto>>(json, SerializerOptions);
+            var characters = await response.Content.ReadFromJsonAsync<List<CharacterDto>>();
             return characters;
         }
         catch (Exception ex)
@@ -29,11 +27,10 @@ public class CharacterDataService : BaseDataService
     {
         try
         {
-            var response = await HttpClient.GetAsync($"http://localhost:5043/api/character/{id}");
+            var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}api/character/{id}");
             response.EnsureSuccessStatusCode();
-            var json = await response.Content.ReadAsStringAsync();
-            var character = JsonSerializer.Deserialize<List<CharacterDto>>(json, SerializerOptions);
-            return character?.FirstOrDefault();
+            var characters = await response.Content.ReadFromJsonAsync<List<CharacterDto>>();
+            return characters?.FirstOrDefault();
         }
         catch (Exception ex)
         {
@@ -46,10 +43,9 @@ public class CharacterDataService : BaseDataService
     {
         try
         {
-            var response = await HttpClient.GetAsync($"http://localhost:5043/api/character/campaign/{id}");
+            var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}api/character/campaign/{id}");
             response.EnsureSuccessStatusCode();
-            var json = await response.Content.ReadAsStringAsync();
-            var characters = JsonSerializer.Deserialize<List<CharacterDto>>(json, SerializerOptions);
+            var characters = await response.Content.ReadFromJsonAsync<List<CharacterDto>>();
             return characters;
         }
         catch (Exception ex)
@@ -63,10 +59,9 @@ public class CharacterDataService : BaseDataService
     {
         try
         {
-            var response = await HttpClient.GetAsync($"http://localhost:5043/api/character/connected/{id}");
+            var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}api/character/connected/{id}");
             response.EnsureSuccessStatusCode();
-            var json = await response.Content.ReadAsStringAsync();
-            var characters = JsonSerializer.Deserialize<List<CharacterDto>>(json, SerializerOptions);
+            var characters = await response.Content.ReadFromJsonAsync<List<CharacterDto>>();
             return characters;
         }
         catch (Exception ex)
@@ -81,7 +76,7 @@ public class CharacterDataService : BaseDataService
         var content = JsonContent.Create(character);
         try
         {
-            using var respone = await HttpClient.PostAsJsonAsync("http://localhost:5043/api/character", content);
+            using var respone = await HttpClient.PostAsJsonAsync($"{HttpClient.BaseAddress}api/character", content);
             respone.EnsureSuccessStatusCode();
         }
         catch (Exception ex)
@@ -95,7 +90,7 @@ public class CharacterDataService : BaseDataService
         var content = JsonContent.Create(character);
         try
         {
-            using var respone = await HttpClient.PutAsJsonAsync($"http://localhost:5043/api/character/{id}", content);
+            using var respone = await HttpClient.PutAsJsonAsync($"{HttpClient.BaseAddress}api/character/{id}", content);
             respone.EnsureSuccessStatusCode();
         }
         catch (Exception ex)
@@ -108,7 +103,7 @@ public class CharacterDataService : BaseDataService
     {
         try
         {
-            using var respone = await HttpClient.DeleteAsync($"http://localhost:5043/api/character/{id}");
+            using var respone = await HttpClient.DeleteAsync($"{HttpClient.BaseAddress}api/character/{id}");
             respone.EnsureSuccessStatusCode();
         }
         catch (Exception ex)
