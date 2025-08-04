@@ -4,19 +4,19 @@
 
 <article class="entity border rounded px-1">
     <p>@Entity.Name</p>
-    <button class="btn btn-primary btn-sm" @onclick="() => SelectEntity(Entity)"><i
+    <button class="btn btn-primary btn-sm" @onclick="() => NotifyParent()"><i
             class="bi bi-arrow-right"></i></button>
     <button class="btn btn-secondary btn-sm" @onclick="() => isCollapsed = !isCollapsed">
         <i class="bi @(isCollapsed ? "bi-chevron-right" : "bi-chevron-down")"></i>
     </button>
     <p>@if(@isCollapsed){
-    @Entity.DescriptionShort
-        } else
-    {
+        @Entity.DescriptionShort
+                } else
+        {
 
-        @Entity.Description
-    }
-</p>
+            @Entity.Description
+        }
+    </p>
     @if (Entity is CampaignDto campaignDto)
     {
         <p>SL @campaignDto.GmId</p>
@@ -39,12 +39,17 @@
         DescriptionShort = "BaseDescription"
     };
 
-    public bool isCollapsed = true;
+    [Parameter]
+    public EventCallback<long> OnNotifyParent { get; set; }
 
-    public void SelectEntity(BaseEntityDto entity)
+    private async Task NotifyParent()
     {
-        //navigate to the entity details page
-        Console.WriteLine($"Selected Entity: {entity.Name}");
-        NavigationManager.NavigateTo($"/campaign/{entity.Id}");
+        if (OnNotifyParent.HasDelegate)
+        {
+            await OnNotifyParent.InvokeAsync(Entity.Id.Value);
+        }
     }
+
+    public bool isCollapsed = true;
+   
 }

@@ -1,5 +1,7 @@
 ﻿@page "/"
 @inject CampaignDataService dataService
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage;
+@inject NavigationManager NavigationManager;
 @using System.Net.Http.Json
 @using System.Text.Json
 @using Shared;
@@ -12,8 +14,7 @@
 @if (Campaigns != null && Campaigns.Any())
 {
     <div>
-        <Frontend.Components.ListComponent EntityList="@(Campaigns?.Cast<BaseEntityDto>().ToList())"
-            EntityType="Kampagne" />
+        <Frontend.Components.ListComponent EntityList="@(Campaigns?.Cast<BaseEntityDto>().ToList())" OnNotifyParent="@SelectCampaign" />
     </div>
 }
 else
@@ -25,6 +26,7 @@ else
 @code {
 
     protected List<CampaignDto>? Campaigns;
+
     protected override async Task OnInitializedAsync()
     {
         try
@@ -35,5 +37,12 @@ else
         {
             Console.WriteLine($"Error: {ex.Message}");
         }
+    }
+
+    private void SelectCampaign(long campaignId)
+    {
+        // Set the campaign to session storage by Id
+        sessionStorage.SetItemAsync("SelectedCampaignId", campaignId);
+        NavigationManager.NavigateTo($"/campaign/{campaignId}");
     }
 }

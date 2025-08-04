@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Blazored.SessionStorage;
 using Frontend;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -10,5 +11,6 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://
 builder.Services.AddScoped<CampaignDataService>();
 builder.Services.AddScoped<CharacterDataService>();
 builder.Services.AddScoped<ConnectionDataService>();
+builder.Services.AddBlazoredSessionStorage();
 
 await builder.Build().RunAsync();
