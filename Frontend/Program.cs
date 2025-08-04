@@ -11,6 +11,7 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://
 builder.Services.AddScoped<CampaignDataService>();
 builder.Services.AddScoped<CharacterDataService>();
 builder.Services.AddScoped<ConnectionDataService>();
+builder.Services.AddScoped<OrganisationDataService>();
 builder.Services.AddBlazoredSessionStorage();
 
 await builder.Build().RunAsync();

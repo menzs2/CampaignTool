@@ -1,6 +1,6 @@
 @page "/organisations"
 
-@inject CharacterDataService DataService
+@inject OrganisationDataService DataService
 @inject Blazored.SessionStorage.ISessionStorageService SessionStorage;
 @inject NavigationManager NavigationManager;
 @using System.Net.Http.Json
@@ -36,7 +36,7 @@ else
             }
             else
             {
-                //OrganisationsList = await DataService.GetOrganisationDtosByCampaignAsync(selectedCampaignId.Value);
+                OrganisationList = await DataService.GetOrganisationDtosByCampaignAsync(selectedCampaignId.Value);
             }
         }
     }
