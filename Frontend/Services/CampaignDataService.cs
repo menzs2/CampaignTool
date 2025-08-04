@@ -38,4 +38,20 @@ public class CampaignDataService : BaseDataService
         }
         return null;
     }
+
+    public async Task<CampaignDto?> GetCampaignByIdAsync(long id)
+    {
+        try
+        {
+            using var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}api/campaign/{id}");
+            response.EnsureSuccessStatusCode();
+            var campaign = await response.Content.ReadFromJsonAsync<CampaignDto>();
+            return campaign;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+        return null;
+    }
 }

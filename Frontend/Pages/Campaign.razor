@@ -1,9 +1,24 @@
-@page "/campaign"
+@page "/campaign/{Id:int}"
+
+@inject CampaignDataService dataService;
+@using Shared;
 
 <PageTitle>Campaign Tool Kampagnen</PageTitle>
 
 <h1>Kampagnen</h1>
+<p>Details for Campaign with Id: @Id</p>
 
 @code{
+    [Parameter]
+    public int Id { get; set; }
 
+    [Parameter]
+    public CampaignDto? CampaignDto { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Logic to load the campaign by Id
+        Console.WriteLine($"Loading campaign with Id: {Id}");
+        CampaignDto = await dataService.GetCampaignByIdAsync(Id);
+    }
 }
