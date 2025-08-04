@@ -5,7 +5,7 @@
 <article class="entity border rounded px-1">
     <p>@Entity.Name</p>
     <button class="btn btn-primary btn-sm" @onclick="() => NotifyParent()"><i
-            class="bi bi-arrow-right"></i></button>
+            class="bi bi-arrow-right"/></button>
     <button class="btn btn-secondary btn-sm" @onclick="() => isCollapsed = !isCollapsed">
         <i class="bi @(isCollapsed ? "bi-chevron-right" : "bi-chevron-down")"></i>
     </button>
@@ -21,10 +21,7 @@
     {
         <p>SL @campaignDto.GmId</p>
     }
-    else
-    {
-        <p>Spieler</p>
-    }
+
 
 
 

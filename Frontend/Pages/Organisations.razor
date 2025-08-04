@@ -1,9 +1,43 @@
 @page "/organisations"
 
+@inject CharacterDataService DataService
+@inject Blazored.SessionStorage.ISessionStorageService SessionStorage;
+@inject NavigationManager NavigationManager;
+@using System.Net.Http.Json
+@using Shared;
+
 <PageTitle>Campaign Tool Organisationen</PageTitle>
 
 <h1>Organisationen</h1>
+@if (OrganisationList != null && OrganisationList.Any())
+{
+    <div>
+        <Frontend.Components.ListComponent EntityList="@(OrganisationList?.Cast<BaseEntityDto>().ToList())" />
+    </div>
+}
+else
+{
+    <p>Not data found.</p>
+}
 
 @code {
+    public List<OrganisationDto>? OrganisationList { get; set; }
 
+    protected override async Task OnInitializedAsync()
+    {
+        if (SessionStorage != null)
+        {
+            // Load characters from session storage if available
+            long? selectedCampaignId = await SessionStorage.GetItemAsync<long?>("SelectedCampaignId");
+            if (!selectedCampaignId.HasValue)
+
+            {
+                NavigationManager.NavigateTo("/");
+            }
+            else
+            {
+                //OrganisationsList = await DataService.GetOrganisationDtosByCampaignAsync(selectedCampaignId.Value);
+            }
+        }
+    }
 }
