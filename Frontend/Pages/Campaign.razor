@@ -2,18 +2,26 @@
 
 @inject CampaignDataService dataService;
 @using Shared;
+@using Components;
 
 <PageTitle>Campaign Tool Kampagnen</PageTitle>
 
 <h1>Kampagnen</h1>
-<p>Details for Campaign with Id: @Id</p>
+@if (CampaignDto == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <Frontend.Components.EntityDetailComponent EntityDto="@CampaignDto" />
+}
 
 @code {
     [Parameter]
     public int Id { get; set; }
 
-    [Parameter]
-    public CampaignDto? CampaignDto { get; set; }
+    
+    public BaseEntityDto? CampaignDto { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

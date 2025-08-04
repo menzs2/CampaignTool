@@ -70,7 +70,7 @@ public static class Extensions
             CampaignId = character.CampaignId,
             PlayerId = character.PlayerId,
             DescriptionShort = character.DescriptionShort,
-            GmOnly = character.GmOnly,
+            GmOnly = character.GmOnly ?? true,
             GmOnlyDescription = character.GmOnlyDescription
         };
     }
@@ -127,7 +127,7 @@ public static class Extensions
             Description = organisation.Description,
             State = organisation.State,
             CampaignId = organisation.CampaignId,
-            GmOnly = organisation.GmOnly,
+            GmOnly = organisation.GmOnly ?? true,
             GmOnlyDescription = organisation.GmOnlyDescription
         };
     }

@@ -15,5 +15,5 @@ public class BaseEntityDto
 
     public string? GmOnlyDescription { get; set; }
 
-    public bool? GmOnly { get; set; }
+    public bool GmOnly { get; set; }
 }
