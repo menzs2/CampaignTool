@@ -12,7 +12,8 @@
 @if (Campaigns != null && Campaigns.Any())
 {
     <div>
-        <Frontend.Components.ListComponent EntityList="@(Campaigns?.Cast<BaseEntityDto>().ToList())" EntityType="Kampagne" />
+        <Frontend.Components.ListComponent EntityList="@(Campaigns?.Cast<BaseEntityDto>().ToList())"
+            EntityType="Kampagne" />
     </div>
 }
 else

@@ -10,19 +10,20 @@
 @if (CharactersList != null && CharactersList.Any())
 {
     <div>
-        <Frontend.Components.ListComponent EntityList="@(CharactersList?.Cast<BaseEntityDto>().ToList())" EntityType="Charakter" />
+        <Frontend.Components.ListComponent EntityList="@(CharactersList?.Cast<BaseEntityDto>().ToList())"
+            EntityType="Charakter" />
     </div>
-}
+}$
 else
 {
     <p>Not data found.</p>
 }
 
-@code{
+@code {
     public List<CharacterDto>? CharactersList { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         CharactersList = await dataService.GetCharacterDtosByCampaignAsync(1);
-    }   
+    }
 }
