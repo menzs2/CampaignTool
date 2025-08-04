@@ -1,51 +1,60 @@
 @using Shared;
 
 <div class="entity-detail">
+    <button class="btn btn-secondary btn-sm" @onclick="() => IsCollapsed = !IsCollapsed">
+        <i class="bi @(IsCollapsed ? "bi-chevron-right" : "bi-chevron-down")"></i>
+    </button>
+    @if (IsCollapsed)
+    {
+        <p class="m-1">@EntityDto.Name</p>
+    }
+    else
+    {
+        <EditForm Model="@EntityDto" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
 
-    <EditForm Model="@EntityDto" OnValidSubmit="HandleValidSubmit">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
+            <div class="form-group">
+                <label for="name">Name</label>
+                <InputText id="name" class="form-control" @bind-Value="EntityDto.Name" />
+                <ValidationMessage For="@(() => EntityDto.Name)" />
+            </div>
+            <div class="form-group">
+                <label for="descriptionShort">Description Short</label>
+                <InputTextArea id="descriptionShort" class="form-control" @bind-Value="EntityDto.DescriptionShort" />
+                <ValidationMessage For="@(() => EntityDto.DescriptionShort)" />
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <InputTextArea id="description" class="form-control" @bind-Value="EntityDto.Description" />
+                <ValidationMessage For="@(() => EntityDto.Description)" />
+            </div>
 
-        <div class="form-group">
-            <label for="name">Name</label>
-            <InputText id="name" class="form-control" @bind-Value="EntityDto.Name" />
-            <ValidationMessage For="@(() => EntityDto.Name)" />
-        </div>
 
-        <div class="form-group">
-            <label for="description">Description</label>
-            <InputTextArea id="description" class="form-control" @bind-Value="EntityDto.Description" />
-            <ValidationMessage For="@(() => EntityDto.Description)" />
-        </div>
-
-        <div class="form-group">
-            <label for="descriptionShort">Description Short</label>
-            <InputTextArea id="descriptionShort" class="form-control" @bind-Value="EntityDto.DescriptionShort" />
-            <ValidationMessage For="@(() => EntityDto.DescriptionShort)" />
-        </div>
-        <div class="form-group">
-            <label for="state">Status</label>
-            <InputTextArea id="state" class="form-control" @bind-Value="EntityDto.State" />
-            <ValidationMessage For="@(() => EntityDto.State)" />
-        </div>
-        <div class="form-group">
-            <label for="gmOnly">Nur SL</label>
-            <InputCheckbox id="gmOnly" class="form-check-input" @bind-Value="EntityDto.GmOnly" />
-        </div>
-        <div class="form-group">
-            <label for="gmOnlyDescription">Nur SL Beschreibung</label>
-            <InputTextArea id="gmOnlyDescription" class="form-control" @bind-Value="EntityDto.GmOnlyDescription" />
-            <ValidationMessage For="@(() => EntityDto.GmOnlyDescription)" />
-        </div>
-        <button type="submit" class="btn btn-primary">Save</button>
-    </EditForm>
-
+            <div class="form-group">
+                <label for="state">Status</label>
+                <InputTextArea id="state" class="form-control" @bind-Value="EntityDto.State" />
+                <ValidationMessage For="@(() => EntityDto.State)" />
+            </div>
+            <div class="form-group">
+                <label for="gmOnly">Nur SL</label>
+                <InputCheckbox id="gmOnly" class="form-check-input" @bind-Value="EntityDto.GmOnly" />
+            </div>
+            <div class="form-group">
+                <label for="gmOnlyDescription">Nur SL Beschreibung</label>
+                <InputTextArea id="gmOnlyDescription" class="form-control" @bind-Value="EntityDto.GmOnlyDescription" />
+                <ValidationMessage For="@(() => EntityDto.GmOnlyDescription)" />
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </EditForm>
+    }
 </div>
 
 @code {
     [Parameter]
     public BaseEntityDto? EntityDto { get; set; }
-
+    [Parameter]
+    public bool IsCollapsed { get; set; } = false;
     private void HandleValidSubmit()
     {
         // Handle the form submission, e.g., save the event data

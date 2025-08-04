@@ -11,9 +11,19 @@
 <h1>Charaktere</h1>
 @if (CharactersList != null && CharactersList.Any())
 {
-    <div>
-        <Frontend.Components.ListComponent EntityList="@(CharactersList?.Cast<BaseEntityDto>().ToList())" />
-    </div>
+    if (SelectedCharacter != null)
+    {
+        <Frontend.Components.EntityDetailComponent EntityDto="SelectedCharacter" />
+    }
+    else
+    {
+        <h2>Bitte wähle einen Charakter aus der Liste unten aus.</h2>
+        <div>
+            <Frontend.Components.ListComponent EntityList="@(CharactersList?.Cast<BaseEntityDto>().ToList())"
+                OnNotifyParent="@SelectCharacter" />
+        </div>
+    }
+
 }
 else
 {
@@ -21,7 +31,16 @@ else
 }
 
 @code {
+
     public List<CharacterDto>? CharactersList { get; set; }
+
+    public CharacterDto? SelectedCharacter { get; set; }
+
+    private async Task SelectCharacter(long characterId)
+    {
+        await SessionStorage.SetItemAsync("SelectedCharacterId", characterId);
+        SelectedCharacter = CharactersList?.FirstOrDefault(c => c.Id == characterId);
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -29,6 +48,7 @@ else
         {
             // Load characters from session storage if available
             long? selectedCampaignId = await SessionStorage.GetItemAsync<long?>("SelectedCampaignId");
+            long? selectedCharacterId = await SessionStorage.GetItemAsync<long?>("SelectedCharacterId");    
             if (!selectedCampaignId.HasValue)
 
             {
@@ -37,6 +57,10 @@ else
             else
             {
                 CharactersList = await DataService.GetCharacterDtosByCampaignAsync(selectedCampaignId.Value);
+                if (selectedCharacterId.HasValue)
+                {
+                    SelectedCharacter = CharactersList?.FirstOrDefault(c => c.Id == selectedCharacterId.Value);
+                }
             }
         }
     }
