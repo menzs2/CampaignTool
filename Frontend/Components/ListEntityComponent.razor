@@ -1,9 +1,13 @@
+@inject NavigationManager NavigationManager
 @using Shared
 @using System.ComponentModel.DataAnnotations;
 
 <article class="entity border rounded px-1">
     <p>@Entity.Name</p>
-    
+        <button class="btn btn-primary btn-sm" @onclick="() => SelectEntity(Entity)"><i class="bi bi-arrow-right"></i></button>
+        <button class="btn btn-secondary btn-sm" @onclick="() => isCollapsed = !isCollapsed">
+        <i class="bi @(isCollapsed ? "bi-chevron-right" : "bi-chevron-down")"></i>
+    </button>
     <p>@if(@isCollapsed){ @Entity.DescriptionShort} else{@Entity.Description}</p>
     @if (Entity is CampaignDto campaignDto)
     {
@@ -12,12 +16,11 @@
     else{
         <p>Spieler</p>
     }
-    <button class="btn btn-secondary btn-sm" @onclick="() => isCollapsed = !isCollapsed">
-        <i class="bi @(isCollapsed ? "bi-chevron-right" : "bi-chevron-down")"></i>
-    </button>
-    <button class="btn btn-primary btn-sm" @onclick="() => SelectEntity(Entity)"><i class="bi bi-arrow-right"></i></button>
+
+
 
 </article>
+
 
 @code {
     [Parameter]
@@ -31,8 +34,8 @@
 
     public void SelectEntity(BaseEntityDto entity)
     {
-        // Logic to handle entity selection
+        //navigate to the entity details page
         Console.WriteLine($"Selected Entity: {entity.Name}");
+        NavigationManager.NavigateTo($"/campaign/{entity.Id}");
     }
-
 }
