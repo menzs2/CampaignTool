@@ -46,21 +46,13 @@ else
 
     private bool IsDetailView { get; set; } = false;
 
-    private async Task SelectCharacter(long characterId)
-    {
-        await SessionStorage.SetItemAsync("SelectedCharacterId", characterId);
-        SelectedCharacter = CharactersList?.FirstOrDefault(c => c.Id == characterId);
-        IsDetailView = true;
-    }
-
-
     protected override async Task OnInitializedAsync()
     {
         if (SessionStorage != null)
         {
             // Load characters from session storage if available
             long? selectedCampaignId = await SessionStorage.GetItemAsync<long?>("SelectedCampaignId");
-            long? selectedCharacterId = await SessionStorage.GetItemAsync<long?>("SelectedCharacterId");    
+            long? selectedCharacterId = await SessionStorage.GetItemAsync<long?>("SelectedCharacterId");
             if (!selectedCampaignId.HasValue)
 
             {
@@ -75,6 +67,13 @@ else
                 }
             }
         }
+    }
+
+    private async Task SelectCharacter(long characterId)
+    {
+        await SessionStorage.SetItemAsync("SelectedCharacterId", characterId);
+        SelectedCharacter = CharactersList?.FirstOrDefault(c => c.Id == characterId);
+        IsDetailView = true;
     }
 
     public void ToggleDetailView()

@@ -85,7 +85,7 @@ public class CharacterDataService : BaseDataService
         }
     }
 
-    public async Task PutCharacterAsyinc(long id, CharacterDto character)
+    public async Task PutCharacterAsync(long id, CharacterDto character)
     {
         var content = JsonContent.Create(character);
         try

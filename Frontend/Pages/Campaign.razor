@@ -1,6 +1,7 @@
 @page "/campaign/{Id:int}"
 
 @inject CampaignDataService dataService;
+@inject NavigationManager NavigationManager;
 @using Shared;
 @using Components;
 
@@ -13,6 +14,7 @@
 }
 else
 {
+    <Frontend.Components.PageHeaderComponent Title="@CampaignDto.Name" OnNotifyParent="ToggleDetailView" />
     <Frontend.Components.EntityDetailComponent EntityDto="@CampaignDto" />
 }
 
@@ -28,5 +30,10 @@ else
         // Logic to load the campaign by Id
         Console.WriteLine($"Loading campaign with Id: {Id}");
         CampaignDto = await dataService.GetCampaignByIdAsync(Id);
+    }
+
+    public async Task ToggleDetailView()
+    {
+        NavigationManager.NavigateTo("/");
     }
 }
