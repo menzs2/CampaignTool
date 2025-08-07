@@ -81,8 +81,10 @@ public class OrganisationService
         }
         existingOrganisation.Description = organisationDto.Description;
         existingOrganisation.DescriptionShort = organisationDto.DescriptionShort;
+        existingOrganisation.State = organisationDto.State;
+        existingOrganisation.Name = organisationDto.Name;
         existingOrganisation.GmOnly = organisationDto.GmOnly;
-        existingOrganisation.GmOnlyDescription = existingOrganisation.GmOnlyDescription;
+        existingOrganisation.GmOnlyDescription = organisationDto.GmOnlyDescription;
 
         _context.Organisations.Update(existingOrganisation);
         await _context.SaveChangesAsync();

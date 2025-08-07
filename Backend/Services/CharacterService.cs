@@ -89,11 +89,14 @@ public class CharacterService
         {
             throw new KeyNotFoundException($"Character with ID {characterDto.Id} not found.");
         }
-
+        existingCharacter.PlayerId = characterDto.PlayerId;
         existingCharacter.Name = characterDto.Name;
         existingCharacter.Description = characterDto.Description;
         existingCharacter.CampaignId = characterDto.CampaignId;
-
+        existingCharacter.State = characterDto.State;
+        existingCharacter.GmOnly = characterDto.GmOnly;
+        existingCharacter.GmOnlyDescription = characterDto.GmOnlyDescription;
+        
         _context.Characters.Update(existingCharacter);
         await _context.SaveChangesAsync();
         return existingCharacter.ToDto();
