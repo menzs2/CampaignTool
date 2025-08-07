@@ -9,7 +9,7 @@
 
 <PageTitle>Campaign Tool Charaktere</PageTitle>
 
-<Frontend.Components.PageHeaderComponent Title="NSC" OnNotifyParent="ToggleDetailView" />
+<Frontend.Components.PageHeaderComponent Title="NSC" OnToggleDetailView="ToggleDetailView" />
 @if (CharactersList != null && CharactersList.Any())
 {
     if (SelectedCharacter == null || !IsDetailView)

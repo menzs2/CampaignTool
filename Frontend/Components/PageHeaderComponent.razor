@@ -1,17 +1,18 @@
-<div class="page-header">
+<div class="page-header p-3 mb-3">
     <h1>@Title</h1>
     <button class="btn btn-secondary" @onclick="ToggleDetailView">@ButtonText</button>
-
+    <button class="btn btn-primary" @onclick="AddNewEntity"><i class="bi bi-plus"></i></button>
 </div>
-
-
 
 @code {
     [Parameter]
     public string Title { get; set; } = "Default Title";
 
     [Parameter]
-    public EventCallback OnNotifyParent { get; set; }
+    public EventCallback OnToggleDetailView { get; set; }
+
+    [Parameter]
+    public EventCallback OnAddNewEntity { get; set; }
 
     public bool IsDetailView { get; set; } = false;
 
@@ -20,9 +21,17 @@
     public async Task ToggleDetailView()
     {
         IsDetailView = !IsDetailView;
-        if (OnNotifyParent.HasDelegate)
+        if (OnToggleDetailView.HasDelegate)
         {
-            await OnNotifyParent.InvokeAsync();
+            await OnToggleDetailView.InvokeAsync();
+        }
+    }
+
+    public async Task AddNewEntity()
+    {
+        if (OnAddNewEntity.HasDelegate)
+        {
+            await OnAddNewEntity.InvokeAsync();
         }
     }
 }

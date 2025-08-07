@@ -14,17 +14,19 @@
 }
 else
 {
-    <Frontend.Components.PageHeaderComponent Title="@CampaignDto.Name" OnNotifyParent="ToggleDetailView" />
-    <Frontend.Components.EntityDetailComponent EntityDto="@CampaignDto" OnNotifyParent="SaveChanges"/>
+    <Frontend.Components.PageHeaderComponent Title="@CampaignDto.Name" OnToggleDetailView="ToggleDetailView"
+        OnAddNewEntity="AddNewEntity" />
+    <Frontend.Components.EntityDetailComponent EntityDto="@CampaignDto" OnNotifyParent="SaveChanges" />
 }
 
 @code {
     [Parameter]
     public int Id { get; set; }
 
-    
+
     public BaseEntityDto? CampaignDto { get; set; }
 
+    private EntityDetailComponent? EntityDetailComponent { get; set; }
     protected override async Task OnInitializedAsync()
     {
         // Logic to load the campaign by Id
@@ -39,14 +41,14 @@ else
 
     public async Task SaveChanges()
     {
-        if (CampaignDto  is CampaignDto campaignDto)
+        if (CampaignDto is CampaignDto campaignDto)
         {
             if (!campaignDto.Id.HasValue || campaignDto.Id == 0)
             {
                 // If the campaign is new, create it
                 Console.WriteLine("Creating new campaign...");
                 await dataService.AddCampaignAsync(campaignDto);
-            }   
+            }
             Console.WriteLine($"Saving campaign with Id: {campaignDto.Id}");
             await dataService.UpdateCampaignAsync(campaignDto);
         }
@@ -54,5 +56,16 @@ else
         {
             Console.WriteLine("No campaign data to save.");
         }
+    }
+
+    public async Task AddNewEntity()
+    {
+        await SaveChanges();
+        CampaignDto = new CampaignDto
+        {
+            Name = "New Campaign",
+            Description = "Description of the new campaign"
+        };
+        StateHasChanged();
     }
 }
