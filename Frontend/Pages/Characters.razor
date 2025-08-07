@@ -4,20 +4,28 @@
 @inject Blazored.SessionStorage.ISessionStorageService SessionStorage;
 @inject NavigationManager NavigationManager;
 @using System.Net.Http.Json
+@using Frontend.Components
 @using Shared;
 
 <PageTitle>Campaign Tool Charaktere</PageTitle>
 
-<h1>Charaktere</h1>
+<Frontend.Components.PageHeaderComponent Title="NSC" OnNotifyParent="ToggleDetailView" />
 @if (CharactersList != null && CharactersList.Any())
 {
-    if (SelectedCharacter != null)
+    if (SelectedCharacter == null || !IsDetailView)
+    {
+        <div>
+            <Frontend.Components.ListComponent EntityList="@(CharactersList?.Cast<BaseEntityDto>().ToList())"
+                OnNotifyParent="@SelectCharacter" />
+        </div>
+    }
+    else if (SelectedCharacter != null && IsDetailView)
     {
         <Frontend.Components.EntityDetailComponent EntityDto="SelectedCharacter" />
     }
     else
     {
-        <h2>Bitte wähle einen Charakter aus der Liste unten aus.</h2>
+        <h2>Wähle einen Charakter aus.</h2>
         <div>
             <Frontend.Components.ListComponent EntityList="@(CharactersList?.Cast<BaseEntityDto>().ToList())"
                 OnNotifyParent="@SelectCharacter" />
@@ -36,11 +44,15 @@ else
 
     public CharacterDto? SelectedCharacter { get; set; }
 
+    private bool IsDetailView { get; set; } = false;
+
     private async Task SelectCharacter(long characterId)
     {
         await SessionStorage.SetItemAsync("SelectedCharacterId", characterId);
         SelectedCharacter = CharactersList?.FirstOrDefault(c => c.Id == characterId);
+        IsDetailView = true;
     }
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -63,5 +75,10 @@ else
                 }
             }
         }
+    }
+
+    public void ToggleDetailView()
+    {
+        IsDetailView = !IsDetailView;
     }
 }

@@ -1,0 +1,28 @@
+<div class="page-header">
+    <h1>@Title</h1>
+    <button class="btn btn-secondary" @onclick="ToggleDetailView">@ButtonText</button>
+
+</div>
+
+
+
+@code {
+    [Parameter]
+    public string Title { get; set; } = "Default Title";
+
+    [Parameter]
+    public EventCallback OnNotifyParent { get; set; }
+
+    public bool IsDetailView { get; set; } = false;
+
+    private string ButtonText => IsDetailView ? "Liste" : "Details";
+
+    public async Task ToggleDetailView()
+    {
+        IsDetailView = !IsDetailView;
+        if (OnNotifyParent.HasDelegate)
+        {
+            await OnNotifyParent.InvokeAsync();
+        }
+    }
+}
