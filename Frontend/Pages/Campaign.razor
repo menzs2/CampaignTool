@@ -15,7 +15,7 @@
 else
 {
     <Frontend.Components.PageHeaderComponent Title="@CampaignDto.Name" OnNotifyParent="ToggleDetailView" />
-    <Frontend.Components.EntityDetailComponent EntityDto="@CampaignDto" />
+    <Frontend.Components.EntityDetailComponent EntityDto="@CampaignDto" OnNotifyParent="SaveChanges"/>
 }
 
 @code {
@@ -35,5 +35,24 @@ else
     public async Task ToggleDetailView()
     {
         NavigationManager.NavigateTo("/");
+    }
+
+    public async Task SaveChanges()
+    {
+        if (CampaignDto  is CampaignDto campaignDto)
+        {
+            if (!campaignDto.Id.HasValue || campaignDto.Id == 0)
+            {
+                // If the campaign is new, create it
+                Console.WriteLine("Creating new campaign...");
+                await dataService.AddCampaignAsync(campaignDto);
+            }   
+            Console.WriteLine($"Saving campaign with Id: {campaignDto.Id}");
+            await dataService.UpdateCampaignAsync(campaignDto);
+        }
+        else
+        {
+            Console.WriteLine("No campaign data to save.");
+        }
     }
 }

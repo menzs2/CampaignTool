@@ -55,10 +55,15 @@
     public BaseEntityDto? EntityDto { get; set; }
     [Parameter]
     public bool IsCollapsed { get; set; } = false;
+
+    [Parameter]
+    public EventCallback OnNotifyParent { get; set; }
     private void HandleValidSubmit()
     {
-        // Handle the form submission, e.g., save the event data
-        Console.WriteLine("Form submitted successfully!");
+        if(OnNotifyParent.HasDelegate)
+        {
+            OnNotifyParent.InvokeAsync();
+        }
     }
 
 
