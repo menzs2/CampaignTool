@@ -32,7 +32,7 @@ public class CampaignController : ControllerBase
     public async Task<IActionResult> Get(long id)
     {
         var campaign = await _campaignService.GetCampaignById(id);
-        return campaign != null ? Ok(campaign) : NotFound($"Campaign with ID {id} not found.");
+        return campaign != null ? Ok(campaign) : Problem(detail: $"Campaign with ID {id} not found.", statusCode: 404);
     }
 
     /// <summary>
@@ -42,7 +42,7 @@ public class CampaignController : ControllerBase
     public async Task<IActionResult> GetByGmId(long gmId)
     {
         var campaigns = await _campaignService.GetCampaignsByGmId(gmId);
-        return campaigns.Any() ? Ok(campaigns) : NotFound($"No campaigns found for GM with ID {gmId}.");
+        return campaigns.Any() ? Ok(campaigns) : Problem($"No campaigns found for GM with ID {gmId}.", statusCode: 404);
     }
 
     /// <summary>
@@ -57,10 +57,10 @@ public class CampaignController : ControllerBase
             var newCampaign = await _campaignService.AddCampaignAsync(campaign);
             return CreatedAtAction(nameof(Get), new { id = newCampaign.Id }, newCampaign);
         }
-        catch
+        catch (Exception ex)
         {
             // TODO: Log the exception.
-            return StatusCode(500, "Internal server error");
+            return Problem("Internal server error",statusCode: 500);
         }
     }
 

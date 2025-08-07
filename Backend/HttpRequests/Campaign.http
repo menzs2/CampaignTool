@@ -1,0 +1,15 @@
+@Backend_HostAddress = http://localhost:5043/api
+
+GET {{Backend_HostAddress}}/campaign/
+Accept: application/json
+
+###
+GET {{Backend_HostAddress}}/campaign/2
+Accept: application/json
+
+###
+
+GET {{Backend_HostAddress}}/campaign/gm/1
+Accept: application/json
+
+###
