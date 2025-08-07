@@ -1,6 +1,6 @@
 ﻿using Backend.Data;
-using Shared;
 using Microsoft.EntityFrameworkCore;
+using Shared;
 
 namespace Backend.Services;
 
@@ -68,6 +68,7 @@ public class CampaignService
         existingCampaign.GmOnlyDescription = campaignDto.GmOnlyDescription;
         existingCampaign.Gm = campaignDto.GmId;
         DbContext.Campaigns.Update(existingCampaign);
+
         await DbContext.SaveChangesAsync();
         return existingCampaign.ToDto();
     }

@@ -60,7 +60,7 @@ public class CampaignController : ControllerBase
         catch (Exception ex)
         {
             // TODO: Log the exception.
-            return Problem("Internal server error",statusCode: 500);
+            return Problem("Internal server error", statusCode: 500);
         }
     }
 
@@ -77,9 +77,9 @@ public class CampaignController : ControllerBase
             var updatedCampaign = await _campaignService.UpdateCampaignAsync(campaign);
             return NoContent();
         }
-        catch (KeyNotFoundException)
+        catch (KeyNotFoundException ex)
         {
-            return BadRequest($"Campaign with key '{id}' not found.");
+            return Problem(detail: ex.Message, statusCode: 404);
         }
         catch
         {
@@ -102,7 +102,7 @@ public class CampaignController : ControllerBase
         }
         catch (KeyNotFoundException ex)
         {
-            return NotFound(ex.Message);
+            return Problem(detail: ex.Message, statusCode: 404);
         }
         catch
         {
