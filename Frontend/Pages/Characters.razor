@@ -9,7 +9,8 @@
 
 <PageTitle>Campaign Tool Charaktere</PageTitle>
 
-<Frontend.Components.PageHeaderComponent Title="NSC" OnToggleDetailView="ToggleDetailView" />
+<Frontend.Components.PageHeaderComponent Title="NSC" OnToggleDetailView="ToggleDetailView"
+    OnAddNewEntity="AddNewEntity" />
 @if (CharactersList != null && CharactersList.Any())
 {
     if (SelectedCharacter == null || !IsDetailView)
@@ -79,5 +80,13 @@ else
     public void ToggleDetailView()
     {
         IsDetailView = !IsDetailView;
+    }
+    public async Task AddNewEntity()
+    {
+        if (!IsDetailView)
+        {
+            IsDetailView = true;
+        }
+        SelectedCharacter = new CharacterDto();
     }
 }
