@@ -6,12 +6,13 @@ namespace Frontend
     public class CampaignDataService : BaseDataService
     {
         public CampaignDataService(HttpClient httpClient) : base(httpClient) { }
+        private readonly string baseRoute = "/api/campaign";
 
         public async Task<List<CampaignDto>?> GetCampaigns()
         {
             try
             {
-                using var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}api/campaign");
+                using var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}{baseRoute}");
                 response.EnsureSuccessStatusCode();
                 var campaigns = await response.Content.ReadFromJsonAsync<List<CampaignDto>>();
                 return campaigns;
@@ -27,7 +28,7 @@ namespace Frontend
         {
             try
             {
-                var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}api/campaign");
+                var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}{baseRoute}/{userID}");
                 response.EnsureSuccessStatusCode();
                 var campaigns = await response.Content.ReadFromJsonAsync<List<CampaignDto>>();
                 return campaigns;
@@ -43,7 +44,7 @@ namespace Frontend
         {
             try
             {
-                using var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}api/campaign/{id}");
+                using var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}{baseRoute}/{id}");
                 response.EnsureSuccessStatusCode();
                 var campaign = await response.Content.ReadFromJsonAsync<CampaignDto>();
                 return campaign;
@@ -59,7 +60,7 @@ namespace Frontend
         {
             try
             {
-                var response = await HttpClient.PostAsJsonAsync($"{HttpClient.BaseAddress}api/campaign", campaignDto);
+                var response = await HttpClient.PostAsJsonAsync($"{HttpClient.BaseAddress}{baseRoute}", campaignDto);
                 response.EnsureSuccessStatusCode();
                 var newCampaign = await response.Content.ReadFromJsonAsync<CampaignDto>();
                 return newCampaign;
@@ -75,7 +76,7 @@ namespace Frontend
         {
             try
             {
-                var response = await HttpClient.PutAsJsonAsync($"{HttpClient.BaseAddress}api/campaign/{campaignDto.Id}", campaignDto);
+                var response = await HttpClient.PutAsJsonAsync($"{HttpClient.BaseAddress}{baseRoute}/{campaignDto.Id}", campaignDto);
                 response.EnsureSuccessStatusCode();
                 var updatedCampaign = await response.Content.ReadFromJsonAsync<CampaignDto>();
                 return updatedCampaign;
@@ -91,7 +92,7 @@ namespace Frontend
         {
             try
             {
-                var response = await HttpClient.DeleteAsync($"{HttpClient.BaseAddress}api/campaign/{id}");
+                var response = await HttpClient.DeleteAsync($"{HttpClient.BaseAddress}{baseRoute}/{id}");
                 return response.IsSuccessStatusCode;
             }
             catch (Exception ex)

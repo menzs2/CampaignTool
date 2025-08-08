@@ -90,6 +90,12 @@ namespace Backend.Services
             return connection?.ToDto();
         }
 
+        public async Task<IEnumerable<CharCharConnectionDto>?> GetCharToCharConnectionsByCampaignAsync(long id)
+        {
+            var connections = await _context.CharCharConnections.Include(c => c.Connection).Where(c => c.Connection.CampaignId == id).ToListAsync();
+            return connections?.ToDto();
+        }
+
         public async Task<CharCharConnectionDto> CreateCharToCharConnectionAsync(CharCharConnectionDto connectionDto)
         {
             if (connectionDto == null)

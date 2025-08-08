@@ -6,12 +6,13 @@ namespace Frontend
     public class OrganisationDataService : BaseDataService
     {
         public OrganisationDataService(HttpClient httpClient) : base(httpClient) { }
+        private readonly string baseRoute = "/api/organisation";
 
         public async Task<List<OrganisationDto>?> GetOrganisationDtosAsync()
         {
             try
             {
-                var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}api/organisation");
+                var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}{baseRoute}");
                 response.EnsureSuccessStatusCode();
                 var Organisations = await response.Content.ReadFromJsonAsync<List<OrganisationDto>>();
                 return Organisations;
@@ -27,7 +28,7 @@ namespace Frontend
         {
             try
             {
-                var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}api/Oorganisation/{id}");
+                var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}{baseRoute}/{id}");
                 response.EnsureSuccessStatusCode();
                 var Organisations = await response.Content.ReadFromJsonAsync<List<OrganisationDto>>();
                 return Organisations?.FirstOrDefault();
@@ -43,7 +44,7 @@ namespace Frontend
         {
             try
             {
-                var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}api/organisation/campaign/{id}");
+                var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}{baseRoute}/campaign/{id}");
                 response.EnsureSuccessStatusCode();
                 var Organisations = await response.Content.ReadFromJsonAsync<List<OrganisationDto>>();
                 return Organisations;
@@ -59,7 +60,7 @@ namespace Frontend
         {
             try
             {
-                var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}api/organisation/connected/{id}");
+                var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}{baseRoute}/connected/{id}");
                 response.EnsureSuccessStatusCode();
                 var Organisations = await response.Content.ReadFromJsonAsync<List<OrganisationDto>>();
                 return Organisations;
@@ -76,8 +77,8 @@ namespace Frontend
             var content = JsonContent.Create(Organisation);
             try
             {
-                using var respone = await HttpClient.PostAsJsonAsync($"{HttpClient.BaseAddress}api/organisation", content);
-                respone.EnsureSuccessStatusCode();
+                using var response = await HttpClient.PostAsJsonAsync($"{HttpClient.BaseAddress}{baseRoute}", content);
+                response.EnsureSuccessStatusCode();
             }
             catch (Exception ex)
             {
@@ -90,8 +91,8 @@ namespace Frontend
             var content = JsonContent.Create(Organisation);
             try
             {
-                using var respone = await HttpClient.PutAsJsonAsync($"{HttpClient.BaseAddress}api/organisation/{id}", content);
-                respone.EnsureSuccessStatusCode();
+                using var response = await HttpClient.PutAsJsonAsync($"{HttpClient.BaseAddress}{baseRoute}/{id}", content);
+                response.EnsureSuccessStatusCode();
             }
             catch (Exception ex)
             {
@@ -103,8 +104,8 @@ namespace Frontend
         {
             try
             {
-                using var respone = await HttpClient.DeleteAsync($"{HttpClient.BaseAddress}api/organisation/{id}");
-                respone.EnsureSuccessStatusCode();
+                using var response = await HttpClient.DeleteAsync($"{HttpClient.BaseAddress}{baseRoute}/{id}");
+                response.EnsureSuccessStatusCode();
             }
             catch (Exception ex)
             {

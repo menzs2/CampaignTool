@@ -149,6 +149,19 @@ public class ConnectionController : ControllerBase
     }
 
     /// <summary>
+    /// Gets all character-character connections for a specific campaign.
+    /// </summary>
+    /// <param name="id">The ID of the campaign.</param>    
+    [HttpGet("charchar/campaign/{id}")]
+    public async Task<IActionResult> GetCharCharConnectionsByCampaign(long id)
+    {
+        var connections = await _service.GetCharToCharConnectionsByCampaignAsync(id);
+        return connections is not null && connections.Any()
+            ? Ok(connections)
+            : NotFound($"No Character-Character connections found for Campaign ID {id}.");
+    }
+
+    /// <summary>
     /// Adds a new character-character connection.
     /// </summary>
     /// <param name="connection">The character-character connection data to add.</param>

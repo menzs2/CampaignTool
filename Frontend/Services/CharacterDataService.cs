@@ -6,12 +6,14 @@ namespace Frontend;
 public class CharacterDataService : BaseDataService
 {
     public CharacterDataService(HttpClient httpClient) : base(httpClient) { }
+    private readonly string baseRoute = "/api/character";
+
 
     public async Task<List<CharacterDto>?> GetCharacterDtosAsync()
     {
         try
         {
-            var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}api/character");
+            var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}{baseRoute}");
             response.EnsureSuccessStatusCode();
             var characters = await response.Content.ReadFromJsonAsync<List<CharacterDto>>();
             return characters;
@@ -27,7 +29,7 @@ public class CharacterDataService : BaseDataService
     {
         try
         {
-            var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}api/character/{id}");
+            var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}{baseRoute}/{id}");
             response.EnsureSuccessStatusCode();
             var characters = await response.Content.ReadFromJsonAsync<List<CharacterDto>>();
             return characters?.FirstOrDefault();
@@ -43,7 +45,7 @@ public class CharacterDataService : BaseDataService
     {
         try
         {
-            var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}api/character/campaign/{id}");
+            var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}{baseRoute}/campaign/{id}");
             response.EnsureSuccessStatusCode();
             var characters = await response.Content.ReadFromJsonAsync<List<CharacterDto>>();
             return characters;
@@ -59,7 +61,7 @@ public class CharacterDataService : BaseDataService
     {
         try
         {
-            var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}api/character/connected/{id}");
+            var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}{baseRoute}/connected/{id}");
             response.EnsureSuccessStatusCode();
             var characters = await response.Content.ReadFromJsonAsync<List<CharacterDto>>();
             return characters;
@@ -76,8 +78,8 @@ public class CharacterDataService : BaseDataService
         var content = JsonContent.Create(character);
         try
         {
-            using var respone = await HttpClient.PostAsJsonAsync($"{HttpClient.BaseAddress}api/character", content);
-            respone.EnsureSuccessStatusCode();
+            using var response = await HttpClient.PostAsJsonAsync($"{HttpClient.BaseAddress}{baseRoute}", content);
+            response.EnsureSuccessStatusCode();
         }
         catch (Exception ex)
         {
@@ -90,8 +92,8 @@ public class CharacterDataService : BaseDataService
         var content = JsonContent.Create(character);
         try
         {
-            using var respone = await HttpClient.PutAsJsonAsync($"{HttpClient.BaseAddress}api/character/{id}", content);
-            respone.EnsureSuccessStatusCode();
+            using var response = await HttpClient.PutAsJsonAsync($"{HttpClient.BaseAddress}{baseRoute}/{id}", content);
+            response.EnsureSuccessStatusCode();
         }
         catch (Exception ex)
         {
@@ -103,8 +105,8 @@ public class CharacterDataService : BaseDataService
     {
         try
         {
-            using var respone = await HttpClient.DeleteAsync($"{HttpClient.BaseAddress}api/character/{id}");
-            respone.EnsureSuccessStatusCode();
+            using var response = await HttpClient.DeleteAsync($"{HttpClient.BaseAddress}{baseRoute}/{id}");
+            response.EnsureSuccessStatusCode();
         }
         catch (Exception ex)
         {
