@@ -62,7 +62,7 @@ public class CampaignService
             throw new KeyNotFoundException($"Campaign with ID {campaignDto.Id} not found.");
         }
 
-        existingCampaign.CampaignName = campaignDto.Name;
+        existingCampaign.Name = campaignDto.Name;
         existingCampaign.Description = campaignDto.Description;
         existingCampaign.DescriptionShort = campaignDto.DescriptionShort;
         existingCampaign.GmOnlyDescription = campaignDto.GmOnlyDescription;

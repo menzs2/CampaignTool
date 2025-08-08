@@ -49,7 +49,7 @@ public partial class CampaignToolContext : DbContext
             entity.HasKey(e => e.Id).HasName("campaign_pkey");
             entity.ToTable("campaign");
             entity.Property(e => e.Id).UseIdentityAlwaysColumn();
-            entity.Property(e => e.CampaignName).HasMaxLength(100);
+            entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.Description).HasColumnType("character varying");
             entity.Property(e => e.DescriptionShort).HasMaxLength(200);
             entity.Property(e => e.GmOnlyDescription).HasColumnType("character varying");

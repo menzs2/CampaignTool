@@ -13,9 +13,10 @@ public static class Extensions
         return new CampaignDto
         {
             Id = campaign.Id,
-            Name = campaign.CampaignName,
+            Name = campaign.Name,
             DescriptionShort = campaign.DescriptionShort,
             Description = campaign.Description,
+            State = campaign.State,
             GmId = campaign.Gm,
             GmOnlyDescription = campaign.GmOnlyDescription
         };
@@ -29,7 +30,7 @@ public static class Extensions
         if (campaignDto == null) return null;
         var newCampaign = new Campaign
         {
-            CampaignName = campaignDto.Name,
+            Name = campaignDto.Name,
             DescriptionShort = campaignDto.DescriptionShort,
             Description = campaignDto.Description,
             Gm = campaignDto.GmId,

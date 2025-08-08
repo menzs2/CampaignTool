@@ -85,7 +85,7 @@ public class CreateDefaultCampaign
             {
                 new Campaign
                 {
-                    CampaignName = "Default Campaign",
+                    Name = "Default Campaign",
                     Description = "This is a default campaign.",
                     Gm = 1, // Assuming the first user is the GM
                     DescriptionShort = "Default campaign short description.",
