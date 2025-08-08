@@ -34,12 +34,9 @@ else
         CampaignDto = await dataService.GetCampaignByIdAsync(Id);
     }
 
-    public async Task ToggleDetailView()
-    {
-        NavigationManager.NavigateTo("/");
-    }
 
-    public async Task SaveChanges()
+
+    private async Task SaveChanges()
     {
         if (CampaignDto is CampaignDto campaignDto)
         {
@@ -58,7 +55,12 @@ else
         }
     }
 
-    public async Task AddNewEntity()
+    private async Task ToggleDetailView()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+
+    private async Task AddNewEntity()
     {
         await SaveChanges();
         CampaignDto = new CampaignDto

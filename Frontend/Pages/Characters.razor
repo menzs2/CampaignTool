@@ -70,6 +70,7 @@ else
         }
     }
 
+
     private async Task SelectCharacter(long characterId)
     {
         await SessionStorage.SetItemAsync("SelectedCharacterId", characterId);
@@ -77,11 +78,11 @@ else
         IsDetailView = true;
     }
 
-    public void ToggleDetailView()
+    private void ToggleDetailView()
     {
         IsDetailView = !IsDetailView;
     }
-    public async Task AddNewEntity()
+    private async Task AddNewEntity()
     {
         if (!IsDetailView)
         {

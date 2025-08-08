@@ -8,20 +8,42 @@
 
 <PageTitle>Campaign Tool Organisationen</PageTitle>
 
-<h1>Organisationen</h1>
+<Frontend.Components.PageHeaderComponent Title="Organisationen" OnToggleDetailView="ToggleDetailView"
+    OnAddNewEntity="AddNewEntity" />
 @if (OrganisationList != null && OrganisationList.Any())
 {
-    <div>
-        <Frontend.Components.ListComponent EntityList="@(OrganisationList?.Cast<BaseEntityDto>().ToList())" />
-    </div>
+    if (SelectedOrganisation == null || !IsDetailView)
+    {
+        <div>
+            <Frontend.Components.ListComponent EntityList="@(OrganisationList?.Cast<BaseEntityDto>().ToList())"
+                OnNotifyParent="@SelectOrganisation" />
+        </div>
+    }
+    else if (SelectedOrganisation != null && IsDetailView)
+    {
+        <Frontend.Components.EntityDetailComponent EntityDto="SelectedOrganisation" />
+    }
+    else
+    {
+        <h2>Wähle eine Organisation aus.</h2>
+        <div>
+            <Frontend.Components.ListComponent EntityList="@(OrganisationList?.Cast<BaseEntityDto>().ToList())"
+                OnNotifyParent="@SelectOrganisation" />
+        </div>
+    }
+
 }
 else
 {
     <p>Not data found.</p>
 }
 
+
 @code {
-    public List<OrganisationDto>? OrganisationList { get; set; }
+    public List<OrganisationDto>? OrganisationList { get; set; } = new List<OrganisationDto>();
+
+    public OrganisationDto? SelectedOrganisation { get; set; }
+    private bool IsDetailView { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -39,5 +61,32 @@ else
                 OrganisationList = await DataService.GetOrganisationDtosByCampaignAsync(selectedCampaignId.Value);
             }
         }
+    }
+
+    private async Task SelectOrganisation(long organisationId)
+    {
+        await SessionStorage.SetItemAsync("SelectedOrganisation", organisationId);
+        SelectedOrganisation = OrganisationList?.FirstOrDefault(c => c.Id == organisationId);
+        IsDetailView = true;
+    }
+
+    private void ToggleDetailView()
+    {
+        IsDetailView = !IsDetailView;
+    }
+
+    private async Task AddNewEntity()
+    {
+        if (!IsDetailView)
+        {
+            IsDetailView = true;
+        }
+        SelectedOrganisation = new OrganisationDto();
+        if (OrganisationList == null)
+        {
+            OrganisationList = new List<OrganisationDto>();
+        }
+        OrganisationList?.Add(SelectedOrganisation);
+        await SessionStorage.SetItemAsync("SelectedOrganisation", SelectedOrganisation);
     }
 }
