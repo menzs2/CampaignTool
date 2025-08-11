@@ -1,8 +1,8 @@
+using System.Reflection;
 using Backend;
 using Backend.Data;
 using Backend.Services;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 

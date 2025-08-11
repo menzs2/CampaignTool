@@ -25,8 +25,8 @@ namespace Backend.Tests
             // Arrange
             var campaigns = new List<Campaign>
             {
-                new Campaign { Id = 1L, CampaignName = "C1", Gm = 1, DescriptionShort = "Short1" },
-                new Campaign { Id = 2L, CampaignName = "C2", Gm = 2, DescriptionShort = "Short2" }
+                new Campaign { Id = 1L, Name = "C1", Gm = 1, DescriptionShort = "Short1" },
+                new Campaign { Id = 2L, Name = "C2", Gm = 2, DescriptionShort = "Short2" }
             };
             using var context = GetDbContextWithData(campaigns);
             var service = new CampaignService(context);
@@ -52,7 +52,7 @@ namespace Backend.Tests
         [Fact]
         public async Task Get_ById_ReturnsCampaign_WhenExists()
         {
-            var campaign = new Campaign { Id = 1L, CampaignName = "C1", Gm = 1, DescriptionShort = "Short1" };
+        var campaign = new Campaign { Id = 1L, Name = "C1", Gm = 1, DescriptionShort = "Short1" };
             using var context = GetDbContextWithData(new List<Campaign> { campaign });
             var service = new CampaignService(context);
 
@@ -79,9 +79,9 @@ namespace Backend.Tests
         {
             var campaigns = new List<Campaign>
             {
-                new Campaign { Id = 1L, CampaignName = "C1", Gm = 1, DescriptionShort = "Short1" },
-                new Campaign { Id = 2L, CampaignName = "C2", Gm = 1, DescriptionShort = "Short2" },
-                new Campaign { Id = 3L, CampaignName = "C3", Gm = 2, DescriptionShort = "Short3" }
+                new Campaign { Id = 1L, Name = "C1", Gm = 1, DescriptionShort = "Short1" },
+                new Campaign { Id = 2L, Name = "C2", Gm = 1, DescriptionShort = "Short2" },
+                new Campaign { Id = 3L, Name = "C3", Gm = 2, DescriptionShort = "Short3" }
             };
             using var context = GetDbContextWithData(campaigns);
             var service = new CampaignService(context);
@@ -99,7 +99,7 @@ namespace Backend.Tests
         {
             var campaigns = new List<Campaign>
             {
-                new Campaign { Id = 1L, CampaignName = "C1", Gm = 2, DescriptionShort = "Short1" }
+                new Campaign { Id = 1L, Name = "C1", Gm = 2, DescriptionShort = "Short1" }
             };
             using var context = GetDbContextWithData(campaigns);
             var service = new CampaignService(context);
@@ -151,7 +151,7 @@ namespace Backend.Tests
         [Fact]
         public async Task Put_UpdatesCampaign_WhenValid()
         {
-            var campaign = new Campaign { Id = 1L, CampaignName = "Old", Gm = 1, DescriptionShort = "Short1" };
+            var campaign = new Campaign { Id = 1L, Name = "Old", Gm = 1, DescriptionShort = "Short1" };
             using var context = GetDbContextWithData(new List<Campaign> { campaign });
             var service = new CampaignService(context);
             var dto = new CampaignDto
@@ -168,7 +168,7 @@ namespace Backend.Tests
 
             var updatedCampaign = context.Campaigns.Find(1L);
             Assert.NotNull(updatedCampaign);
-            Assert.Equal("Updated", updatedCampaign.CampaignName);
+            Assert.Equal("Updated", updatedCampaign.Name);
         }
 
         [Fact]
@@ -197,7 +197,7 @@ namespace Backend.Tests
         [Fact]
         public async Task Delete_RemovesCampaign_WhenExists()
         {
-            var campaign = new Campaign { Id = 1L, CampaignName = "ToDelete", Gm = 1, DescriptionShort = "Short1" };
+            var campaign = new Campaign { Id = 1L, Name = "ToDelete", Gm = 1, DescriptionShort = "Short1" };
             using var context = GetDbContextWithData(new List<Campaign> { campaign });
             var service = new CampaignService(context);
 

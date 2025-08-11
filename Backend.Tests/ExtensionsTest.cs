@@ -44,7 +44,7 @@ namespace Backend.Tests
                 new Campaign
                 {
                     Id = 1,
-                    CampaignName = "Test Campaign",
+                    Name = "Test Campaign",
                     DescriptionShort = "Short",
                     Description = "Long",
                     Gm = 1,
@@ -53,7 +53,7 @@ namespace Backend.Tests
                 new Campaign
                 {
                     Id = 2,
-                    CampaignName = "Another Campaign",
+                    Name = "Another Campaign",
                     DescriptionShort = "Short2",
                     Description = "Long2",
                     Gm = 2,
@@ -82,7 +82,7 @@ namespace Backend.Tests
                 new Campaign
                 {
                     Id = 3,
-                    CampaignName = "Valid",
+                    Name = "Valid",
                     DescriptionShort = "Short",
                     Description = "Desc",
                     Gm = 1,

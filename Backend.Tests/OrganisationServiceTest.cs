@@ -14,8 +14,8 @@ public class OrganisationServiceTest
             .Options;
         var context = new CampaignToolContext(options);
 
-        context.Campaigns.Add(new Campaign { Id = 1L, CampaignName = "Test Campaign", DescriptionShort = "Short Desc", Gm = 1 });
-        context.Campaigns.Add(new Campaign { Id = 2L, CampaignName = "Test Campaign 2", DescriptionShort = "Short Desc", Gm = 1 });
+        context.Campaigns.Add(new Campaign { Id = 1L, Name = "Test Campaign", DescriptionShort = "Short Desc", Gm = 1 });
+        context.Campaigns.Add(new Campaign { Id = 2L, Name = "Test Campaign 2", DescriptionShort = "Short Desc", Gm = 1 });
 
         //Seed Organisations
         if (organisations == null)

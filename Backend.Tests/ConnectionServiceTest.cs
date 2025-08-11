@@ -16,7 +16,7 @@ namespace Backend.Tests
             var context = new CampaignToolContext(options);
             // Seed Characters
             // Seed Campaign
-            context.Campaigns.Add(new Campaign { Id = 1, CampaignName = "Test Campaign", DescriptionShort = "Short Desc", Gm = 1 });
+            context.Campaigns.Add(new Campaign { Id = 1, Name = "Test Campaign", DescriptionShort = "Short Desc", Gm = 1 });
 
             // Seed Connections
             context.Connections.Add(new Connection { Id = 1, ConnectionName = "Conn1", Description = "Desc", GmOnly = false, CampaignId = 1 });
