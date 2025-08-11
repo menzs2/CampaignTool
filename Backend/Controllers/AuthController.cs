@@ -11,14 +11,11 @@ namespace Backend
     {
 
         private readonly AuthenticationService _authenticationService;
-        private readonly IConfigurationSection _configuration;
 
         public AuthController(
-            AuthenticationService authenticationService,
-            IConfigurationSection configuration)
+            AuthenticationService authenticationService)
         {
             _authenticationService = authenticationService;
-            _configuration = configuration;
         }
 
         [HttpPost("login")]
@@ -79,6 +76,8 @@ namespace Backend
 
         public class RegisterRequestWithRole
         {
+            [Required]
+            public long UserId { get; set; }
             [Required]
             public string Email { get; set; }
             [Required]
