@@ -3,7 +3,7 @@
 @inject CampaignDataService dataService;
 @inject NavigationManager NavigationManager;
 @using Shared;
-@using Components;
+@using Frontend.Components;
 
 <PageTitle>Campaign Tool Kampagnen</PageTitle>
 
@@ -14,9 +14,10 @@
 }
 else
 {
-    <Frontend.Components.PageHeaderComponent Title="@CampaignDto.Name" OnToggleDetailView="ToggleDetailView"
+    <PageHeaderComponent Title="@CampaignDto.Name" OnToggleDetailView="ToggleDetailView"
         OnAddNewEntity="AddNewEntity" />
-    <Frontend.Components.EntityDetailComponent EntityDto="@CampaignDto" OnNotifyParent="SaveChanges" />
+    <EntityDetailComponent EntityDto="@CampaignDto" OnNotifyParent="SaveChanges" />
+    <ConnectedEntitesComponent Entity="@CampaignDto" />
 }
 
 @code {
