@@ -6,7 +6,7 @@ namespace Frontend
     public class CampaignDataService : BaseDataService
     {
         public CampaignDataService(HttpClient httpClient) : base(httpClient) { }
-        private readonly string baseRoute = "/api/campaign";
+        private readonly string baseRoute = "api/campaign";
 
         public async Task<List<CampaignDto>?> GetCampaigns()
         {

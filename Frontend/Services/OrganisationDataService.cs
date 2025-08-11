@@ -6,7 +6,7 @@ namespace Frontend
     public class OrganisationDataService : BaseDataService
     {
         public OrganisationDataService(HttpClient httpClient) : base(httpClient) { }
-        private readonly string baseRoute = "/api/organisation";
+        private readonly string baseRoute = "api/organisation";
 
         public async Task<List<OrganisationDto>?> GetOrganisationDtosAsync()
         {

@@ -6,7 +6,7 @@ namespace Frontend;
 public class CharacterDataService : BaseDataService
 {
     public CharacterDataService(HttpClient httpClient) : base(httpClient) { }
-    private readonly string baseRoute = "/api/character";
+    private readonly string baseRoute = "api/character";
 
 
     public async Task<List<CharacterDto>?> GetCharacterDtosAsync()

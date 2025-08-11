@@ -7,7 +7,7 @@ public class ConnectionDataService : BaseDataService
 {
     public ConnectionDataService(HttpClient httpClient) : base(httpClient) { }
 
-    private readonly string baseRoute = "/api/connection";
+    private readonly string baseRoute = "api/connection";
 
     #region Connections
 
