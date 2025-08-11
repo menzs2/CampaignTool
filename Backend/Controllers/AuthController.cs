@@ -1,6 +1,4 @@
-﻿using Backend.Services;
-using Microsoft.AspNetCore.Mvc;
-using Shared;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
 namespace Backend
@@ -78,7 +76,7 @@ namespace Backend
 
             return CreatedAtAction(nameof(Register), new { Email = request.Email }, new { Message = "User registered successfully." });
         }
-        
+
         public class RegisterRequestWithRole
         {
             [Required]
