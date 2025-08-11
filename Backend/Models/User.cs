@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Backend.Models;
 
 [Table("user")]
-public partial class User
+public class User
 {
     [Key]
     [Column("id")]
@@ -37,7 +37,7 @@ public partial class User
     [Column("role")]
     public long Role { get; set; }
 
-    [InverseProperty("User")]
+     [InverseProperty("User")]
     public virtual UserSetting UserSetting { get; set; } = null!;
 
     [InverseProperty("User")]

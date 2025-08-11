@@ -44,6 +44,7 @@ builder.Services.AddDbContext<CampaignToolContext>(options =>
 builder.Services.AddScoped<CreateDefaultCampaign>();
 
 // Register the Services
+builder.Services.AddScoped<AuthenticationService>();
 builder.Services.AddScoped<CampaignService>();
 builder.Services.AddScoped<CharacterService>();
 builder.Services.AddScoped<ConnectionService>();
@@ -80,5 +81,6 @@ app.UseHttpsRedirection();
 app.UseCors();
 app.UseRouting();
 app.UseAuthorization();
+app.UseAuthentication();
 app.MapControllers();
 app.Run();
