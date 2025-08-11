@@ -3,31 +3,33 @@
 @inject OrganisationDataService DataService
 @inject Blazored.SessionStorage.ISessionStorageService SessionStorage;
 @inject NavigationManager NavigationManager;
-@using System.Net.Http.Json
+@using System.Net.Http.Json;
+@using Frontend.Components;
 @using Shared;
 
 <PageTitle>Campaign Tool Organisationen</PageTitle>
 
-<Frontend.Components.PageHeaderComponent Title="Organisationen" OnToggleDetailView="ToggleDetailView"
+<PageHeaderComponent Title="Organisationen" OnToggleDetailView="ToggleDetailView"
     OnAddNewEntity="AddNewEntity" />
 @if (OrganisationList != null && OrganisationList.Any())
 {
     if (SelectedOrganisation == null || !IsDetailView)
     {
         <div>
-            <Frontend.Components.ListComponent EntityList="@(OrganisationList?.Cast<BaseEntityDto>().ToList())"
+            <ListComponent EntityList="@(OrganisationList?.Cast<BaseEntityDto>().ToList())"
                 OnNotifyParent="@SelectOrganisation" />
         </div>
     }
     else if (SelectedOrganisation != null && IsDetailView)
     {
-        <Frontend.Components.EntityDetailComponent EntityDto="SelectedOrganisation" />
+        <EntityDetailComponent EntityDto="SelectedOrganisation" />
+        <ConnectedEntitiesComponent Entity="@SelectedOrganisation" OnNotifyParent="@SelectOrganisation" />
     }
     else
     {
         <h2>Wähle eine Organisation aus.</h2>
         <div>
-            <Frontend.Components.ListComponent EntityList="@(OrganisationList?.Cast<BaseEntityDto>().ToList())"
+            <ListComponent EntityList="@(OrganisationList?.Cast<BaseEntityDto>().ToList())"
                 OnNotifyParent="@SelectOrganisation" />
         </div>
     }

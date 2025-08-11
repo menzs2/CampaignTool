@@ -7,23 +7,20 @@
 
 <PageTitle>Campaign Tool Kampagnen</PageTitle>
 
-<h1>Kampagnen</h1>
 @if (CampaignDto == null)
 {
     <p>Loading...</p>
 }
 else
 {
-    <PageHeaderComponent Title="@CampaignDto.Name" OnToggleDetailView="ToggleDetailView"
-        OnAddNewEntity="AddNewEntity" />
+    <PageHeaderComponent Title="@CampaignDto.Name" OnToggleDetailView="ToggleDetailView" OnAddNewEntity="AddNewEntity" />
     <EntityDetailComponent EntityDto="@CampaignDto" OnNotifyParent="SaveChanges" />
-    <ConnectedEntitesComponent Entity="@CampaignDto" />
+    <ConnectedEntitiesComponent Entity="@CampaignDto" />
 }
 
 @code {
     [Parameter]
     public int Id { get; set; }
-
 
     public BaseEntityDto? CampaignDto { get; set; }
 
@@ -34,8 +31,6 @@ else
         Console.WriteLine($"Loading campaign with Id: {Id}");
         CampaignDto = await dataService.GetCampaignByIdAsync(Id);
     }
-
-
 
     private async Task SaveChanges()
     {

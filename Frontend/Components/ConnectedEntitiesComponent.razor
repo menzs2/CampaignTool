@@ -1,9 +1,9 @@
-@using Shared;
 @inject CampaignDataService dataService;
 @inject CharacterDataService characterDataService;
 @inject NavigationManager NavigationManager;
+@using Shared;
 
-<section class="connected-entities p-3">
+<div class="connected-entities p-3">
     <div class="button-container">
         <button class="btn btn-primary">SC</button>
         <button class="btn btn-primary">NSC</button>
@@ -15,20 +15,28 @@
     }
     else
     {
-        <ListComponent EntityList="@(ConnectedEntities?.Cast<BaseEntityDto>().ToList())" />
+        <ListComponent EntityList="@(ConnectedEntities?.Cast<BaseEntityDto>().ToList())" OnNotifyParent="@OnNotifyParent" />
     }
-</section>
-@code{
+</div>
+
+@code {
     [Parameter]
     public BaseEntityDto? Entity { get; set; }
+
+    [Parameter]
+    public EventCallback<long> OnNotifyParent { get; set; }
 
     private List<CharacterDto> ConnectedEntities { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
-        if (Entity != null)
+        if (Entity != null && Entity is CampaignDto campaignDto)
         {
-            ConnectedEntities = await characterDataService.GetCharacterDtosByCampaignAsync(Entity.Id.Value);
+            ConnectedEntities = await characterDataService.GetCharacterDtosByCampaignAsync(campaignDto.Id.Value);
+        }
+        else
+        {
+            ConnectedEntities = await characterDataService.GetConnectedCharacterDtosAsync(Entity.Id.Value);
         }
     }
 }
