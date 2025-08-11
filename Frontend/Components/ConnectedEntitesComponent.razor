@@ -3,7 +3,7 @@
 @inject CharacterDataService characterDataService;
 @inject NavigationManager NavigationManager;
 
-<section class="connected-entities">
+<section class="connected-entities p-3">
     <div class="button-container">
         <button class="btn btn-primary">SC</button>
         <button class="btn btn-primary">NSC</button>
@@ -15,12 +15,7 @@
     }
     else
     {
-        <ul>
-            @foreach (var entity in ConnectedEntities)
-            {
-                <li>@entity.Name</li>
-            }
-        </ul>
+        <ListComponent EntityList="@(ConnectedEntities?.Cast<BaseEntityDto>().ToList())" />
     }
 </section>
 @code{

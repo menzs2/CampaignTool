@@ -118,3 +118,8 @@ code {
     justify-content: left;
     flex-direction: row;
 }   
+
+.button-container {
+    display: flex;
+    justify-content: left
+}
