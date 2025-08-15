@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
+using Shared.DTO;
 
 namespace Backend
 {
@@ -18,6 +18,9 @@ namespace Backend
             _authenticationService = authenticationService;
         }
 
+        /// <summary>
+        /// Logs in a user with email and password.
+        /// </summary>
         [HttpPost("login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -49,10 +52,13 @@ namespace Backend
             return BadRequest(ModelState);
         }
 
+        /// <summary>
+        /// Registers a new user with email, password, and optional role.
+        /// </summary>  
         [HttpPost("register")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Register([FromBody] RegisterRequestWithRole request)
+        public async Task<IActionResult> Register([FromBody] RegisterRequestWithRoleDto request)
         {
             if (request == null || string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
             {
@@ -74,16 +80,5 @@ namespace Backend
             return CreatedAtAction(nameof(Register), new { Email = request.Email }, new { Message = "User registered successfully." });
         }
 
-        public class RegisterRequestWithRole
-        {
-            [Required]
-            public long UserId { get; set; }
-            [Required]
-            public string Email { get; set; }
-            [Required]
-            [DataType(DataType.Password)]
-            public string Password { get; set; }
-            public string? Role { get; set; } // Optional role for registration
-        }
     }
 }

@@ -5,7 +5,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Backend.Data;
 
-
 namespace Backend
 {
     public class AuthenticationService
@@ -60,7 +59,8 @@ namespace Backend
             return result;
         }
 
-        public async Task UpdateUser(ApplicationUser user) {
+        public async Task UpdateUser(ApplicationUser user)
+        {
             if (user == null)
             {
                 throw new ArgumentNullException(nameof(user), "User cannot be null.");
@@ -95,10 +95,6 @@ namespace Backend
             return await _signInManager.PasswordSignInAsync(email, password, isPersistent: true, lockoutOnFailure: false);
         }
 
-        public async Task LogoutAsync()
-        {
-            await _signInManager.SignOutAsync();
-        }
 
         // Add methods for login, registration, etc. here
         public async Task<string> GenerateJwtTokenAsync(ApplicationUser user)
