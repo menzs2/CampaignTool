@@ -28,7 +28,7 @@ public class CreateDefaultCampaign
 
     private void CreateDefaultUsers()
     {
-        if (!_dbContext.Users.Any())
+        if (!_dbContext.Player.Any())
         {
             var userList = new List<User>()
             {
@@ -62,9 +62,9 @@ public class CreateDefaultCampaign
                 }
             };
 
-            _dbContext.Users.AddRange(userList);
+            _dbContext.Player.AddRange(userList);
             _dbContext.SaveChanges();
-            foreach (var item in _dbContext.Users)
+            foreach (var item in _dbContext.Player)
             {
                 item.UserSetting = new UserSetting
                 {

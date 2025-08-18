@@ -38,10 +38,10 @@ public class User
     public long Role { get; set; }
 
     [Column("app_user_id")]
-    public long? AppUserId { get; set; }
+    public string? AppUserId { get; set; }
 
     [ForeignKey("AppUserId")]
-    public virtual ApplicationUser? AppUser { get; set; }
+    public virtual ApplicationUser? ApplicationUser { get; set; }
 
     [InverseProperty("User")]
     public virtual UserSetting UserSetting { get; set; } = null!;

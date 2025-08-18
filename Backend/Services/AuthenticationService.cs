@@ -4,8 +4,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Backend.Data;
+using Backend.Models;
 
-namespace Backend
+namespace Backend.Services
 {
     public class AuthenticationService
     {
@@ -17,8 +18,7 @@ namespace Backend
         public AuthenticationService(UserManager<ApplicationUser> userManager,
                 SignInManager<ApplicationUser> signInManager,
                 RoleManager<IdentityRole> roleManager,
-                IConfigurationSection configuration,
-                CampaignToolContext dbContext)
+                IConfigurationSection configuration)
         {
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));

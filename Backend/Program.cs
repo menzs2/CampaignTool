@@ -1,8 +1,13 @@
 using System.Reflection;
+using System.Text;
 using Backend;
 using Backend.Data;
 using Backend.Services;
+using Backend.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,19 +43,44 @@ builder.Services.AddCors(options =>
     });
 });
 
+//Configure Authentication
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+.AddEntityFrameworkStores<CampaignToolContext>();
+
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtSettings["Issuer"],
+            ValidAudience = jwtSettings["Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Secret"]))
+        };
+    });
+
+builder.Services.AddAuthorization();
+
+var connectionstring = builder.Configuration.GetConnectionString("DefaultConnection");
 // Configure EF Core with PostgreSQL
 builder.Services.AddDbContext<CampaignToolContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<CreateDefaultCampaign>();
 
 // Register the Services
+builder.Services.AddAuthentication();
 builder.Services.AddScoped<AuthenticationService>();
 builder.Services.AddScoped<CampaignService>();
 builder.Services.AddScoped<CharacterService>();
 builder.Services.AddScoped<ConnectionService>();
 builder.Services.AddScoped<OrganisationService>();
 builder.Services.AddScoped<UserService>();
-
+builder.Services.AddScoped(provider => jwtSettings);
 var app = builder.Build();
 
 // Apply migrations at startup

@@ -1,13 +1,12 @@
 ﻿using Backend.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Backend.Data;
 
-public partial class CampaignToolContext : DbContext
+public partial class CampaignToolContext : IdentityDbContext<ApplicationUser>
 {
-    public CampaignToolContext()
-    {
-    }
+
 
     public CampaignToolContext(DbContextOptions<CampaignToolContext> options)
         : base(options)
@@ -21,14 +20,14 @@ public partial class CampaignToolContext : DbContext
     public virtual DbSet<CharOrgConnection> CharOrgConnections { get; set; }
 
     public virtual DbSet<OrgOrgConnection> OrgOrgConnections { get; set; }
-    
+
     public virtual DbSet<Character> Characters { get; set; }
 
     public virtual DbSet<Connection> Connections { get; set; }
 
     public virtual DbSet<Organisation> Organisations { get; set; }
 
-    public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<User> Player { get; set; }
 
     public virtual DbSet<UserSetting> UserSettings { get; set; }
 
@@ -43,6 +42,8 @@ public partial class CampaignToolContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+        
         // Campaign
         modelBuilder.Entity<Campaign>(entity =>
         {
@@ -151,6 +152,7 @@ public partial class CampaignToolContext : DbContext
             entity.Property(e => e.LastName).HasMaxLength(150);
             entity.Property(e => e.Password).HasMaxLength(50);
             entity.Property(e => e.UserName).HasMaxLength(50);
+           
         });
 
         // UserSetting

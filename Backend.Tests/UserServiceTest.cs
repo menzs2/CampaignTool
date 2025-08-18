@@ -36,7 +36,7 @@ namespace Backend.Tests
             var context = new CampaignToolContext(options);
             foreach (var user in users)
             {
-                context.Users.Add(user);
+                context.Player.Add(user);
             }
             context.SaveChanges();
             return context;

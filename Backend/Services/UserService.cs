@@ -16,13 +16,13 @@ namespace Backend
 
         public async Task<IEnumerable<UserDto>> GetAllUsers()
         {
-            var users = await _context.Users.ToListAsync();
+            var users = await _context.Player.ToListAsync();
             return users.ToDto();
         }
 
         public async Task<UserDto?> GetUserByID(long id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await _context.Player.FindAsync(id);
             return user?.ToDto();
         }
 
@@ -32,13 +32,13 @@ namespace Backend
             {
                 throw new ArgumentException("Email cannot be null or empty.", nameof(email));
             }
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            var user = await _context.Player.FirstOrDefaultAsync(u => u.Email == email);
             return user?.ToDto();
         }
 
-        public async Task<UserDto?> GetUserByLogin(long id)
+        public async Task<UserDto?> GetUserByLogin(string id)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.AppUserId == id);
+            var user = await _context.Player.FirstOrDefaultAsync(u => u.AppUserId == id);
             if (user == null)
             {
                 throw new KeyNotFoundException($"User not found.");
@@ -57,7 +57,7 @@ namespace Backend
             {
                 throw new InvalidOperationException("Failed to convert UserDTo to User model.");
             }
-            _context.Users.Add(newUser);
+            _context.Player.Add(newUser);
             await _context.SaveChangesAsync();
             await CreateUserSetting(newUser.Id);
             return newUser?.ToDto();
@@ -65,7 +65,7 @@ namespace Backend
 
         public async Task UpdateUser(long id, UserDto userDto)
         {
-            var exisitingUser = await _context.Users.FindAsync(id);
+            var exisitingUser = await _context.Player.FindAsync(id);
             if (exisitingUser == null)
             {
                 throw new KeyNotFoundException($"User with id '{id}' not found.");
@@ -80,7 +80,7 @@ namespace Backend
 
         public async Task DeleteUser(long id)
         {
-            var exisitingUser = await _context.Users.FindAsync(id);
+            var exisitingUser = await _context.Player.FindAsync(id);
             if (exisitingUser == null)
             {
                 throw new KeyNotFoundException($"User with id '{id}' not found.");
