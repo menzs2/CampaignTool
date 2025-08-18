@@ -9,7 +9,6 @@ namespace Backend
 {
     public class AuthenticationService
     {
-        private readonly CampaignToolContext _dbContext;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
@@ -25,7 +24,6 @@ namespace Backend
             _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
             _roleManager = roleManager ?? throw new ArgumentNullException(nameof(roleManager));
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         public async Task<IdentityResult> RegisterUserAsync(ApplicationUser user, string password, string? role = null)
@@ -85,6 +83,7 @@ namespace Backend
         {
             return await _userManager.FindByIdAsync(userId.ToString());
         }
+
         public async Task<SignInResult> LoginAsync(string email, string password)
         {
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
@@ -95,8 +94,6 @@ namespace Backend
             return await _signInManager.PasswordSignInAsync(email, password, isPersistent: true, lockoutOnFailure: false);
         }
 
-
-        // Add methods for login, registration, etc. here
         public async Task<string> GenerateJwtTokenAsync(ApplicationUser user)
         {
             var claims = new[]

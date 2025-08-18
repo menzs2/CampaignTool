@@ -26,6 +26,26 @@ namespace Backend
             return user?.ToDto();
         }
 
+        public async Task<UserDto?> GetUserByEmail(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                throw new ArgumentException("Email cannot be null or empty.", nameof(email));
+            }
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            return user?.ToDto();
+        }
+
+        public async Task<UserDto?> GetUserByLogin(long id)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.AppUserId == id);
+            if (user == null)
+            {
+                throw new KeyNotFoundException($"User not found.");
+            }
+            return user.ToDto();
+        }
+
         public async Task<UserDto?> CreateUser(UserDto userDto)
         {
             if (userDto == null)
