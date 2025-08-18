@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Shared;
 
 namespace Backend;
@@ -18,6 +20,7 @@ public class UserController : ControllerBase
     /// Retrieves all users.
     /// </summary>
     [HttpGet]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> Get()
     {
         var users = await _service.GetAllUsers();
@@ -31,6 +34,7 @@ public class UserController : ControllerBase
     /// </summary>
     /// <param name="id">The ID of the user to retrieve.</param>
     [HttpGet("{id}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> Get(long id)
     {
         var user = await _service.GetUserByID(id);
@@ -44,6 +48,7 @@ public class UserController : ControllerBase
     /// The user data to add. Can be null; if null, a BadRequest response is returned.
     /// </param>
     [HttpPost]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> Post([FromBody] UserDto? user)
     {
         if (user == null)
@@ -68,6 +73,7 @@ public class UserController : ControllerBase
     /// <param name="id">The ID of the user to update.</param>
     /// <param name="user">The updated user data.</param>
     [HttpPut("{id}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> Put(long id, [FromBody] UserDto? user)
     {
         if (user == null || user.Id != id)
@@ -99,6 +105,7 @@ public class UserController : ControllerBase
     /// This action will remove the user from the database.
     /// </remarks>
     [HttpDelete("{id}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> Delete(long id)
     {
         try

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Shared;
 
 namespace Backend;
@@ -16,6 +18,7 @@ public class UserSettingController : ControllerBase
     /// Gets user settings.
     /// </summary>
     [HttpGet]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> Get()
     {
         var userSettings = await _service.GetUserSettings();
@@ -28,6 +31,7 @@ public class UserSettingController : ControllerBase
     /// </summary>
     /// <param name="id">The ID of the user setting to retrieve.</param>
     [HttpGet("{id}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> Get(long id)
     {
         var userSetting = await _service.GetUserSettingById(id);
@@ -44,6 +48,7 @@ public class UserSettingController : ControllerBase
     /// The user setting data to create. Can be null; if null, a BadRequest response is returned.
     /// </param>
     [HttpPost]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> Post(long id, [FromBody] UserSettingDto? userSetting)
     {
         if (userSetting == null)
@@ -70,6 +75,7 @@ public class UserSettingController : ControllerBase
     /// The user setting data to update. Must not be null and must match the ID.
     /// </param>
     [HttpPut("{id}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<ActionResult> Put(long id, [FromBody] UserSettingDto? userSetting)
     {
         if (userSetting == null)
