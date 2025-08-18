@@ -12,5 +12,7 @@ namespace Shared.DTO
         [DataType(DataType.Password)]
         public string Password { get; set; }
         public string? Role { get; set; } // Optional role for registration
+
+        public UserDto? User { get; set; }
     }
 }

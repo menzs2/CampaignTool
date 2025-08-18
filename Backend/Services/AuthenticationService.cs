@@ -1,6 +1,7 @@
 ﻿using Backend.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using Shared;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -13,16 +14,19 @@ namespace Backend.Services
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfigurationSection _configuration;
+        private readonly UserService _userService;
 
         public AuthenticationService(UserManager<ApplicationUser> userManager,
                 SignInManager<ApplicationUser> signInManager,
                 RoleManager<IdentityRole> roleManager,
-                IConfigurationSection configuration)
+                IConfigurationSection configuration,
+                UserService userService)
         {
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
             _roleManager = roleManager ?? throw new ArgumentNullException(nameof(roleManager));
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
 
         public async Task<IdentityResult> RegisterUserAsync(ApplicationUser user, string password, string? role = null)
@@ -52,7 +56,7 @@ namespace Backend.Services
                     return result;
                 }
             }
-
+            await CreateOrUpdatePlayer(user);
             return result;
         }
 
@@ -140,6 +144,35 @@ namespace Backend.Services
             if (!await _roleManager.RoleExistsAsync(roleName))
             {
                 await _roleManager.CreateAsync(new IdentityRole(roleName));
+            }
+        }
+
+        private async Task CreateOrUpdatePlayer(ApplicationUser user)
+        {
+            if (user == null || string.IsNullOrEmpty(user.Email))
+            {
+                throw new ArgumentNullException(nameof(user), "User cannot be null.");
+            }
+
+            var player = await _userService.GetUserByEmail(user.Email);
+            if (player == null || !player.Id.HasValue)
+            {
+                player = new UserDto
+                {
+                    LastName = user.Email,
+                    UserName = user.Email,
+                    Email = user.Email,
+                    HasLogin = true,
+                    Role = 0,
+                    AppUserId = user.Id.ToString()
+                };
+                await _userService.CreateUser(player);
+            }
+            else
+            {
+                player.AppUserId = user.Id.ToString();
+                player.HasLogin = true;
+                await _userService.UpdateUser(player.Id.Value, player);
             }
         }
     }

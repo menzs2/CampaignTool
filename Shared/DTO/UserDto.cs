@@ -17,4 +17,6 @@ public class UserDto
     public string? Password { get; set; }
 
     public long Role { get; set; }
+
+    public string? AppUserId { get; set; }
 }

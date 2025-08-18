@@ -1,6 +1,6 @@
 ﻿using Backend.Models;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Backend.Data;
 
@@ -43,7 +43,6 @@ public partial class CampaignToolContext : IdentityDbContext<ApplicationUser>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
         // Campaign
         modelBuilder.Entity<Campaign>(entity =>
         {
@@ -152,7 +151,7 @@ public partial class CampaignToolContext : IdentityDbContext<ApplicationUser>
             entity.Property(e => e.LastName).HasMaxLength(150);
             entity.Property(e => e.Password).HasMaxLength(50);
             entity.Property(e => e.UserName).HasMaxLength(50);
-
+           
         });
 
         // UserSetting
@@ -217,8 +216,7 @@ public partial class CampaignToolContext : IdentityDbContext<ApplicationUser>
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("organisation_b_fkey");
         });
-
-        OnModelCreatingPartial(modelBuilder);
+                OnModelCreatingPartial(modelBuilder);
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
