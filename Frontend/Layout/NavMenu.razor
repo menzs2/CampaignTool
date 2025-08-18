@@ -1,4 +1,7 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using Services;
+@inject CustomAuthenticationStateProvider AuthenticationProvider
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">Menu</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -14,45 +17,52 @@
                 <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span>Kampagne
             </NavLink>
         </div>
-        <div class="nav-item px-1">
-            <NavLink class="nav-link" href="campaign">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span>Übersicht
-            </NavLink>
-        </div>
-        <div class="nav-item px-1">
-            <NavLink class="nav-link" href="playercharacters">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span>SC
-            </NavLink>
-        </div>
-        <div class="nav-item px-1">
-            <NavLink class="nav-link" href="characters">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span>NSC
-            </NavLink>
-        </div>
-        <div class="nav-item px-1">
-            <NavLink class="nav-link" href="organisations">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Organisationen
-            </NavLink> </div>
-        <div class="nav-item px-1">
-            <NavLink class="nav-link" href="logout">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Logout
-            </NavLink>
-        </div>
+        @if (isUserAuthenticated)
+        {
             <div class="nav-item px-1">
-            <NavLink class="nav-link" href="settings">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Einstell.
-            </NavLink>
-        </div>
+                <NavLink class="nav-link" href="campaign">
+                    <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span>Übersicht
+                </NavLink>
+            </div>
             <div class="nav-item px-1">
-            <NavLink class="nav-link" href="administration">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Admin
-            </NavLink>
-        </div>
+                <NavLink class="nav-link" href="playercharacters">
+                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span>SC
+                </NavLink>
+            </div>
+            <div class="nav-item px-1">
+                <NavLink class="nav-link" href="characters">
+                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span>NSC
+                </NavLink>
+            </div>
+            <div class="nav-item px-1">
+                <NavLink class="nav-link" href="organisations">
+                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Organisationen
+                </NavLink>
+            </div>
+            <div class="nav-item px-1">
+                <NavLink class="nav-link" href="logout">
+                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Logout
+                </NavLink>
+            </div>
+            <div class="nav-item px-1">
+                <NavLink class="nav-link" href="settings">
+                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Einstell.
+                </NavLink>
+            </div>
+            <div class="nav-item px-1">
+                <NavLink class="nav-link" href="administration">
+                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Admin
+                </NavLink>
+            </div>
+        }
+       
     </nav>
 </div>
 
 @code {
     private bool collapseNavMenu = true;
+
+	private bool isUserAuthenticated => AuthenticationProvider.IsAuthenticated();
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 

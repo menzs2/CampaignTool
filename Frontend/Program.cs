@@ -1,7 +1,9 @@
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Blazored.SessionStorage;
 using Frontend;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Frontend.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -12,6 +14,7 @@ builder.Services.AddScoped<CampaignDataService>();
 builder.Services.AddScoped<CharacterDataService>();
 builder.Services.AddScoped<ConnectionDataService>();
 builder.Services.AddScoped<OrganisationDataService>();
+builder.Services.AddScoped<CustomAuthenticationStateProvider>();
 builder.Services.AddBlazoredSessionStorage();
 
 await builder.Build().RunAsync();

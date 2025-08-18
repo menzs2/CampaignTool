@@ -2,10 +2,12 @@
 @inject CampaignDataService DataService
 @inject Blazored.SessionStorage.ISessionStorageService SessionStorage;
 @inject NavigationManager NavigationManager;
+@inject CustomAuthenticationStateProvider AuthenticationStateProvider;
 @using System.Net.Http.Json
 @using System.Text.Json
 @using Shared;
 @using Components;
+@using Services;
 
 <PageTitle>Campaign Home</PageTitle>
 
@@ -30,7 +32,14 @@ else
     {
         try
         {
-            Campaigns = await DataService.GetCampaigns();
+            if (AuthenticationStateProvider.IsAuthenticated())
+            {
+                Campaigns = await DataService.GetCampaigns();
+            }
+            else
+            {
+                NavigationManager.NavigateTo("/login");
+            }
         }
         catch (Exception ex)
         {

@@ -23,9 +23,14 @@ namespace Frontend.Services
         }
         public bool IsAuthenticated()
         {
-            return GetAuthenticationStateAsync().Result is AuthenticationState state && state.User.Identity != null && state.User.Identity.IsAuthenticated;
+            var result = GetAuthenticationStateAsync();
+            if (result.IsCompletedSuccessfully)
+            {
+                var state = result.Result;
+                return state.User.Identity != null && state.User.Identity.IsAuthenticated;
+            }
+            return false;
         }
-
 
         private IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
         {
