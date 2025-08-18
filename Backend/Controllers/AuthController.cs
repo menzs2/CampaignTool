@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Shared.DTO;
+﻿using Backend.Models;
 using Backend.Services;
-using Backend.Models;
+using Microsoft.AspNetCore.Mvc;
+using Shared.DTO;
 
 namespace Backend
 {

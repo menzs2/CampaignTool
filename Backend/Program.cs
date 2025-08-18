@@ -1,13 +1,13 @@
-using System.Reflection;
-using System.Text;
 using Backend;
 using Backend.Data;
-using Backend.Services;
 using Backend.Models;
-using Microsoft.EntityFrameworkCore;
+using Backend.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Reflection;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 

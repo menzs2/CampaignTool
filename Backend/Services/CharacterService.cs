@@ -1,6 +1,6 @@
 ﻿using Backend.Data;
-using Shared;
 using Microsoft.EntityFrameworkCore;
+using Shared;
 
 namespace Backend.Services;
 
@@ -51,7 +51,7 @@ public class CharacterService
         var connectedCharacters = await _context.Characters
             .Where(c => connectedCharacterIds.Contains(c.Id))
             .ToListAsync();
-       
+
         return connectedCharacters.ToDto();
     }
 
@@ -96,7 +96,7 @@ public class CharacterService
         existingCharacter.State = characterDto.State;
         existingCharacter.GmOnly = characterDto.GmOnly;
         existingCharacter.GmOnlyDescription = characterDto.GmOnlyDescription;
-        
+
         _context.Characters.Update(existingCharacter);
         await _context.SaveChangesAsync();
         return existingCharacter.ToDto();

@@ -1,5 +1,5 @@
-﻿using Backend.Models;
-using Backend.Data;
+﻿using Backend.Data;
+using Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Shared;
 
@@ -137,6 +137,6 @@ namespace Backend
             await _context.SaveChangesAsync();
         }
 
-        
+
     }
 }

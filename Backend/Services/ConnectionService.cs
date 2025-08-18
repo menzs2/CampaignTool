@@ -1,6 +1,6 @@
 ﻿using Backend.Data;
-using Shared;
 using Microsoft.EntityFrameworkCore;
+using Shared;
 
 namespace Backend.Services
 {
