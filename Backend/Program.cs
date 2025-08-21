@@ -21,12 +21,23 @@ builder.Services.AddSwaggerGen(c =>
         Title = "Campaign Tool API",
         Version = "v1",
         Description = "API documentation for the Campaign Tool project"
-    });
 
+    });
+    // Add security definition for JWT authentication
+    c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    {
+        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        Description = "Please enter a valid token",
+        Name = "Authorization",
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT"
+    });
     // Enable XML comments for Swagger
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
+
 });
 
 // Add Cors policy
