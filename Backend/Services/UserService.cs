@@ -74,6 +74,7 @@ namespace Backend
             exisitingUser.LastName = userDto.LastName;
             exisitingUser.HasLogin = userDto.HasLogin;
             exisitingUser.Role = userDto.Role;
+            exisitingUser.AppUserId = userDto.AppUserId;
             _context.Update(exisitingUser);
             await _context.SaveChangesAsync();
         }

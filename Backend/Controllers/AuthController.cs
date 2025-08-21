@@ -13,11 +13,14 @@ namespace Backend
     {
 
         private readonly AuthenticationService _authenticationService;
+        private readonly UserService _userService;
 
         public AuthController(
-            AuthenticationService authenticationService)
+            AuthenticationService authenticationService,
+            UserService userService)
         {
             _authenticationService = authenticationService;
+            _userService = userService;
         }
 
         /// <summary>
@@ -45,8 +48,8 @@ namespace Backend
                         return BadRequest("User not found.");
                     }
                     var JwtToken = await _authenticationService.GenerateJwtTokenAsync(user);
-
-                    return Ok(new { Token = JwtToken, Message = "Login successful." });
+                    var player = await _userService.GetUserByID(8);
+                    return Ok(new { Token = JwtToken, User = player, Message = "Login successful." });
                 }
 
                 return BadRequest("Invalid username or password.");
@@ -82,5 +85,18 @@ namespace Backend
             return CreatedAtAction(nameof(Register), new { Email = request.Email }, new { Message = "User registered successfully." });
         }
 
+        [HttpDelete("delete")]
+        public async Task DeleteUser([FromBody] string email)
+        {
+
+            try
+            {
+                await _authenticationService.DeleteUserAsync(email);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("Failed to delete user: " + ex.Message);
+            }
+        }
     }
 }

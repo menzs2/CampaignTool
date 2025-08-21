@@ -19,3 +19,10 @@ Content-Type: application/json
     "email": "user@example.com",
     "password": "passWord123?"
 }
+
+###
+
+DELETE {{Backend_HostAddress}}/auth/delete
+Content-Type: application/json
+
+"user@example.com"
