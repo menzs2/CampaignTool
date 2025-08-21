@@ -1,4 +1,6 @@
 ﻿using Backend.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared;
 
@@ -23,12 +25,13 @@ public class CharacterController : ControllerBase
     /// Retrieves all characters.   
     /// </summary>
     [HttpGet]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> Get()
     {
         try
         {
             var characters = await _service.GetAllCharacters();
-            return characters.Any() ? Ok(characters) : NotFound("No characters found.");
+            return characters.Any() ? Ok(characters) : Problem(statusCode: 404, detail: "No characters found.");
         }
         catch (Exception ex)
         {
@@ -42,12 +45,13 @@ public class CharacterController : ControllerBase
     /// </summary>
     /// <param name="id">The ID of the character to retrieve.</param>
     [HttpGet("{id}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> Get(long id)
     {
         try
         {
             var character = await _service.GetCharacterById(id);
-            return character == null ? NotFound($"Character with ID {id} not found.") : Ok(character);
+            return character == null ? Problem(statusCode: 404, detail: $"Character with ID {id} not found.") : Ok(character);
         }
         catch (Exception ex)
         {
@@ -61,12 +65,13 @@ public class CharacterController : ControllerBase
     /// </summary>
     /// <param name="campaignId">The ID of the campaign to retrieve characters for.</param>
     [HttpGet("campaign/{campaignId}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> GetByCampaign(long campaignId)
     {
         try
         {
             var characters = await _service.GetCharactersByCampaignId(campaignId);
-            return characters != null && characters.Any() ? Ok(characters) : NotFound($"No characters found for campaign ID {campaignId}.");
+            return characters != null && characters.Any() ? Ok(characters) : Problem(statusCode: 404, detail: $"No characters found for campaign ID {campaignId}.");
         }
         catch (Exception ex)
         {
@@ -80,10 +85,11 @@ public class CharacterController : ControllerBase
     /// </summary>
     /// <param name="id">The ID of the character to find connections for.</param>
     [HttpGet("connected/{id}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> GetConnectedCharacters(long id)
     {
         var characters = await _service.GetConnectedCharacters(id);
-        return characters != null ? Ok(characters) : NotFound("No connected characters found.");
+        return characters != null ? Ok(characters) : Problem(statusCode: 404, detail: "No connected characters found.");
     }
 
     /// <summary>
@@ -91,12 +97,13 @@ public class CharacterController : ControllerBase
     /// </summary>
     /// <param name="character">The character data to create.</param>  
     [HttpPost]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> Post([FromBody] CharacterDto character)
     {
         try
         {
             var newCharacter = await _service.AddCharacterAsync(character);
-            return CreatedAtAction(nameof(Get), new { id = newCharacter.Id }, newCharacter);
+            return CreatedAtAction(nameof(Get), new { id = newCharacter?.Id }, newCharacter);
         }
         catch (Exception ex)
         {
@@ -111,6 +118,7 @@ public class CharacterController : ControllerBase
     /// <param name="id">The ID of the character to update.</param>
     /// <param name="character">The updated character data.</param>
     [HttpPut("{id}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> Put(long id, [FromBody] CharacterDto character)
     {
         try
@@ -134,6 +142,7 @@ public class CharacterController : ControllerBase
     /// </summary>
     /// <param name="id">The ID of the character to delete.</param>
     [HttpDelete("{id}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> Delete(long id)
     {
         try
