@@ -151,7 +151,12 @@ public partial class CampaignToolContext : IdentityDbContext<ApplicationUser>
             entity.Property(e => e.LastName).HasMaxLength(150);
             entity.Property(e => e.Password).HasMaxLength(50);
             entity.Property(e => e.UserName).HasMaxLength(50);
-           
+            entity.HasOne(d => d.ApplicationUser)
+                .WithOne(u => u.User)
+                .HasForeignKey<User>(u => u.AppUserId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("user_application_user_fkey");
+
         });
 
         // UserSetting
@@ -216,7 +221,7 @@ public partial class CampaignToolContext : IdentityDbContext<ApplicationUser>
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("organisation_b_fkey");
         });
-                OnModelCreatingPartial(modelBuilder);
+        OnModelCreatingPartial(modelBuilder);
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

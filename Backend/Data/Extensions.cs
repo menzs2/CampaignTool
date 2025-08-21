@@ -186,7 +186,8 @@ public static class Extensions
             Email = user.Email,
             HasLogin = user.HasLogin,
             Password = user.Password,
-            Role = user.Role
+            Role = user.Role,
+            AppUserId = user.AppUserId
         };
     }
 
@@ -209,7 +210,8 @@ public static class Extensions
             Email = userDto.Email,
             HasLogin = userDto.HasLogin,
             Password = userDto.Password,
-            Role = userDto.Role
+            Role = userDto.Role,
+            AppUserId = userDto.AppUserId
         };
         if (userDto.Id.HasValue)
         {
