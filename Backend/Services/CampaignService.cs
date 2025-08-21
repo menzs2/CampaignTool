@@ -25,10 +25,10 @@ public class CampaignService
         return campaign?.ToDto();
     }
 
-    public async Task<IEnumerable<CampaignDto>> GetCampaignsByGmId(long gmId)
+    public async Task<IEnumerable<CampaignDto>> GetCampaignsByUserId(long userId)
     {
-        var campaigns = await DbContext.Campaigns
-            .Where(c => c.Gm == gmId).ToListAsync();
+        var campaigns = await DbContext.Campaigns.Include(c => c.Characters)
+            .Where(c => c.Gm == userId || c.Characters.Any(p => p.PlayerId == userId)).Distinct().ToListAsync();
         return campaigns.ToDto();
     }
 
