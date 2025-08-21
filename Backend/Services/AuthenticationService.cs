@@ -10,11 +10,17 @@ namespace Backend.Services
 {
     public class AuthenticationService
     {
+        #region Fields
+
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfigurationSection _configuration;
         private readonly UserService _userService;
+
+        #endregion
+
+        #region Constructor
 
         public AuthenticationService(UserManager<ApplicationUser> userManager,
                 SignInManager<ApplicationUser> signInManager,
@@ -28,6 +34,62 @@ namespace Backend.Services
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
+
+        #endregion
+
+        #region Login
+
+        /// <summary>
+        /// Logs in a user with the specified email and password.
+        /// </summary>
+        public async Task<SignInResult> LoginAsync(string email, string password)
+        {
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+            {
+                throw new ArgumentException("Email and password must be provided.");
+            }
+
+            return await _signInManager.PasswordSignInAsync(email, password, isPersistent: true, lockoutOnFailure: false);
+        }
+
+        /// <summary>
+        /// Generates a JWT token for the specified user.
+        /// </summary>
+        public async Task<string> GenerateJwtTokenAsync(ApplicationUser user)
+        {
+            var claims = new[]
+            {
+            new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
+            new Claim(ClaimTypes.Role, (await _userManager.GetRolesAsync(user)).FirstOrDefault() ?? "User") // Default to User role if none assigned
+        };
+
+            var issuer = _configuration["Issuer"];
+            var audience = _configuration["Audience"];
+            var secret = _configuration["Secret"];
+
+            if (string.IsNullOrEmpty(issuer))
+                throw new InvalidOperationException("JWT Issuer configuration is missing.");
+            if (string.IsNullOrEmpty(audience))
+                throw new InvalidOperationException("JWT Audience configuration is missing.");
+            if (string.IsNullOrEmpty(secret))
+                throw new InvalidOperationException("JWT Secret configuration is missing.");
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret)); // Use a secure key from config
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: issuer,
+                audience: audience,
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(30),
+                signingCredentials: creds);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        #endregion
+
+        #region User Management
 
         public async Task<IdentityResult> RegisterUserAsync(ApplicationUser user, string password, string? role = null)
         {
@@ -87,47 +149,6 @@ namespace Backend.Services
             return await _userManager.FindByIdAsync(userId.ToString());
         }
 
-        public async Task<SignInResult> LoginAsync(string email, string password)
-        {
-            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
-            {
-                throw new ArgumentException("Email and password must be provided.");
-            }
-
-            return await _signInManager.PasswordSignInAsync(email, password, isPersistent: true, lockoutOnFailure: false);
-        }
-
-        public async Task<string> GenerateJwtTokenAsync(ApplicationUser user)
-        {
-            var claims = new[]
-            {
-            new Claim(ClaimTypes.Name, user.UserName ?? string.Empty),
-            new Claim(ClaimTypes.Role, (await _userManager.GetRolesAsync(user)).FirstOrDefault() ?? "User") // Default to User role if none assigned
-        };
-
-            var issuer = _configuration["Issuer"];
-            var audience = _configuration["Audience"];
-            var secret = _configuration["Secret"];
-
-            if (string.IsNullOrEmpty(issuer))
-                throw new InvalidOperationException("JWT Issuer configuration is missing.");
-            if (string.IsNullOrEmpty(audience))
-                throw new InvalidOperationException("JWT Audience configuration is missing.");
-            if (string.IsNullOrEmpty(secret))
-                throw new InvalidOperationException("JWT Secret configuration is missing.");
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret)); // Use a secure key from config
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(
-                issuer: issuer,
-                audience: audience,
-                claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(30),
-                signingCredentials: creds);
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
 
         /// <summary>
         /// Retrieves an <see cref="ApplicationUser"/> by their email address.
@@ -139,7 +160,7 @@ namespace Backend.Services
             return await _userManager.FindByEmailAsync(email);
         }
 
-        internal async Task InsertRole(string roleName)
+        private async Task InsertRole(string roleName)
         {
             if (!await _roleManager.RoleExistsAsync(roleName))
             {
@@ -176,7 +197,7 @@ namespace Backend.Services
             }
         }
 
-        internal async Task DeleteUserAsync(string userId)
+        public async Task DeleteUserAsync(string userId)
         {
             if (string.IsNullOrEmpty(userId))
             {
@@ -195,5 +216,7 @@ namespace Backend.Services
                 throw new InvalidOperationException("Failed to delete user: " + string.Join(", ", result.Errors.Select(e => e.Description)));
             }
         }
+
+        #endregion
     }
 }
