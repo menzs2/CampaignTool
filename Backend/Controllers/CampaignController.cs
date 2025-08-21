@@ -55,7 +55,7 @@ public class CampaignController : ControllerBase
         try
         {
             var newCampaign = await _campaignService.AddCampaignAsync(campaign);
-            return CreatedAtAction(nameof(Get), new { id = newCampaign.Id }, newCampaign);
+            return CreatedAtAction(nameof(Get), new { id = newCampaign?.Id }, newCampaign);
         }
         catch (Exception ex)
         {

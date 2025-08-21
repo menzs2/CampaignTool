@@ -32,7 +32,7 @@ public class CampaignService
         return campaigns.ToDto();
     }
 
-    public async Task<CampaignDto> AddCampaignAsync(CampaignDto? campaignDto)
+    public async Task<CampaignDto?> AddCampaignAsync(CampaignDto? campaignDto)
     {
         if (campaignDto == null)
         {
@@ -49,7 +49,7 @@ public class CampaignService
         return newCampaign.ToDto();
     }
 
-    public async Task<CampaignDto> UpdateCampaignAsync(CampaignDto? campaignDto)
+    public async Task<CampaignDto?> UpdateCampaignAsync(CampaignDto? campaignDto)
     {
         if (campaignDto == null)
         {
@@ -84,5 +84,4 @@ public class CampaignService
         DbContext.Campaigns.Remove(campaign);
         await DbContext.SaveChangesAsync();
     }
-
 }
