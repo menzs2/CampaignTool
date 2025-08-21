@@ -1,12 +1,15 @@
 @Backend_HostAddress = http://localhost:5043/api
-
+@bearerToken = Bearer YOUR_JWT_TOKEN
+  
 GET {{Backend_HostAddress}}/character/
 Accept: application/json
+Authorization: {{bearerToken}}
 
 ###
 GET {{Backend_HostAddress}}/character/15
 Accept: application/json
-
+Authorization: {{bearerToken}}
+Authorization: {{bearerToken}}
 ###
 GET {{Backend_HostAddress}}/character/campaign/1
 Accept: application/json
@@ -14,6 +17,7 @@ Accept: application/json
 ###
 POST {{Backend_HostAddress}}/character/
 Content-Type: application/json
+Authorization: {{bearerToken}}
 
 {
   "name": "New Character",
@@ -26,6 +30,7 @@ Content-Type: application/json
 ###
 PUT {{Backend_HostAddress}}/character/15
 Content-Type: application/json
+Authorization: {{bearerToken}}
 
 {
   "id": 15,
@@ -38,3 +43,4 @@ Content-Type: application/json
 
 ###
 DELETE {{Backend_HostAddress}}/character/15
+Authorization: {{bearerToken}}
