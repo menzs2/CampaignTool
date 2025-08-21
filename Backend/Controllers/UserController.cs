@@ -20,7 +20,7 @@ public class UserController : ControllerBase
     /// Retrieves all users.
     /// </summary>
     [HttpGet]
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> Get()
     {
         var users = await _service.GetAllUsers();
