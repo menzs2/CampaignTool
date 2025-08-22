@@ -26,7 +26,7 @@
     [Parameter]
     public EventCallback<long> OnNotifyParent { get; set; }
 
-    private List<CharacterDto> ConnectedEntities { get; set; }
+    private List<CharacterDto>? ConnectedEntities { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {

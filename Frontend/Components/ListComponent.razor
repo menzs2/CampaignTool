@@ -9,7 +9,8 @@
   {
     <Virtualize Items="@EntityList" ItemSize="50">
       <ItemContent Context="e">
-        <ListEntityComponent Entity="e" OnNotifyParent="@OnNotifyParent" />
+        <ListEntityComponent Entity="e"
+                             OnNotifyParent="@OnNotifyParent" />
       </ItemContent>
     </Virtualize>
   }
@@ -18,7 +19,7 @@
 
 @code {
   [Parameter]
-  public List<BaseEntityDto> EntityList { get; set; }
+  public List<BaseEntityDto>? EntityList { get; set; }
 
   [Parameter]
   public EventCallback<long> OnNotifyParent { get; set; }
