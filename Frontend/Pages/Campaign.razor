@@ -1,7 +1,7 @@
-@page "/campaign/{Id:int}"
-
+@page "/campaign"
 @inject CampaignDataService dataService;
 @inject NavigationManager NavigationManager;
+@inject Blazored.SessionStorage.ISessionStorageService SessionStorage;
 @using Shared;
 @using Frontend.Components;
 
@@ -19,15 +19,25 @@ else
 }
 
 @code {
-    [Parameter]
-    public int Id { get; set; }
 
     public BaseEntityDto? CampaignDto { get; set; }
 
     private EntityDetailComponent? EntityDetailComponent { get; set; }
     protected override async Task OnInitializedAsync()
     {
-        CampaignDto = await dataService.GetCampaignByIdAsync(Id);
+        if (SessionStorage != null)
+        {
+            // Load characters from session storage if available
+            long? selectedCampaignId = await SessionStorage.GetItemAsync<long?>("SelectedCampaignId");
+            if (!selectedCampaignId.HasValue)
+            {
+                NavigationManager.NavigateTo("/");
+            }
+            else
+            {
+                CampaignDto = await dataService.GetCampaignByIdAsync(selectedCampaignId.Value);
+            }
+        }
     }
 
     private async Task SaveChanges()
