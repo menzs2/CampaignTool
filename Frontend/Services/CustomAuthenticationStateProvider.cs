@@ -16,17 +16,25 @@ namespace Frontend.Services
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            string? token = await _jsRuntime.InvokeAsync<string>("sessionStorage.getItem", "authToken");
-            var identity = string.IsNullOrWhiteSpace(token) ? new ClaimsIdentity() : new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt");
-            var user = new ClaimsPrincipal(identity);
-            return new AuthenticationState(user);
-        }
-        public bool IsAuthenticated()
-        {
-            var result = GetAuthenticationStateAsync();
-            if (result.IsCompletedSuccessfully)
+            try
             {
-                var state = result.Result;
+                string? token = await _jsRuntime.InvokeAsync<string>("sessionStorage.getItem", "authToken");
+                var identity = string.IsNullOrWhiteSpace(token) ? new ClaimsIdentity() : new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt");
+                var user = new ClaimsPrincipal(identity);
+                return new AuthenticationState(user);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error retrieving token: {ex.Message}");
+                return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
+            }
+        }
+        public async Task<bool> IsAuthenticated()
+        {
+            var result = await GetAuthenticationStateAsync();
+            if (result != null)
+            {
+                var state = result;
                 return state.User.Identity != null && state.User.Identity.IsAuthenticated;
             }
             return false;
@@ -49,5 +57,6 @@ namespace Frontend.Services
             }
             return Convert.FromBase64String(base64);
         }
+
     }
 }

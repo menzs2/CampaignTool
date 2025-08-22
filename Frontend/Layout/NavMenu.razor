@@ -1,4 +1,5 @@
 ﻿@using Services;
+@using Microsoft.AspNetCore.Components.Authorization
 @inject CustomAuthenticationStateProvider AuthenticationProvider
 
 <div class="top-row ps-3 navbar navbar-dark">
@@ -62,7 +63,8 @@
 @code {
     private bool collapseNavMenu = true;
 
-	private bool isUserAuthenticated => AuthenticationProvider.IsAuthenticated();
+	private bool isUserAuthenticated {get; set; }
+
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
@@ -70,4 +72,10 @@
     {
         collapseNavMenu = !collapseNavMenu;
     }
+
+    protected override async Task OnInitializedAsync()
+    {
+        isUserAuthenticated = await AuthenticationProvider.IsAuthenticated();
+    }
+
 }

@@ -32,7 +32,7 @@ else
     {
         try
         {
-            if (AuthenticationStateProvider.IsAuthenticated())
+            if (await AuthenticationStateProvider.IsAuthenticated())
             {
                 Campaigns = await DataService.GetCampaigns();
             }

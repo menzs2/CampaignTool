@@ -4,6 +4,9 @@
 @using Shared.DTO;
 @inject HttpClient HttpClient;
 @inject IJSRuntime JSRuntime;
+@inject NavigationManager NavigationManager;
+@inject Blazored.SessionStorage.ISessionStorageService SessionStorage;
+
 
 <h3>Login</h3>
 
@@ -37,10 +40,12 @@
 		{
 			var response = await HttpClient.PostAsJsonAsync($"{HttpClient.BaseAddress}api/auth/login", loginModel);
 			response.EnsureSuccessStatusCode();
-			var token = await response.Content.ReadAsStringAsync();
-			await JSRuntime.InvokeVoidAsync("sessionStorage.setItem", "authToken", token);
+			var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponseDto>();
+			await JSRuntime.InvokeVoidAsync("sessionStorage.setItem", "authToken", loginResponse?.Token);
 			HttpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer",
-			token);
+			loginResponse?.Token);
+			NavigationManager.NavigateTo("/");
+			await SessionStorage.SetItemAsync<long?>("UserId", loginResponse?.User?.Id);
 		}
 		catch (Exception ex)
 		{

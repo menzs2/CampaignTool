@@ -49,7 +49,7 @@ namespace Backend
                     }
                     var JwtToken = await _authenticationService.GenerateJwtTokenAsync(user);
                     var player = await _userService.GetUserByID(8);
-                    return Ok(new { Token = JwtToken, User = player, Message = "Login successful." });
+                    return Ok(new LoginResponseDto { Token = JwtToken, User = player, Message = "Login successful." });
                 }
 
                 return BadRequest("Invalid username or password.");
