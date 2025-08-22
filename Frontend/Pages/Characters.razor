@@ -10,16 +10,11 @@
 <PageTitle>Campaign Tool Charaktere</PageTitle>
 
 <PageHeaderComponent Title="NSC" OnToggleDetailView="ToggleDetailView"
-    OnAddNewEntity="AddNewEntity" />
+    OnAddNewEntity="AddNewEntity" IsDetailView="@IsDetailView" />
 
 @if (CharactersList != null && CharactersList.Any())
 {
-    if (SelectedCharacter == null || !IsDetailView)
-    {
-            <ListComponent EntityList="@(CharactersList?.Cast<BaseEntityDto>().ToList())"
-                OnNotifyParent="@SelectCharacter" />
-    }
-    else if (SelectedCharacter != null && IsDetailView)
+    if (SelectedCharacter != null && IsDetailView)
     {
         <EntityDetailComponent EntityDto="@SelectedCharacter" OnNotifyParent="@SaveChanges" />
         <ConnectedEntitiesComponent Entity="@SelectedCharacter" />

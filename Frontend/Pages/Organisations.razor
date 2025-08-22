@@ -10,7 +10,8 @@
 <PageTitle>Campaign Tool Organisationen</PageTitle>
 
 <PageHeaderComponent Title="Organisationen" OnToggleDetailView="ToggleDetailView"
-    OnAddNewEntity="AddNewEntity" />
+    OnAddNewEntity="AddNewEntity" IsDetailView="@IsDetailView" />
+    
 @if (OrganisationList != null && OrganisationList.Any())
 {
     if (SelectedOrganisation == null || !IsDetailView)

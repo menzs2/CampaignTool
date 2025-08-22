@@ -50,6 +50,6 @@ else
     {
         // Set the campaign to session storage by Id
         SessionStorage.SetItemAsync<long?>("SelectedCampaignId", campaignId);
-        NavigationManager.NavigateTo($"/campaign/{campaignId}");
+        NavigationManager.NavigateTo($"/campaign");
     }
 }
