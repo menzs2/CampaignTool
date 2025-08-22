@@ -27,8 +27,6 @@ else
     private EntityDetailComponent? EntityDetailComponent { get; set; }
     protected override async Task OnInitializedAsync()
     {
-        // Logic to load the campaign by Id
-        Console.WriteLine($"Loading campaign with Id: {Id}");
         CampaignDto = await dataService.GetCampaignByIdAsync(Id);
     }
 

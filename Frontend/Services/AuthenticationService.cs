@@ -1,6 +1,7 @@
 ﻿using Shared.DTO;
 using System.Net.Http.Json;
 using Microsoft.JSInterop;
+
 namespace Frontend
 {
     public class AuthenticationService : BaseDataService

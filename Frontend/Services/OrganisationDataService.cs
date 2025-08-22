@@ -1,6 +1,7 @@
 ﻿using Shared;
 using System.Net.Http.Json;
 using Microsoft.JSInterop;
+using System.Net.Http.Headers;
 
 namespace Frontend
 {
@@ -13,6 +14,7 @@ namespace Frontend
         {
             try
             {
+                HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "authToken"));
                 var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}{baseRoute}");
                 response.EnsureSuccessStatusCode();
                 var Organisations = await response.Content.ReadFromJsonAsync<List<OrganisationDto>>();
@@ -29,6 +31,7 @@ namespace Frontend
         {
             try
             {
+                HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "authToken"));
                 var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}{baseRoute}/{id}");
                 response.EnsureSuccessStatusCode();
                 var Organisations = await response.Content.ReadFromJsonAsync<List<OrganisationDto>>();
@@ -45,6 +48,7 @@ namespace Frontend
         {
             try
             {
+                HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "authToken"));
                 var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}{baseRoute}/campaign/{id}");
                 response.EnsureSuccessStatusCode();
                 var Organisations = await response.Content.ReadFromJsonAsync<List<OrganisationDto>>();
@@ -61,6 +65,7 @@ namespace Frontend
         {
             try
             {
+                HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "authToken"));
                 var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}{baseRoute}/connected/{id}");
                 response.EnsureSuccessStatusCode();
                 var Organisations = await response.Content.ReadFromJsonAsync<List<OrganisationDto>>();
@@ -78,6 +83,7 @@ namespace Frontend
             var content = JsonContent.Create(Organisation);
             try
             {
+                HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "authToken"));
                 using var response = await HttpClient.PostAsJsonAsync($"{HttpClient.BaseAddress}{baseRoute}", content);
                 response.EnsureSuccessStatusCode();
             }
@@ -92,6 +98,7 @@ namespace Frontend
             var content = JsonContent.Create(Organisation);
             try
             {
+                HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "authToken"));
                 using var response = await HttpClient.PutAsJsonAsync($"{HttpClient.BaseAddress}{baseRoute}/{id}", content);
                 response.EnsureSuccessStatusCode();
             }
@@ -105,6 +112,7 @@ namespace Frontend
         {
             try
             {
+                HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "authToken"));
                 using var response = await HttpClient.DeleteAsync($"{HttpClient.BaseAddress}{baseRoute}/{id}");
                 response.EnsureSuccessStatusCode();
             }

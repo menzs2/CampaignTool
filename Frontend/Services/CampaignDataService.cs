@@ -31,6 +31,7 @@ namespace Frontend
         {
             try
             {
+                HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "authToken"));
                 var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}{baseRoute}/{userID}");
                 response.EnsureSuccessStatusCode();
                 var campaigns = await response.Content.ReadFromJsonAsync<List<CampaignDto>>();
@@ -47,6 +48,7 @@ namespace Frontend
         {
             try
             {
+                HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "authToken"));
                 using var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}{baseRoute}/{id}");
                 response.EnsureSuccessStatusCode();
                 var campaign = await response.Content.ReadFromJsonAsync<CampaignDto>();
@@ -63,6 +65,7 @@ namespace Frontend
         {
             try
             {
+                HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "authToken"));
                 var response = await HttpClient.PostAsJsonAsync($"{HttpClient.BaseAddress}{baseRoute}", campaignDto);
                 response.EnsureSuccessStatusCode();
                 var newCampaign = await response.Content.ReadFromJsonAsync<CampaignDto>();
@@ -79,6 +82,7 @@ namespace Frontend
         {
             try
             {
+                HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "authToken"));
                 var response = await HttpClient.PutAsJsonAsync($"{HttpClient.BaseAddress}{baseRoute}/{campaignDto.Id}", campaignDto);
                 response.EnsureSuccessStatusCode();
                 var updatedCampaign = await response.Content.ReadFromJsonAsync<CampaignDto>();
@@ -95,6 +99,7 @@ namespace Frontend
         {
             try
             {
+                HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "authToken"));
                 var response = await HttpClient.DeleteAsync($"{HttpClient.BaseAddress}{baseRoute}/{id}");
                 return response.IsSuccessStatusCode;
             }

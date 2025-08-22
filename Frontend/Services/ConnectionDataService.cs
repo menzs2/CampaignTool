@@ -1,6 +1,8 @@
 ﻿using Shared;
 using System.Net.Http.Json;
 using Microsoft.JSInterop;
+using System.Net.Http.Headers;
+
 namespace Frontend;
 
 public class ConnectionDataService : BaseDataService
@@ -15,6 +17,7 @@ public class ConnectionDataService : BaseDataService
     {
         try
         {
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "authToken"));
             using var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}{baseRoute}");
             response.EnsureSuccessStatusCode();
             var connections = await response.Content.ReadFromJsonAsync<List<ConnectionDto>>();
@@ -31,6 +34,7 @@ public class ConnectionDataService : BaseDataService
     {
         try
         {
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "authToken"));
             using var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}{baseRoute}/{id}");
             response.EnsureSuccessStatusCode();
             var connection = await response.Content.ReadFromJsonAsync<List<ConnectionDto>>();
@@ -47,6 +51,7 @@ public class ConnectionDataService : BaseDataService
     {
         try
         {
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "authToken"));
             using var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}{baseRoute}/campaign/{id}");
             response.EnsureSuccessStatusCode();
             var connections = await response.Content.ReadFromJsonAsync<List<ConnectionDto>>();
@@ -64,6 +69,7 @@ public class ConnectionDataService : BaseDataService
         var content = JsonContent.Create(connection);
         try
         {
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "authToken"));
             using var response = await HttpClient.PostAsync($"{HttpClient.BaseAddress}{baseRoute}", content);
             response.EnsureSuccessStatusCode();
         }
@@ -78,6 +84,7 @@ public class ConnectionDataService : BaseDataService
         var content = JsonContent.Create(connection);
         try
         {
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "authToken"));
             using var response = await HttpClient.PutAsync($"{HttpClient.BaseAddress}{baseRoute}/{id}", content);
             response.EnsureSuccessStatusCode();
         }
@@ -91,6 +98,7 @@ public class ConnectionDataService : BaseDataService
     {
         try
         {
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "authToken"));
             using var response = await HttpClient.DeleteAsync($"{HttpClient.BaseAddress}{baseRoute}/{id}");
             response.EnsureSuccessStatusCode();
         }
@@ -108,6 +116,7 @@ public class ConnectionDataService : BaseDataService
     {
         try
         {
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "authToken"));
             using var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}{baseRoute}/charchar");
             response.EnsureSuccessStatusCode();
             var connections = await response.Content.ReadFromJsonAsync<List<CharCharConnectionDto>>();
@@ -124,6 +133,7 @@ public class ConnectionDataService : BaseDataService
     {
         try
         {
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "authToken"));
             using var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}{baseRoute}/charchar/{id}");
             response.EnsureSuccessStatusCode();
             var connection = await response.Content.ReadFromJsonAsync<List<CharCharConnectionDto>>();
@@ -140,6 +150,7 @@ public class ConnectionDataService : BaseDataService
     {
         try
         {
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "authToken"));
             using var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}{baseRoute}/charchar/campaign/{id}");
             response.EnsureSuccessStatusCode();
             var connections = await response.Content.ReadFromJsonAsync<List<CharCharConnectionDto>>();
@@ -157,6 +168,7 @@ public class ConnectionDataService : BaseDataService
         var content = JsonContent.Create(connection);
         try
         {
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "authToken"));
             using var response = await HttpClient.PostAsync($"{HttpClient.BaseAddress}{baseRoute}/charchar", content);
             response.EnsureSuccessStatusCode();
         }
@@ -171,6 +183,7 @@ public class ConnectionDataService : BaseDataService
         var content = JsonContent.Create(connection);
         try
         {
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "authToken"));
             using var response = await HttpClient.PutAsync($"{HttpClient.BaseAddress}{baseRoute}/charchar/{id}", content);
             response.EnsureSuccessStatusCode();
         }
@@ -184,6 +197,7 @@ public class ConnectionDataService : BaseDataService
     {
         try
         {
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "authToken"));
             using var response = await HttpClient.DeleteAsync($"{HttpClient.BaseAddress}{baseRoute}/charchar/{id}");
             response.EnsureSuccessStatusCode();
         }
