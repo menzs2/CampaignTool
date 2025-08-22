@@ -1,11 +1,11 @@
 ﻿using Shared;
 using System.Net.Http.Json;
-
+using Microsoft.JSInterop;
 namespace Frontend;
 
 public class ConnectionDataService : BaseDataService
 {
-    public ConnectionDataService(HttpClient httpClient) : base(httpClient) { }
+    public ConnectionDataService(HttpClient httpClient, IJSRuntime jsRuntime) : base(httpClient, jsRuntime) { }
 
     private readonly string baseRoute = "api/connection";
 

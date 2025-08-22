@@ -1,11 +1,11 @@
 ﻿using Shared.DTO;
 using System.Net.Http.Json;
-
+using Microsoft.JSInterop;
 namespace Frontend
 {
     public class AuthenticationService : BaseDataService
     {
-        public AuthenticationService(HttpClient httpClient) : base(httpClient) { }
+        public AuthenticationService(HttpClient httpClient, IJSRuntime jsRuntime) : base(httpClient, jsRuntime) { }
 
         private readonly string baseRoute = "api/auth";
 

@@ -1,16 +1,17 @@
 ﻿using System.Text.Json;
-
+using Microsoft.JSInterop;
 namespace Frontend;
 
 public abstract class BaseDataService
 {
     protected HttpClient HttpClient { get; set; }
-    
+    protected IJSRuntime JSRuntime { get; set; }
     protected JsonSerializerOptions SerializerOptions { get; set; }
 
-    public BaseDataService(HttpClient httpClient)
+    public BaseDataService(HttpClient httpClient, IJSRuntime jsRuntime)
     {
         HttpClient = httpClient;
+        JSRuntime = jsRuntime;
         SerializerOptions = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true

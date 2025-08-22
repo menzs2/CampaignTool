@@ -1,17 +1,20 @@
 ﻿using Shared;
 using System.Net.Http.Json;
+using Microsoft.JSInterop;
+using System.Net.Http.Headers;
 
 namespace Frontend
 {
     public class CampaignDataService : BaseDataService
     {
-        public CampaignDataService(HttpClient httpClient) : base(httpClient) { }
+        public CampaignDataService(HttpClient httpClient, IJSRuntime jsRuntime) : base(httpClient, jsRuntime) { }
         private readonly string baseRoute = "api/campaign";
 
         public async Task<List<CampaignDto>?> GetCampaigns()
         {
             try
             {
+                HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "authToken"));
                 using var response = await HttpClient.GetAsync($"{HttpClient.BaseAddress}{baseRoute}");
                 response.EnsureSuccessStatusCode();
                 var campaigns = await response.Content.ReadFromJsonAsync<List<CampaignDto>>();

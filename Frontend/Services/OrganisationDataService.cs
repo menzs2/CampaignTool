@@ -1,11 +1,12 @@
 ﻿using Shared;
 using System.Net.Http.Json;
+using Microsoft.JSInterop;
 
 namespace Frontend
 {
     public class OrganisationDataService : BaseDataService
     {
-        public OrganisationDataService(HttpClient httpClient) : base(httpClient) { }
+        public OrganisationDataService(HttpClient httpClient, IJSRuntime jsRuntime) : base(httpClient, jsRuntime) { }
         private readonly string baseRoute = "api/organisation";
 
         public async Task<List<OrganisationDto>?> GetOrganisationDtosAsync()

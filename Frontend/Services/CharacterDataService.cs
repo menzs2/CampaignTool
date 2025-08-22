@@ -1,13 +1,12 @@
 ﻿using Shared;
 using System.Net.Http.Json;
-
+using Microsoft.JSInterop;
 namespace Frontend;
 
 public class CharacterDataService : BaseDataService
 {
-    public CharacterDataService(HttpClient httpClient) : base(httpClient) { }
+    public CharacterDataService(HttpClient httpClient, IJSRuntime jsRuntime) : base(httpClient, jsRuntime) { }
     private readonly string baseRoute = "api/character";
-
 
     public async Task<List<CharacterDto>?> GetCharacterDtosAsync()
     {
