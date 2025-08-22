@@ -5,22 +5,24 @@ namespace Frontend
 {
     public class AuthenticationService : BaseDataService
     {
-        public AuthenticationService(HttpClient httpClient) : base(httpClient){}
+        public AuthenticationService(HttpClient httpClient) : base(httpClient) { }
 
         private readonly string baseRoute = "api/auth";
 
-        public async Task<bool> LoginAsync(string username, string password)
+        public async Task<LoginResponseDto?> LoginAsync(LoginRequestDto loginRequest)
         {
+        
             try
             {
-                var response = await HttpClient.PostAsJsonAsync($"{HttpClient.BaseAddress}{baseRoute}/login", new { username, password });
+                var response = await HttpClient.PostAsJsonAsync($"{HttpClient.BaseAddress}{baseRoute}/login", loginRequest);
                 response.EnsureSuccessStatusCode();
-                return true;
+                var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponseDto>();
+                return loginResponse;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Login Error: {ex.Message}");
-                return false;
+                return null;
             }
         }
 

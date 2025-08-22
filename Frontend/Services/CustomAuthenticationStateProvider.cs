@@ -3,7 +3,7 @@ using Microsoft.JSInterop;
 using System.Security.Claims;
 using System.Text.Json;
 
-namespace Frontend.Services
+namespace Frontend
 {
     public class CustomAuthenticationStateProvider : AuthenticationStateProvider
     {
@@ -29,6 +29,7 @@ namespace Frontend.Services
                 return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
             }
         }
+
         public async Task<bool> IsAuthenticated()
         {
             var result = await GetAuthenticationStateAsync();
@@ -40,6 +41,14 @@ namespace Frontend.Services
             return false;
         }
 
+        public void NotifyUserAuthentication(string token)
+        {
+            var identity = new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt");
+            var user = new ClaimsPrincipal(identity);
+            var authState = Task.FromResult(new AuthenticationState(user));
+            NotifyAuthenticationStateChanged(authState);
+        }
+        
         private IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
         {
             var payload = jwt.Split('.')[1];
