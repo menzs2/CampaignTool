@@ -4,39 +4,39 @@
 @using Shared;
 
 <div class="connected-entities p-3">
-    <div class="button-container">
-        <button class="btn btn-primary">SC</button>
-        <button class="btn btn-primary">NSC</button>
-        <button class="btn btn-primary">Org</button>
-    </div>
-    @if (ConnectedEntities == null || ConnectedEntities.Count == 0)
-    {
-        <p>Keine verbundenen Entitäten gefunden.</p>
-    }
-    else
-    {
-        <ListComponent EntityList="@(ConnectedEntities?.Cast<BaseEntityDto>().ToList())" OnNotifyParent="@OnNotifyParent" />
-    }
+	<div class="button-container">
+		<button class="btn btn-primary">SC</button>
+		<button class="btn btn-primary">NSC</button>
+		<button class="btn btn-primary">Org</button>
+	</div>
+	@if (ConnectedEntities == null || ConnectedEntities.Count == 0)
+	{
+		<p>Keine verbundenen Entitäten gefunden.</p>
+	}
+	else
+	{
+		<ListComponent EntityList="@(ConnectedEntities?.Cast<BaseEntityDto>().ToList())" OnNotifyParent="@OnNotifyParent" />
+	}
 </div>
 
 @code {
-    [Parameter]
-    public BaseEntityDto? Entity { get; set; }
+	[Parameter]
+	public BaseEntityDto? Entity { get; set; }
 
-    [Parameter]
-    public EventCallback<long> OnNotifyParent { get; set; }
+	[Parameter]
+	public EventCallback<long> OnNotifyParent { get; set; }
 
-    private List<CharacterDto>? ConnectedEntities { get; set; }
+	private List<CharacterDto>? ConnectedEntities { get; set; }
 
-    protected override async Task OnParametersSetAsync()
-    {
-        if (Entity != null && Entity is CampaignDto campaignDto)
-        {
-            ConnectedEntities = await characterDataService.GetCharacterDtosByCampaignAsync(campaignDto.Id.Value);
-        }
-        else
-        {
-            ConnectedEntities = await characterDataService.GetConnectedCharacterDtosAsync(Entity.Id.Value);
-        }
-    }
+	protected override async Task OnParametersSetAsync()
+	{
+		if (Entity != null && Entity is CampaignDto campaignDto)
+		{
+			ConnectedEntities = await characterDataService.GetCharacterDtosByCampaignAsync(campaignDto.Id.Value);
+		}
+		else
+		{
+			ConnectedEntities = await characterDataService.GetConnectedCharacterDtosAsync(Entity.Id.Value);
+		}
+	}
 }
