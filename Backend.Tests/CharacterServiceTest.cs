@@ -157,7 +157,7 @@ namespace Backend.Tests
                 Assert.IsType<KeyNotFoundException>(ex);
             }
         }
-        
+
         [Fact]
         public async Task Delete_RemovesCharacter_WhenExists()
         {

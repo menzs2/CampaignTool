@@ -350,7 +350,7 @@ namespace Backend.Tests
         }
 
         [Fact]
-       public void CharCharConnection_ToModel_WithNullDto_ReturnsNull()
+        public void CharCharConnection_ToModel_WithNullDto_ReturnsNull()
         {
             // Arrange
             CharCharConnectionDto? dto = null;

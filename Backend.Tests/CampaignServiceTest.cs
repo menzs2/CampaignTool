@@ -52,7 +52,7 @@ namespace Backend.Tests
         [Fact]
         public async Task Get_ById_ReturnsCampaign_WhenExists()
         {
-        var campaign = new Campaign { Id = 1L, Name = "C1", Gm = 1, DescriptionShort = "Short1" };
+            var campaign = new Campaign { Id = 1L, Name = "C1", Gm = 1, DescriptionShort = "Short1" };
             using var context = GetDbContextWithData(new List<Campaign> { campaign });
             var service = new CampaignService(context);
 
@@ -161,7 +161,7 @@ namespace Backend.Tests
                 Description = "Desc",
                 DescriptionShort = "Short",
                 GmOnlyDescription = "GM",
-                GmId= 2
+                GmId = 2
             };
 
             var result = await service.UpdateCampaignAsync(dto);
