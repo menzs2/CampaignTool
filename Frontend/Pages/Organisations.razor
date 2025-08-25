@@ -1,95 +1,94 @@
 @page "/organisations"
 
+@using Frontend.Components;
+@using System.Net.Http.Json;
 @inject OrganisationDataService DataService
 @inject Blazored.SessionStorage.ISessionStorageService SessionStorage;
 @inject NavigationManager NavigationManager;
-@using System.Net.Http.Json;
-@using Frontend.Components;
-@using Shared;
 
 <PageTitle>Campaign Tool Organisationen</PageTitle>
 
 <PageHeaderComponent Title="Organisationen" OnToggleDetailView="ToggleDetailView"
-    OnAddNewEntity="AddNewEntity" IsDetailView="@IsDetailView" />
-    
+					 OnAddNewEntity="AddNewEntity" IsDetailView="@IsDetailView" />
+
 @if (OrganisationList != null && OrganisationList.Any())
 {
-    if (SelectedOrganisation == null || !IsDetailView)
-    {
-        <div>
-            <ListComponent EntityList="@(OrganisationList?.Cast<BaseEntityDto>().ToList())"
-                OnNotifyParent="@SelectOrganisation" />
-        </div>
-    }
-    else if (SelectedOrganisation != null && IsDetailView)
-    {
-        <EntityDetailComponent EntityDto="SelectedOrganisation" />
-        <ConnectedEntitiesComponent Entity="@SelectedOrganisation" OnNotifyParent="@SelectOrganisation" />
-    }
-    else
-    {
-        <h2>Wähle eine Organisation aus.</h2>
-        <div>
-            <ListComponent EntityList="@(OrganisationList?.Cast<BaseEntityDto>().ToList())"
-                OnNotifyParent="@SelectOrganisation" />
-        </div>
-    }
+	if (SelectedOrganisation == null || !IsDetailView)
+	{
+		<div>
+			<ListComponent EntityList="@(OrganisationList?.Cast<BaseEntityDto>().ToList())"
+						   OnNotifyParent="@SelectOrganisation" />
+		</div>
+	}
+	else if (SelectedOrganisation != null && IsDetailView)
+	{
+		<EntityDetailComponent EntityDto="SelectedOrganisation" />
+		<ConnectedEntitiesComponent Entity="@SelectedOrganisation" OnNotifyParent="@SelectOrganisation" />
+	}
+	else
+	{
+		<h2>Wähle eine Organisation aus.</h2>
+		<div>
+			<ListComponent EntityList="@(OrganisationList?.Cast<BaseEntityDto>().ToList())"
+						   OnNotifyParent="@SelectOrganisation" />
+		</div>
+	}
 
 }
 else
 {
-    <p>Not data found.</p>
+	<p>Not data found.</p>
 }
 
 
 @code {
-    public List<OrganisationDto>? OrganisationList { get; set; } = new List<OrganisationDto>();
+	public List<OrganisationDto>? OrganisationList { get; set; } = new List<OrganisationDto>();
 
-    public OrganisationDto? SelectedOrganisation { get; set; }
-    private bool IsDetailView { get; set; } = false;
+	public OrganisationDto? SelectedOrganisation { get; set; }
+	private bool IsDetailView { get; set; } = false;
 
-    protected override async Task OnInitializedAsync()
-    {
-        if (SessionStorage != null)
-        {
-            // Load characters from session storage if available
-            long? selectedCampaignId = await SessionStorage.GetItemAsync<long?>("SelectedCampaignId");
-            if (!selectedCampaignId.HasValue)
+	protected override async Task OnInitializedAsync()
+	{
+		if (SessionStorage != null)
+		{
+			// Load characters from session storage if available
+			long? selectedCampaignId = await SessionStorage.GetItemAsync<long?>("SelectedCampaignId");
+			if (!selectedCampaignId.HasValue)
 
-            {
-                NavigationManager.NavigateTo("/");
-            }
-            else
-            {
-                OrganisationList = await DataService.GetOrganisationDtosByCampaignAsync(selectedCampaignId.Value);
-            }
-        }
-    }
+			{
+				NavigationManager.NavigateTo("/");
+			}
+			else
+			{
+				OrganisationList = await DataService.GetOrganisationDtosByCampaignAsync(selectedCampaignId.Value);
+			}
+		}
+	}
 
-    private async Task SelectOrganisation(long organisationId)
-    {
-        await SessionStorage.SetItemAsync("SelectedOrganisation", organisationId);
-        SelectedOrganisation = OrganisationList?.FirstOrDefault(c => c.Id == organisationId);
-        IsDetailView = true;
-    }
+	private async Task SelectOrganisation(long organisationId)
+	{
+		await SessionStorage.SetItemAsync("SelectedOrganisation", organisationId);
+		SelectedOrganisation = OrganisationList?.FirstOrDefault(c => c.Id == organisationId);
+		IsDetailView = true;
+	}
 
-    private void ToggleDetailView()
-    {
-        IsDetailView = !IsDetailView;
-    }
+	private void ToggleDetailView()
+	{
+		IsDetailView = !IsDetailView;
+	}
 
-    private async Task AddNewEntity()
-    {
-        if (!IsDetailView)
-        {
-            IsDetailView = true;
-        }
-        SelectedOrganisation = new OrganisationDto();
-        if (OrganisationList == null)
-        {
-            OrganisationList = new List<OrganisationDto>();
-        }
-        OrganisationList?.Add(SelectedOrganisation);
-        await SessionStorage.SetItemAsync("SelectedOrganisation", SelectedOrganisation);
-    }
+	private async Task AddNewEntity()
+	{
+		if (!IsDetailView)
+		{
+			IsDetailView = true;
+		}
+		SelectedOrganisation = new OrganisationDto();
+		if (OrganisationList == null)
+		{
+			OrganisationList = new List<OrganisationDto>();
+		}
+		OrganisationList?.Add(SelectedOrganisation);
+		await SessionStorage.SetItemAsync("SelectedOrganisation", SelectedOrganisation);
+	}
 }

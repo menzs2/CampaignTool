@@ -1,7 +1,7 @@
 ﻿using Backend.Models;
 using Backend.Services;
 using Microsoft.AspNetCore.Mvc;
-using Shared.DTO;
+using Shared;
 
 namespace Backend
 {

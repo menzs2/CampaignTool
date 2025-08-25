@@ -1,38 +1,38 @@
 <header class="page-header p-3 mb-3">
-    <h1 class="mx-3">@Title</h1>
-    <div class="btn-toolbar">
-    <button class="btn btn-secondary mx-3" @onclick="ToggleDetailView">@ButtonText</button>
-    <button class="btn btn-primary mx-3" @onclick="AddNewEntity"><i class="bi bi-plus"></i></button>
-    </div>
+	<h1 class="mx-3">@Title</h1>
+	<div class="btn-toolbar">
+		<button class="btn btn-secondary mx-3" @onclick="ToggleDetailView">@ButtonText</button>
+		<button class="btn btn-primary mx-3" @onclick="AddNewEntity"><i class="bi bi-plus"></i></button>
+	</div>
 </header>
 
 @code {
-    [Parameter]
-    public string Title { get; set; } = "Default Title";
+	[Parameter]
+	public string Title { get; set; } = "Default Title";
 
-    [Parameter]
-    public EventCallback<bool> OnToggleDetailView { get; set; }
+	[Parameter]
+	public EventCallback<bool> OnToggleDetailView { get; set; }
 
-    [Parameter]
-    public EventCallback OnAddNewEntity { get; set; }
+	[Parameter]
+	public EventCallback OnAddNewEntity { get; set; }
 
-    [Parameter]
-    public bool IsDetailView { get; set; } = false;
+	[Parameter]
+	public bool IsDetailView { get; set; } = false;
 
-    private string ButtonText => IsDetailView ? "Liste" : "Details";
+	private string ButtonText => IsDetailView ? "Liste" : "Details";
 
-    public async Task ToggleDetailView()
-    {
-        if (OnToggleDetailView.HasDelegate)
-        {
-            await OnToggleDetailView.InvokeAsync(IsDetailView);
-        }
-    }
-    public async Task AddNewEntity()
-    {
-        if (OnAddNewEntity.HasDelegate)
-        {
-            await OnAddNewEntity.InvokeAsync();
-        }
-    }
+	public async Task ToggleDetailView()
+	{
+		if (OnToggleDetailView.HasDelegate)
+		{
+			await OnToggleDetailView.InvokeAsync(IsDetailView);
+		}
+	}
+	public async Task AddNewEntity()
+	{
+		if (OnAddNewEntity.HasDelegate)
+		{
+			await OnAddNewEntity.InvokeAsync();
+		}
+	}
 }

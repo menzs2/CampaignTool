@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Shared.DTO
+namespace Shared
 {
     public class LoginRequestDto
     {

@@ -1,4 +1,4 @@
-namespace Shared.DTO
+namespace Shared
 {
     public class LoginResponseDto
     {

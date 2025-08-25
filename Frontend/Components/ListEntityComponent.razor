@@ -1,48 +1,51 @@
 @inject NavigationManager NavigationManager
-@using Shared
 @using System.ComponentModel.DataAnnotations;
 
 <article class="entity border rounded px-1">
-    <p>@Entity.Name</p>
-    <button class="btn btn-primary btn-sm" @onclick="() => NotifyParent()"><i
-            class="bi bi-arrow-right"/></button>
-    <button class="btn btn-secondary btn-sm" @onclick="() => isCollapsed = !isCollapsed">
-        <i class="bi @(isCollapsed ? "bi-chevron-right" : "bi-chevron-down")"></i>
-    </button>
-    <p>@if(@isCollapsed){
-        @Entity.DescriptionShort
-                } else
-        {
+	<p>@Entity.Name</p>
+	<button class="btn btn-primary btn-sm" @onclick="() => NotifyParent()">
+		<i class="bi bi-arrow-right" />
+	</button>
+	<button class="btn btn-secondary btn-sm" @onclick="() => isCollapsed = !isCollapsed">
+		<i class="bi @(isCollapsed ? "bi-chevron-right" : "bi-chevron-down")"></i>
+	</button>
+	<p>
+		@if (@isCollapsed)
+		{
+			@Entity.DescriptionShort
+		}
+		else
+		{
 
-            @Entity.Description
-        }
-    </p>
-    @if (Entity is CampaignDto campaignDto)
-    {
-        <p>SL @campaignDto.GmId</p>
-    }
+			@Entity.Description
+		}
+	</p>
+	@if (Entity is CampaignDto campaignDto)
+	{
+		<p>SL @campaignDto.GmId</p>
+	}
 </article>
 
 
 @code {
-    [Parameter]
-    public BaseEntityDto Entity { get; set; } = new BaseEntityDto
-    {
-        Name = "BaseEntity",
-        DescriptionShort = "BaseDescription"
-    };
+	[Parameter]
+	public BaseEntityDto Entity { get; set; } = new BaseEntityDto
+	{
+		Name = "BaseEntity",
+		DescriptionShort = "BaseDescription"
+	};
 
-    [Parameter]
-    public EventCallback<long> OnNotifyParent { get; set; }
+	[Parameter]
+	public EventCallback<long> OnNotifyParent { get; set; }
 
-    private async Task NotifyParent()
-    {
-        if (OnNotifyParent.HasDelegate && Entity.Id.HasValue)
-        {
-            await OnNotifyParent.InvokeAsync(Entity.Id.Value);
-        }
-    }
+	private async Task NotifyParent()
+	{
+		if (OnNotifyParent.HasDelegate && Entity.Id.HasValue)
+		{
+			await OnNotifyParent.InvokeAsync(Entity.Id.Value);
+		}
+	}
 
-    public bool isCollapsed = true;
-   
+	public bool isCollapsed = true;
+
 }

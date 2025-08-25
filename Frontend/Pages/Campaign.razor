@@ -9,70 +9,70 @@
 
 @if (CampaignDto == null)
 {
-    <p>Loading...</p>
+	<p>Loading...</p>
 }
 else
 {
-    <PageHeaderComponent Title="@CampaignDto.Name" OnToggleDetailView="ToggleDetailView" OnAddNewEntity="AddNewEntity" />
-    <EntityDetailComponent EntityDto="@CampaignDto" OnNotifyParent="SaveChanges" />
-    <ConnectedEntitiesComponent Entity="@CampaignDto" />
+	<PageHeaderComponent Title="@CampaignDto.Name" OnToggleDetailView="ToggleDetailView" OnAddNewEntity="AddNewEntity" />
+	<EntityDetailComponent EntityDto="@CampaignDto" OnNotifyParent="SaveChanges" />
+	<ConnectedEntitiesComponent Entity="@CampaignDto" />
 }
 
 @code {
 
-    public BaseEntityDto? CampaignDto { get; set; }
+	public BaseEntityDto? CampaignDto { get; set; }
 
-    private EntityDetailComponent? EntityDetailComponent { get; set; }
-    protected override async Task OnInitializedAsync()
-    {
-        if (SessionStorage != null)
-        {
-            // Load characters from session storage if available
-            long? selectedCampaignId = await SessionStorage.GetItemAsync<long?>("SelectedCampaignId");
-            if (!selectedCampaignId.HasValue)
-            {
-                NavigationManager.NavigateTo("/");
-            }
-            else
-            {
-                CampaignDto = await dataService.GetCampaignByIdAsync(selectedCampaignId.Value);
-            }
-        }
-    }
+	private EntityDetailComponent? EntityDetailComponent { get; set; }
+	protected override async Task OnInitializedAsync()
+	{
+		if (SessionStorage != null)
+		{
+			// Load characters from session storage if available
+			long? selectedCampaignId = await SessionStorage.GetItemAsync<long?>("SelectedCampaignId");
+			if (!selectedCampaignId.HasValue)
+			{
+				NavigationManager.NavigateTo("/");
+			}
+			else
+			{
+				CampaignDto = await dataService.GetCampaignByIdAsync(selectedCampaignId.Value);
+			}
+		}
+	}
 
-    private async Task SaveChanges()
-    {
-        if (CampaignDto is CampaignDto campaignDto)
-        {
-            if (!campaignDto.Id.HasValue || campaignDto.Id == 0)
-            {
-                // If the campaign is new, create it
-                Console.WriteLine("Creating new campaign...");
-                await dataService.AddCampaignAsync(campaignDto);
-            }
-            Console.WriteLine($"Saving campaign with Id: {campaignDto.Id}");
-            await dataService.UpdateCampaignAsync(campaignDto);
-        }
-        else
-        {
-            Console.WriteLine("No campaign data to save.");
-        }
-    }
+	private async Task SaveChanges()
+	{
+		if (CampaignDto is CampaignDto campaignDto)
+		{
+			if (!campaignDto.Id.HasValue || campaignDto.Id == 0)
+			{
+				// If the campaign is new, create it
+				Console.WriteLine("Creating new campaign...");
+				await dataService.AddCampaignAsync(campaignDto);
+			}
+			Console.WriteLine($"Saving campaign with Id: {campaignDto.Id}");
+			await dataService.UpdateCampaignAsync(campaignDto);
+		}
+		else
+		{
+			Console.WriteLine("No campaign data to save.");
+		}
+	}
 
-    private async Task ToggleDetailView()
-    {
-        await SaveChanges();
-        NavigationManager.NavigateTo("/");
-    }
+	private async Task ToggleDetailView()
+	{
+		await SaveChanges();
+		NavigationManager.NavigateTo("/");
+	}
 
-    private async Task AddNewEntity()
-    {
-        await SaveChanges();
-        CampaignDto = new CampaignDto
-        {
-            Name = "New Campaign",
-            Description = "Description of the new campaign"
-        };
-        StateHasChanged();
-    }
+	private async Task AddNewEntity()
+	{
+		await SaveChanges();
+		CampaignDto = new CampaignDto
+		{
+			Name = "New Campaign",
+			Description = "Description of the new campaign"
+		};
+		StateHasChanged();
+	}
 }

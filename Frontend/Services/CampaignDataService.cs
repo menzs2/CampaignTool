@@ -1,7 +1,7 @@
-﻿using Shared;
-using System.Net.Http.Json;
-using Microsoft.JSInterop;
+﻿using Microsoft.JSInterop;
+using Shared;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 
 namespace Frontend
 {

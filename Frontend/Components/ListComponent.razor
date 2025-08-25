@@ -1,28 +1,26 @@
-@using Shared;
-
 <section class="entitylist">
-  @if (EntityList == null || !EntityList.Any())
-  {
-    <h2>Keine Daten gefunden.</h2>
-  }
-  else
-  {
-    <Virtualize Items="@EntityList" ItemSize="50">
-      <ItemContent Context="e">
-        <ListEntityComponent Entity="e"
-                             OnNotifyParent="@OnNotifyParent" />
-      </ItemContent>
-    </Virtualize>
-  }
+	@if (EntityList == null || !EntityList.Any())
+	{
+		<h2>Keine Daten gefunden.</h2>
+	}
+	else
+	{
+		<Virtualize Items="@EntityList" ItemSize="50">
+			<ItemContent Context="e">
+				<ListEntityComponent Entity="e"
+									 OnNotifyParent="@OnNotifyParent" />
+			</ItemContent>
+		</Virtualize>
+	}
 
 </section>
 
 @code {
-  [Parameter]
-  public List<BaseEntityDto>? EntityList { get; set; }
+	[Parameter]
+	public List<BaseEntityDto>? EntityList { get; set; }
 
-  [Parameter]
-  public EventCallback<long> OnNotifyParent { get; set; }
+	[Parameter]
+	public EventCallback<long> OnNotifyParent { get; set; }
 
 
 }

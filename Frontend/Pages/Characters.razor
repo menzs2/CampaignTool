@@ -5,101 +5,100 @@
 @inject NavigationManager NavigationManager;
 @using System.Net.Http.Json;
 @using Frontend.Components;
-@using Shared;
 
 <PageTitle>Campaign Tool Charaktere</PageTitle>
 
 <PageHeaderComponent Title="NSC" OnToggleDetailView="ToggleDetailView"
-    OnAddNewEntity="AddNewEntity" IsDetailView="@IsDetailView" />
+					 OnAddNewEntity="AddNewEntity" IsDetailView="@IsDetailView" />
 
 @if (CharactersList != null && CharactersList.Any())
 {
-    if (SelectedCharacter != null && IsDetailView)
-    {
-        <EntityDetailComponent EntityDto="@SelectedCharacter" OnNotifyParent="@SaveChanges" />
-        <ConnectedEntitiesComponent Entity="@SelectedCharacter" />
-    }
-    else
-    {
-        <h2>Wähle einen Charakter aus.</h2>
-            <ListComponent EntityList="@(CharactersList?.Cast<BaseEntityDto>().ToList())"
-                OnNotifyParent="@SelectCharacter" />
-    }
+	if (SelectedCharacter != null && IsDetailView)
+	{
+		<EntityDetailComponent EntityDto="@SelectedCharacter" OnNotifyParent="@SaveChanges" />
+		<ConnectedEntitiesComponent Entity="@SelectedCharacter" />
+	}
+	else
+	{
+		<h2>Wähle einen Charakter aus.</h2>
+		<ListComponent EntityList="@(CharactersList?.Cast<BaseEntityDto>().ToList())"
+					   OnNotifyParent="@SelectCharacter" />
+	}
 
 }
 else
 {
-    <p>Not data found.</p>
+	<p>Not data found.</p>
 }
 
 @code {
 
-    public List<CharacterDto>? CharactersList { get; set; }
+	public List<CharacterDto>? CharactersList { get; set; }
 
-    public CharacterDto? SelectedCharacter { get; set; }
+	public CharacterDto? SelectedCharacter { get; set; }
 
-    private bool IsDetailView { get; set; } = false;
+	private bool IsDetailView { get; set; } = false;
 
-    protected override async Task OnInitializedAsync()
-    {
-        if (SessionStorage != null)
-        {
-            // Load characters from session storage if available
-            long? selectedCampaignId = await SessionStorage.GetItemAsync<long?>("SelectedCampaignId");
-            long? selectedCharacterId = await SessionStorage.GetItemAsync<long?>("SelectedCharacterId");
-            if (!selectedCampaignId.HasValue)
+	protected override async Task OnInitializedAsync()
+	{
+		if (SessionStorage != null)
+		{
+			// Load characters from session storage if available
+			long? selectedCampaignId = await SessionStorage.GetItemAsync<long?>("SelectedCampaignId");
+			long? selectedCharacterId = await SessionStorage.GetItemAsync<long?>("SelectedCharacterId");
+			if (!selectedCampaignId.HasValue)
 
-            {
-                NavigationManager.NavigateTo("/");
-            }
-            else
-            {
-                CharactersList = await DataService.GetCharacterDtosByCampaignAsync(selectedCampaignId.Value);
-                if (selectedCharacterId.HasValue)
-                {
-                    SelectedCharacter = CharactersList?.FirstOrDefault(c => c.Id == selectedCharacterId.Value);
-                }
-            }
-        }
-    }
+			{
+				NavigationManager.NavigateTo("/");
+			}
+			else
+			{
+				CharactersList = await DataService.GetCharacterDtosByCampaignAsync(selectedCampaignId.Value);
+				if (selectedCharacterId.HasValue)
+				{
+					SelectedCharacter = CharactersList?.FirstOrDefault(c => c.Id == selectedCharacterId.Value);
+				}
+			}
+		}
+	}
 
-    private async Task SaveChanges()
-    {
-        if (SelectedCharacter is CharacterDto characterDto)
-        {
-            if (!characterDto.Id.HasValue || characterDto.Id == 0)
-            {
-                // If the character is new, create it
-                Console.WriteLine("Creating new character...");
-                await DataService.PostCharacterAsync(characterDto);
-            }
-            Console.WriteLine($"Saving character with Id: {characterDto.Id}");
-            await DataService.PutCharacterAsync(characterDto.Id.Value, characterDto);
-        }
-        else
-        {
-            Console.WriteLine("No character data to save.");
-        }
+	private async Task SaveChanges()
+	{
+		if (SelectedCharacter is CharacterDto characterDto)
+		{
+			if (!characterDto.Id.HasValue || characterDto.Id == 0)
+			{
+				// If the character is new, create it
+				Console.WriteLine("Creating new character...");
+				await DataService.PostCharacterAsync(characterDto);
+			}
+			Console.WriteLine($"Saving character with Id: {characterDto.Id}");
+			await DataService.PutCharacterAsync(characterDto.Id.Value, characterDto);
+		}
+		else
+		{
+			Console.WriteLine("No character data to save.");
+		}
 
-    }
-    private async Task SelectCharacter(long characterId)
-    {
-        await SessionStorage.SetItemAsync("SelectedCharacterId", characterId);
-        SelectedCharacter = CharactersList?.FirstOrDefault(c => c.Id == characterId);
-        IsDetailView = true;
-    }
+	}
+	private async Task SelectCharacter(long characterId)
+	{
+		await SessionStorage.SetItemAsync("SelectedCharacterId", characterId);
+		SelectedCharacter = CharactersList?.FirstOrDefault(c => c.Id == characterId);
+		IsDetailView = true;
+	}
 
-    private void ToggleDetailView()
-    {
-        IsDetailView = !IsDetailView;
-    }
-    private async Task AddNewEntity()
-    {
-        if (!IsDetailView)
-        {
-            IsDetailView = true;
-        }
-        SelectedCharacter = new CharacterDto();
-    }
+	private void ToggleDetailView()
+	{
+		IsDetailView = !IsDetailView;
+	}
+	private async Task AddNewEntity()
+	{
+		if (!IsDetailView)
+		{
+			IsDetailView = true;
+		}
+		SelectedCharacter = new CharacterDto();
+	}
 
 }

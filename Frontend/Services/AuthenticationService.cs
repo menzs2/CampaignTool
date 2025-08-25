@@ -1,6 +1,6 @@
-﻿using Shared.DTO;
+﻿using Microsoft.JSInterop;
+using Shared;
 using System.Net.Http.Json;
-using Microsoft.JSInterop;
 
 namespace Frontend
 {
@@ -12,7 +12,7 @@ namespace Frontend
 
         public async Task<LoginResponseDto?> LoginAsync(LoginRequestDto loginRequest)
         {
-        
+
             try
             {
                 var response = await HttpClient.PostAsJsonAsync($"{HttpClient.BaseAddress}{baseRoute}/login", loginRequest);
