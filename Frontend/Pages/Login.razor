@@ -12,7 +12,6 @@
 <section class="login-form">
 	<EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
 		<DataAnnotationsValidator />
-		<ValidationSummary />
 
 		<div class="form-group">
 			<label for="email">Email:</label>
@@ -26,7 +25,7 @@
 			<ValidationMessage For="@(() => loginModel.Password)" />
 		</div>
 
-		<button type="submit" class="btn btn-primary m-3">Login</button>
+		<button type="submit" class="btn btn-primary mt-3">Login</button>
 
 		<div class="guest-login  mt-3">
 			<p>Or login as a guest:</p>
