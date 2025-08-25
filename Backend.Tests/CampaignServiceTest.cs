@@ -86,7 +86,7 @@ namespace Backend.Tests
             using var context = GetDbContextWithData(campaigns);
             var service = new CampaignService(context);
 
-            var result = await service.GetCampaignsByGmId(1);
+            var result = await service.GetCampaignsByUserId(1);
 
             Assert.NotNull(result);
             Assert.IsType<List<CampaignDto>>(result);
@@ -104,7 +104,7 @@ namespace Backend.Tests
             using var context = GetDbContextWithData(campaigns);
             var service = new CampaignService(context);
 
-            var result = await service.GetCampaignsByGmId(99);
+            var result = await service.GetCampaignsByUserId(99);
 
             Assert.Empty(result);
         }
