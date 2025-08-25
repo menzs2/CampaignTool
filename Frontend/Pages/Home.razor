@@ -13,7 +13,7 @@
 
 @if (Campaigns != null && Campaigns.Any())
 {
-	<div class="campaign-list container border rounded p-1">
+	<div class="campaign-list container border rounded px-1">
 		<Frontend.Components.ListComponent EntityList="@(Campaigns?.Cast<BaseEntityDto>().ToList())" OnNotifyParent="@SelectCampaign" />
 	</div>
 }
@@ -45,10 +45,10 @@ else
 		}
 	}
 
-	private void SelectCampaign(long campaignId)
+	private async void SelectCampaign(long campaignId)
 	{
 		// Set the campaign to session storage by Id
-		SessionStorage.SetItemAsync<long?>("SelectedCampaignId", campaignId);
+		await SessionStorage.SetItemAsync<long?>("SelectedCampaignId", campaignId);
 		NavigationManager.NavigateTo($"/campaign");
 	}
 }
