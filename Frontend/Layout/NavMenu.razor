@@ -1,5 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
+@using Shared;
 @inject CustomAuthenticationStateProvider AuthenticationProvider
+@inject Blazored.SessionStorage.ISessionStorageService SessionStorage
 
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
@@ -49,11 +51,14 @@
                     <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Einstell.
                 </NavLink>
             </div>
-            <div class="nav-item px-1">
-                <NavLink class="nav-link" href="admin">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Admin
-                </NavLink>
-            </div>
+            @if (isUserAdmin)
+            {
+                <div class="nav-item px-1">
+                    <NavLink class="nav-link" href="admin">
+                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Admin
+                    </NavLink>
+                </div>
+            }
         }
        
     </nav>
@@ -63,7 +68,8 @@
     private bool collapseNavMenu = true;
 
     private bool isUserAuthenticated {get; set; }
-
+        
+    private bool isUserAdmin { get; set; }
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
@@ -74,13 +80,23 @@
 
     protected override async Task OnInitializedAsync()
     {
-        isUserAuthenticated = await AuthenticationProvider.IsAuthenticated();
+        var result = await AuthenticationProvider.GetAuthenticationStateAsync();
+        isUserAuthenticated = result.User.Identity?.IsAuthenticated ?? false;
+        isUserAdmin = result.User.IsInRole("Admin");
         AuthenticationProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
     }
+    
     protected void OnAuthenticationStateChanged(Task<AuthenticationState> task)
     {
         isUserAuthenticated = task.Result.User.Identity?.IsAuthenticated ?? false;
+        isUserAdmin = task.Result.User.IsInRole("Admin");
         StateHasChanged();
+    }
+
+    private async Task<bool> IsUserAdmin()
+    {
+        var user = await SessionStorage.GetItemAsync<UserDto?>("User");
+        return user?.Role == 1;
     }
 
 }
