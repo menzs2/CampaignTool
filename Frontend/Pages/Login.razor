@@ -26,7 +26,12 @@
 			<ValidationMessage For="@(() => loginModel.Password)" />
 		</div>
 
-		<button type="submit">Login</button>
+		<button type="submit" class="btn btn-primary m-3">Login</button>
+
+		<div class="guest-login  mt-3">
+			<p>Or login as a guest:</p>
+			<button type="button" class="btn btn-primary" @onclick="GuestLogin">Guest Login</button>
+		</div>
 	</EditForm>
 </section>
 
@@ -50,5 +55,12 @@
 		{
 			await JSRuntime.InvokeVoidAsync("alert", $"Login failed: {ex.Message}");
 		}
+	}
+
+	private async Task GuestLogin()
+	{
+		loginModel.Email = "guest@example.com";
+		loginModel.Password = "guestpassword";
+		await HandleLogin();
 	}
 }
