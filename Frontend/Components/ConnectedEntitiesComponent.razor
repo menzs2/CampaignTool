@@ -7,6 +7,9 @@
 		<button class="btn btn-primary">SC</button>
 		<button class="btn btn-primary">NSC</button>
 		<button class="btn btn-primary">Org</button>
+		<button class="btn btn-secondary btn-sm" @onclick="() => IsCollapsed = !IsCollapsed">
+		<i class="bi @(IsCollapsed ? "bi-chevron-right" : "bi-chevron-down")"></i>
+	</button>
 	</div>
 	@if (ConnectedEntities == null || ConnectedEntities.Count == 0)
 	{
@@ -14,7 +17,9 @@
 	}
 	else
 	{
+		<div class="@(IsCollapsed ? "collapse" : "")">
 		<ListComponent EntityList="@(ConnectedEntities?.Cast<BaseEntityDto>().ToList())" OnNotifyParent="@OnNotifyParent" />
+		</div>
 	}
 </div>
 
@@ -25,6 +30,7 @@
 	[Parameter]
 	public EventCallback<long> OnNotifyParent { get; set; }
 
+	private bool IsCollapsed;
 	private List<CharacterDto>? ConnectedEntities { get; set; }
 
 	protected override async Task OnParametersSetAsync()
