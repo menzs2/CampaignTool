@@ -18,17 +18,23 @@
 				<InputText id="name" class="form-control" @bind-Value="EntityDto.Name" />
 				<ValidationMessage For="@(() => EntityDto.Name)" />
 			</div>
+			@if(EntityDto is CharacterDto character){
+				<div class="form-group">
+				<label for="name">Spieler</label>
+				<InputNumber id="name" class="form-control" @bind-Value="character.PlayerId" />
+				<ValidationMessage For="@(() => EntityDto.Name)" />
+			</div>
+			}
 			<div class="form-group">
-				<label for="descriptionShort">Description Short</label>
+				<label for="descriptionShort">Kurzbeschreibung </label>
 				<InputTextArea id="descriptionShort" class="form-control" @bind-Value="EntityDto.DescriptionShort" />
 				<ValidationMessage For="@(() => EntityDto.DescriptionShort)" />
 			</div>
 			<div class="form-group">
-				<label for="description">Description</label>
+				<label for="description">Beschreibung</label>
 				<InputTextArea id="description" class="form-control" @bind-Value="EntityDto.Description" />
 				<ValidationMessage For="@(() => EntityDto.Description)" />
 			</div>
-
 
 			<div class="form-group">
 				<label for="state">Status</label>
