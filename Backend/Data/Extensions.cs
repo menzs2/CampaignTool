@@ -42,7 +42,7 @@ public static class Extensions
 
     }
 
-    public static IEnumerable<Campaign> ToModel(this IEnumerable<CampaignDto> campaignDtos)
+    public static IEnumerable<Campaign> ToModel(this IEnumerable<CampaignDto?> campaignDtos)
     {
         var campaigns = new List<Campaign>();
         foreach (var campaignDto in campaignDtos)
@@ -166,115 +166,6 @@ public static class Extensions
         return organisationDtos
             .Where(o => o != null)
             .Select(o => o!.ToModel()!)
-            .ToList();
-    }
-
-    #endregion
-
-    #region User Extensions
-
-    public static UserDto? ToDto(this User? user)
-    {
-        if (user == null) return null;
-
-        return new UserDto
-        {
-            Id = user.Id,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            UserName = user.UserName,
-            Email = user.Email,
-            HasLogin = user.HasLogin,
-            Password = user.Password,
-            Role = user.Role,
-            AppUserId = user.AppUserId
-        };
-    }
-
-    public static IEnumerable<UserDto> ToDto(this IEnumerable<User?> users)
-    {
-        return users
-            .Where(u => u != null)
-            .Select(u => u!.ToDto()!)
-            .ToList();
-    }
-
-    public static User? ToModel(this UserDto? userDto)
-    {
-        if (userDto == null) return null;
-        var newUser = new User
-        {
-            FirstName = userDto.FirstName,
-            LastName = userDto.LastName,
-            UserName = userDto.UserName,
-            Email = userDto.Email,
-            HasLogin = userDto.HasLogin,
-            Password = userDto.Password,
-            Role = userDto.Role,
-            AppUserId = userDto.AppUserId
-        };
-        if (userDto.Id.HasValue)
-        {
-            newUser.Id = userDto.Id.Value;
-        }
-        return newUser;
-    }
-
-    public static IEnumerable<User> ToModel(this IEnumerable<UserDto?> userDtos)
-    {
-        return userDtos
-            .Where(u => u != null)
-            .Select(u => u!.ToModel()!)
-            .ToList();
-    }
-    #endregion
-
-    #region UserSetting Extensions
-
-    public static UserSettingDto? ToDto(this UserSetting? userSetting)
-    {
-        if (userSetting == null) return null;
-
-        return new UserSettingDto
-        {
-            Id = userSetting.Id,
-            UserId = userSetting.UserId,
-            SelectLastCampaign = userSetting.SelectLastCampaign,
-            SameNameWarning = userSetting.SameNameWarning,
-            DefaultCampaignId = userSetting.DefaultCampaignId
-        };
-    }
-
-    public static IEnumerable<UserSettingDto> ToDto(this IEnumerable<UserSetting?> userSettings)
-    {
-        return userSettings
-            .Where(u => u != null)
-            .Select(u => u!.ToDto()!)
-            .ToList();
-    }
-
-    public static UserSetting? ToModel(this UserSettingDto? userSettingDto)
-    {
-        if (userSettingDto == null) return null;
-        var userSetting = new UserSetting
-        {
-            UserId = userSettingDto.UserId,
-            SelectLastCampaign = userSettingDto.SelectLastCampaign,
-            SameNameWarning = userSettingDto.SameNameWarning,
-            DefaultCampaignId = userSettingDto.DefaultCampaignId
-        };
-        if (userSettingDto.Id.HasValue)
-        {
-            userSetting.Id = userSettingDto.Id.Value;
-        }
-        return userSetting;
-    }
-
-    public static IEnumerable<UserSetting> ToModel(this IEnumerable<UserSettingDto?> userSettingDtos)
-    {
-        return userSettingDtos
-            .Where(u => u != null)
-            .Select(u => u!.ToModel()!)
             .ToList();
     }
 
@@ -476,4 +367,114 @@ public static class Extensions
     }
 
     #endregion
+
+    #region User Extensions
+
+    public static UserDto? ToDto(this User? user)
+    {
+        if (user == null) return null;
+
+        return new UserDto
+        {
+            Id = user.Id,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            UserName = user.UserName,
+            Email = user.Email,
+            HasLogin = user.HasLogin,
+            Password = user.Password,
+            Role = user.Role,
+            AppUserId = user.AppUserId
+        };
+    }
+
+    public static IEnumerable<UserDto> ToDto(this IEnumerable<User?> users)
+    {
+        return users
+            .Where(u => u != null)
+            .Select(u => u!.ToDto()!)
+            .ToList();
+    }
+
+    public static User? ToModel(this UserDto? userDto)
+    {
+        if (userDto == null) return null;
+        var newUser = new User
+        {
+            FirstName = userDto.FirstName,
+            LastName = userDto.LastName,
+            UserName = userDto.UserName,
+            Email = userDto.Email,
+            HasLogin = userDto.HasLogin,
+            Password = userDto.Password,
+            Role = userDto.Role,
+            AppUserId = userDto.AppUserId
+        };
+        if (userDto.Id.HasValue)
+        {
+            newUser.Id = userDto.Id.Value;
+        }
+        return newUser;
+    }
+
+    public static IEnumerable<User> ToModel(this IEnumerable<UserDto?> userDtos)
+    {
+        return userDtos
+            .Where(u => u != null)
+            .Select(u => u!.ToModel()!)
+            .ToList();
+    }
+    #endregion
+
+    #region UserSetting Extensions
+
+    public static UserSettingDto? ToDto(this UserSetting? userSetting)
+    {
+        if (userSetting == null) return null;
+
+        return new UserSettingDto
+        {
+            Id = userSetting.Id,
+            UserId = userSetting.UserId,
+            SelectLastCampaign = userSetting.SelectLastCampaign,
+            SameNameWarning = userSetting.SameNameWarning,
+            DefaultCampaignId = userSetting.DefaultCampaignId
+        };
+    }
+
+    public static IEnumerable<UserSettingDto> ToDto(this IEnumerable<UserSetting?> userSettings)
+    {
+        return userSettings
+            .Where(u => u != null)
+            .Select(u => u!.ToDto()!)
+            .ToList();
+    }
+
+    public static UserSetting? ToModel(this UserSettingDto? userSettingDto)
+    {
+        if (userSettingDto == null) return null;
+        var userSetting = new UserSetting
+        {
+            UserId = userSettingDto.UserId,
+            SelectLastCampaign = userSettingDto.SelectLastCampaign,
+            SameNameWarning = userSettingDto.SameNameWarning,
+            DefaultCampaignId = userSettingDto.DefaultCampaignId
+        };
+        if (userSettingDto.Id.HasValue)
+        {
+            userSetting.Id = userSettingDto.Id.Value;
+        }
+        return userSetting;
+    }
+
+    public static IEnumerable<UserSetting> ToModel(this IEnumerable<UserSettingDto?> userSettingDtos)
+    {
+        return userSettingDtos
+            .Where(u => u != null)
+            .Select(u => u!.ToModel()!)
+            .ToList();
+    }
+
+    #endregion
+
 }
