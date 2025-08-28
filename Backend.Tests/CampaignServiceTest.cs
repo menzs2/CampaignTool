@@ -161,7 +161,8 @@ namespace Backend.Tests
                 Description = "Desc",
                 DescriptionShort = "Short",
                 GmOnlyDescription = "GM",
-                GmId = 2
+                GmId = 2,
+                State = "Updated State"
             };
 
             var result = await service.UpdateCampaignAsync(dto);
@@ -169,6 +170,7 @@ namespace Backend.Tests
             var updatedCampaign = context.Campaigns.Find(1L);
             Assert.NotNull(updatedCampaign);
             Assert.Equal("Updated", updatedCampaign.Name);
+            Assert.Equal("Updated State", updatedCampaign.State);
         }
 
         [Fact]

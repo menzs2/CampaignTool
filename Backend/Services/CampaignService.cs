@@ -67,6 +67,7 @@ public class CampaignService
         existingCampaign.DescriptionShort = campaignDto.DescriptionShort;
         existingCampaign.GmOnlyDescription = campaignDto.GmOnlyDescription;
         existingCampaign.Gm = campaignDto.GmId;
+        existingCampaign.State = campaignDto.State;
         DbContext.Campaigns.Update(existingCampaign);
 
         await DbContext.SaveChangesAsync();
