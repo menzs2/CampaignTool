@@ -1,4 +1,4 @@
-@page "/characters"
+@page "/characters/{Pc:bool}"
 
 @inject CharacterDataService DataService;
 @inject Blazored.SessionStorage.ISessionStorageService SessionStorage;
@@ -8,7 +8,7 @@
 
 <PageTitle>Campaign Tool Charaktere</PageTitle>
 
-<PageHeaderComponent Title="NSC" OnToggleDetailView="ToggleDetailView"
+<PageHeaderComponent Title=@(Pc ? "PC" :"NSC")  OnToggleDetailView="ToggleDetailView"
 					 OnAddNewEntity="AddNewEntity" IsDetailView="@IsDetailView" />
 
 @if (CharactersList != null && CharactersList.Any())
@@ -37,6 +37,8 @@ else
 
 	public CharacterDto? SelectedCharacter { get; set; }
 
+	[Parameter]
+	public bool Pc {get; set;}
 	private bool IsDetailView { get; set; } = false;
 
 	protected override async Task OnInitializedAsync()
