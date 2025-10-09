@@ -2,6 +2,7 @@
 using Backend.Models;
 using Shared;
 using Microsoft.EntityFrameworkCore;
+using Backend.Services;
 
 namespace Backend.Tests;
 
@@ -250,12 +251,19 @@ public class OrganisationServiceTest
     {
         var context = GetDbContextWithData();
         var service = new OrganisationService(context);
-
-        await service.DeleteOrganisation(3);
+        var connectionService = new ConnectionService(context);
+        var connectionsbefore = await connectionService.GetOrganizationToOrganizationConnectionsAsync();
+        await service.DeleteOrganisation(2);
 
         var organisations = await service.GetOrganisationDtoAsync();
+        var connections = await connectionService.GetOrganizationToOrganizationConnectionsAsync();
+        
         Assert.IsType<List<OrganisationDto>>(organisations);
         Assert.Equal(2, organisations?.Count());
+        Assert.NotNull(connectionsbefore);
+        Assert.Single(connectionsbefore);
+        Assert.NotNull(connections);
+        Assert.Empty(connections);
     }
 
     [Fact]
