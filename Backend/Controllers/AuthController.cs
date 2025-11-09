@@ -2,6 +2,8 @@
 using Backend.Services;
 using Microsoft.AspNetCore.Mvc;
 using Shared;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Backend
 {
@@ -86,6 +88,7 @@ namespace Backend
         }
 
         [HttpDelete("delete")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task DeleteUser([FromBody] string email)
         {
 

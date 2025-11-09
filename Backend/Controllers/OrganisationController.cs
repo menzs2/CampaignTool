@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Shared;
 
 namespace Backend;
@@ -7,7 +9,6 @@ namespace Backend;
 [ApiController]
 public class OrganisationController : ControllerBase
 {
-    //private readonly CampaignToolContext _dbContext;
     private readonly OrganisationService _service;
 
     public OrganisationController(OrganisationService service)
@@ -19,6 +20,7 @@ public class OrganisationController : ControllerBase
     /// gets all organisations.
     /// </summary>
     [HttpGet]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> Get()
     {
         var organisations = await _service.GetOrganisationDtoAsync();
@@ -32,6 +34,7 @@ public class OrganisationController : ControllerBase
     /// </summary>
     /// <param name="id">The ID of the organisation to retrieve.</param>
     [HttpGet("{id}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> Get(long id)
     {
         var organisation = await _service.GetOrganisationDtoByIdAsync(id);
@@ -43,6 +46,7 @@ public class OrganisationController : ControllerBase
     /// </summary>
     /// <param name="campaignId">The ID of the campaign to retrieve organisations for.</param>
     [HttpGet("campaign/{campaignId}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> GetByCampaign(long campaignId)
     {
         var organisations = await _service.GetOrganisationDtoAsync(campaignId);
@@ -54,6 +58,7 @@ public class OrganisationController : ControllerBase
     /// </summary>
     /// <param name="id">The ID of the organisation to find connections for.</param>
     [HttpGet("connected/{id}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> GetConnectedOrganisations(long id)
     {
         var organisations = await _service.GetConnectedOrganisationsAsync(id);
@@ -65,6 +70,7 @@ public class OrganisationController : ControllerBase
     /// </summary>
     /// <param name="organisation">The organisation data to create.</param>
     [HttpPost]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> Post([FromBody] OrganisationDto? organisation)
     {
         if (organisation == null)
@@ -90,6 +96,7 @@ public class OrganisationController : ControllerBase
     /// <param name="id">The ID of the organisation to update.</param>
     /// <param name="organisation">The updated organisation data.</param>
     [HttpPut("{id}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> Put(long id, [FromBody] OrganisationDto? organisation)
     {
         if (organisation == null || organisation.Id != id)
@@ -118,6 +125,7 @@ public class OrganisationController : ControllerBase
     /// </summary>
     /// <param name="id">The ID of the organisation to delete.</param>
     [HttpDelete("{id}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> Delete(long id)
     {
         try
