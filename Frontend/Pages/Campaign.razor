@@ -12,7 +12,7 @@
 }
 else
 {
-	<PageHeaderComponent Title="@CampaignDto.Name" OnToggleDetailView="ToggleDetailView" OnAddNewEntity="AddNewEntity" />
+	<PageHeaderComponent Title="@CampaignDto.Name" OnToggleDetailView="ToggleDetailView" OnAddNewEntity="AddNewEntity" IsDetailView="true" />
 	<EntityDetailComponent EntityDto="@CampaignDto" OnNotifyParent="SaveChanges" />
 	<ConnectedEntitiesComponent Entity="@CampaignDto" />
 }
