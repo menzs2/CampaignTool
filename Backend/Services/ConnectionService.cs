@@ -229,7 +229,7 @@ namespace Backend.Services
             return connection?.ToDto();
         }
 
-        public async Task<OrgOrgConnectionDto> CreateOrganizationToOrganizationConnectionAsync(OrgOrgConnectionDto connectionDto)
+        public async Task<OrgOrgConnectionDto?> CreateOrganizationToOrganizationConnectionAsync(OrgOrgConnectionDto connectionDto)
         {
             if (connectionDto == null)
             {
